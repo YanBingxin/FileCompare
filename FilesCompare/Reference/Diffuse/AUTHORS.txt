@@ -1,0 +1,14 @@
+Programming
+-----------
+Derrick Moser <derrick_moser@yahoo.com>
+
+Translators
+-----------
+Cristian Marchi <cri.penta@gmail.com> (Italian)
+Derrick Moser <derrick_moser@yahoo.com> (Japanese)
+Henri Menke <henrimenke4@aim.com> (German, Spanish)
+Jindřich Šesták <khagaroth@gmail.com> (Czech)
+Kang Bundo <kangbundo@gmail.com> (Korean)
+Liu Hao <jarryson@gmail.com> (Simplified Chinese)
+Miś Uszatek <adres.email@ymail.com> (Polish)
+Oleg Pakhtusov <oupakhtusov@gmail.com> (Russian)
