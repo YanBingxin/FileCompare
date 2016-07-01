@@ -1045,6 +1045,7 @@ namespace FilesCompare.ViewModel
                 var updated = from f1 in collection1
                               from f2 in collection2
                               where f1.FName == f2.FName && f1.IsFile == true && f2.IsFile == true && f1.FMD5 != f2.FMD5
+                              orderby f1.FFullName
                               select new
                               {
                                   f1,

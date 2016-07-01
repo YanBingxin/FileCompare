@@ -92,7 +92,7 @@ namespace FilesCompare
 
         #region 垂直滚动条同步
         /// <summary>
-        /// 双Datagrid垂直滚动条同步
+        /// 双Datagrid滚动条同步
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -100,14 +100,17 @@ namespace FilesCompare
         {
             DataGrid dg = (sender as DataGrid).Name == "dgNew" ? dgOld : dgNew;
 
-            if (e.VerticalChange != 0.0f)
+            if (e.VerticalChange != 0.0f || e.HorizontalChange != 0.0f)
             {
                 ScrollViewer sv = null;
                 Type t = dgNew.GetType();
                 try
                 {
                     sv = t.InvokeMember("InternalScrollHost", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetProperty, null, dg, null) as ScrollViewer;
-                    sv.ScrollToVerticalOffset(e.VerticalOffset);
+                    if (e.VerticalChange != 0.0f)
+                        sv.ScrollToVerticalOffset(e.VerticalOffset);
+                    if (e.HorizontalChange != 0.0f)
+                        sv.ScrollToHorizontalOffset(e.HorizontalOffset);
                 }
                 catch (Exception ex)
                 {
