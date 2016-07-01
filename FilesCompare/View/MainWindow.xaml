@@ -1,0 +1,321 @@
+﻿<Window x:Class="FilesCompare.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Title="MainWindow" Height="650" Width="1000">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Style/ybx_GraySimpleStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"></ColumnDefinition>
+            <ColumnDefinition Width="75"/>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="120"></ColumnDefinition>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="55"></RowDefinition>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="68"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="28"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="1"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Background="#FF333333"/>
+            <StackPanel x:Name="stpHeaderButton" Orientation="Horizontal"
+        		Grid.Column="1"
+        		Grid.Row="0"
+        		Background="Transparent">
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource NoBorderButtonStyle}">
+                        <Setter Property="Width" Value="20"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Background" Value="#FF333333"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Background" Value="DimGray"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Resources>
+                <Button Content="-" Command="{Binding MinCommand}"/>
+                <Button Content="□" Command="{Binding MaxCommand}"/>
+                <Button Content="×" Command="{Binding CloseCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource NoBorderButtonStyle}">
+                            <Setter Property="Width" Value="20"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Background" Value="#FF333333"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                    <Setter Property="Background" Value="DimGray"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+            <StackPanel x:Name="stpTitle" Orientation="Horizontal" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2">
+                <Image Source="..\Style\navwj.ico" Margin="10,5,0,5"/>
+                <TextBlock Text="文件差异分析系统" FontFamily="幼圆" Foreground="White" Width="auto" HorizontalAlignment="Left" Margin="12,0,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <Border Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="2" Background="LightGray"/>
+        <TextBlock Grid.Column="1" Grid.Row="1" Width="65" Text="白名单:" FontFamily="幼圆"/>
+        <TextBox Grid.Row="1" Grid.Column="2" ToolTip="以'|'号分隔" Text="{Binding Config, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
+        <Grid Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="新文件>" FontFamily="幼圆" Grid.Column="0">
+                <TextBlock.TextEffects>
+                    <TextEffect PositionStart="3" PositionCount="1" >
+                        <TextEffect.Transform>
+                            <SkewTransform x:Name="st" AngleX="0" AngleY="0" CenterX="10" CenterY="-250"/>
+                        </TextEffect.Transform>
+                    </TextEffect>
+                </TextBlock.TextEffects>
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard>
+                            <Storyboard Storyboard.TargetName="st" Storyboard.TargetProperty="AngleX" RepeatBehavior="Forever" AutoReverse="True">
+                                <DoubleAnimation From="0" To="3" Duration="0:0:1.5"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
+            <TextBox Grid.Column="1" 
+                 Style="{StaticResource OpenPathTBXStyle}"
+                 Text="{Binding FilePath1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            <TextBlock Text="旧文件>" FontFamily="幼圆" Grid.Column="2">
+                <TextBlock.TextEffects>
+                    <TextEffect PositionStart="3" PositionCount="1" >
+                        <TextEffect.Transform>
+                            <SkewTransform x:Name="st2" AngleX="0" AngleY="0" CenterX="10" CenterY="-250"/>
+                        </TextEffect.Transform>
+                    </TextEffect>
+                </TextBlock.TextEffects>
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard>
+                            <Storyboard Storyboard.TargetName="st2" Storyboard.TargetProperty="AngleX" RepeatBehavior="Forever" AutoReverse="True">
+                                <DoubleAnimation From="0" To="3" Duration="0:0:1.5"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
+            <TextBox Grid.Column="3" 
+                 Style="{StaticResource OpenPathTBXStyle}"
+                 Text="{Binding FilePath2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+        </Grid>
+
+        <Button Grid.Column="3" 
+                Grid.Row="1" 
+                Grid.RowSpan="2"
+                Content="{Binding btnContent}"
+                Command="{Binding DescryptCommand}"
+                Background="LightGray"
+               >
+            <Button.Style>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButtonStyle}">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Grid Grid.Row="3" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="3" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <!--<ScrollViewer HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">-->
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <DataGrid x:Name="dgNew" ScrollViewer.ScrollChanged="DataGrid_ScrollChanged" CanUserAddRows="False" SelectionMode="Single" RowBackground="White" AlternatingRowBackground="#FFD4D0D0" Grid.Column="0" RowHeight="22" HorizontalAlignment="Stretch" AutoGenerateColumns="False" Margin="1" ItemsSource="{Binding Result1, UpdateSourceTrigger=PropertyChanged}" PreviewMouseDoubleClick="DataGrid_PreviewMouseDoubleClick">
+                        <DataGrid.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel/>
+                            </ItemsPanelTemplate>
+                        </DataGrid.ItemsPanel>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="操作">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Vertical">
+                                            <Image x:Name="file" Tag="{Binding}" MouseLeftButtonDown="file_MouseLeftButtonDown" Height="20" Stretch="Uniform" Source="..\Style\File.ico"/>
+                                            <!--<Image x:Name="folder" MouseLeftButtonDown="file_MouseLeftButtonDown" Tag="{Binding FFullName}" Height="20" Stretch="Uniform" Source="..\Style\folder.ico" Visibility="Collapsed"/>-->
+                                        </StackPanel>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsFile}" Value="false">
+                                                <Setter TargetName="file" Property="Source" Value="..\Style\folder.ico"/>
+                                            </DataTrigger>
+                                            <!--<DataTrigger Binding="{Binding IsFile}" Value="false">
+                                                    <Setter TargetName="folder" Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>-->
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="文件">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding DifTag}" Value="True">
+                                                <Setter TargetName="txtFile" Property="Background" Value="Yellow"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding DifTag}" Value="False">
+                                                <Setter TargetName="txtFile" Property="Background" Value="LightGreen"/>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="全路径">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FFullName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding DifTag}" Value="True">
+                                                <Setter TargetName="txtFile" Property="Background" Value="Yellow"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding DifTag}" Value="False">
+                                                <Setter TargetName="txtFile" Property="Background" Value="LightGreen"/>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid x:Name="dgOld" ScrollViewer.ScrollChanged="DataGrid_ScrollChanged"  CanUserAddRows="False" RowBackground="White" AlternatingRowBackground="#FFD4D0D0" Grid.Column="1" RowHeight="22" HorizontalAlignment="Stretch" AutoGenerateColumns="False" Margin="1" ItemsSource="{Binding Result2, UpdateSourceTrigger=PropertyChanged}" PreviewMouseDoubleClick="DataGrid_PreviewMouseDoubleClick" SelectionMode="Single">
+                        <DataGrid.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </DataGrid.ItemsPanel>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="操作">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Vertical">
+                                            <Image x:Name="file" Tag="{Binding}" MouseLeftButtonDown="file_MouseLeftButtonDown" Height="20" Stretch="Uniform" Source="..\Style\File.ico"/>
+                                            <!--<Image x:Name="folder" MouseLeftButtonDown="file_MouseLeftButtonDown" Tag="{Binding FFullName}" Height="20" Stretch="Uniform" Source="..\Style\folder.ico" Visibility="Collapsed"/>-->
+                                        </StackPanel>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsFile}" Value="false">
+                                                <Setter TargetName="file" Property="Source" Value="..\Style\folder.ico"/>
+                                            </DataTrigger>
+                                            <!--<DataTrigger Binding="{Binding IsFile}" Value="false">
+                                                    <Setter TargetName="folder" Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>-->
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="文件">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock x:Name="txtFile" Foreground="Black"  Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding DifTag}" Value="True">
+                                                <Setter TargetName="txtFile" Property="Background" Value="Yellow"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding DifTag}" Value="False">
+                                                <Setter TargetName="txtFile" Property="Background" Value="LightPink"/>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="全路径">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FFullName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding DifTag}" Value="True">
+                                                <Setter TargetName="txtFile" Property="Background" Value="Yellow"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding DifTag}" Value="False">
+                                                <Setter TargetName="txtFile" Property="Background" Value="LightPink"/>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+                <!--</ScrollViewer>-->
+            </Grid>
+            <GridSplitter Width="3" HorizontalAlignment="Center" Background="LightGray" Grid.Column="1" VerticalAlignment="Stretch"/>
+            <Grid Grid.Column="2" Background="LightGray">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" Background="Gray"/>
+                <TextBlock Text="运行日志" Foreground="White" Grid.Row="0" HorizontalAlignment="Center"></TextBlock>
+                <TextBox Grid.Row="1" HorizontalAlignment="Stretch" Grid.RowSpan="2" Text="{Binding Logs, UpdateSourceTrigger=PropertyChanged}" 
+                         FontSize="12" BorderThickness="1" Margin="0,0,0,1" SnapsToDevicePixels="True"
+                         Style="{StaticResource DownClearButtonTextBoxStyle}" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                </TextBox>
+                <TextBlock Grid.Row="3" FontSize="12" Text="{Binding NumDif,StringFormat=已校对文件(夹)数：{0}}"/>
+            </Grid>
+        </Grid>
+
+        <TextBlock Grid.Column="1"
+                   Grid.Row="5"
+                   Grid.ColumnSpan="2"
+                   HorizontalAlignment="Left"
+                   Width="auto"
+                   FontSize="12"
+                   Text="{Binding NumMD5, UpdateSourceTrigger=PropertyChanged, StringFormat=总文件(夹):{0}}">
+        </TextBlock>
+        <TextBlock Grid.Column="2"
+                   Grid.Row="5"
+                   FontSize="12"
+                   Text="{Binding UnzipFileName, UpdateSourceTrigger=PropertyChanged, StringFormat=当前状态:{0}}">
+        </TextBlock>
+        <TextBlock Grid.Column="3"
+                   Grid.Row="5"
+                   FontSize="12"
+                   Text="{Binding Time, UpdateSourceTrigger=PropertyChanged,StringFormat=已花费：{0}秒}">
+        </TextBlock>
+    </Grid>
+</Window>
