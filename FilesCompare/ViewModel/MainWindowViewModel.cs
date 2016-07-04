@@ -1129,8 +1129,8 @@ namespace FilesCompare.ViewModel
                         ZipFiles1.Add(item.f1);
                         ZipFiles2.Add(item.f2);
                     }
-                    DifFiles1.Add(item.f1);
-                    DifFiles2.Add(item.f2);
+                    //DifFiles1.Add(item.f1);
+                    //DifFiles2.Add(item.f2);
                 }
                 //当前已校对文件数(包含文件夹)
                 NumDif += collection1.Count + collection2.Count;

@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="../Style/ybx_GraySimpleStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <converter:PathConverter x:Key="PathConverter"/>
+            <converter:JarNameConverter x:Key="JarNameConverter"/>
         </ResourceDictionary>
     </Window.Resources>
     <Grid Background="White">
@@ -177,7 +178,7 @@
                                 <VirtualizingStackPanel/>
                             </ItemsPanelTemplate>
                         </DataGrid.ItemsPanel>
-                    <DataGrid.Columns>
+                        <DataGrid.Columns>
                             <DataGridTemplateColumn Header="操作">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -200,7 +201,7 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
-                                            <TextBlock Text="{Binding JarParentName, StringFormat={}[{0}]}" FontFamily="Italic" Foreground="#FF3F3FC9">
+                                            <TextBlock Text="{Binding JarParentName,Converter={StaticResource JarNameConverter}}" FontFamily="Italic" Foreground="#FFD7AB69">
                                             </TextBlock>
                                             <TextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                                         </StackPanel>
@@ -271,7 +272,7 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
-                                            <TextBlock Text="{Binding JarParentName, StringFormat={}[{0}]}" FontFamily="Italic" Foreground="#FF3F3FC9">
+                                            <TextBlock Text="{Binding JarParentName,Converter={StaticResource JarNameConverter}}" FontFamily="Italic" Foreground="#FFD7AB69">
                                             </TextBlock>
                                             <TextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                                         </StackPanel>
