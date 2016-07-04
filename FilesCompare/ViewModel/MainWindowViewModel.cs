@@ -598,6 +598,7 @@ namespace FilesCompare.ViewModel
             InitData();
             InitCommand();
             LoadIgnores();
+            InitTempDirectory();
         }
 
         /// <summary>
@@ -653,11 +654,8 @@ namespace FilesCompare.ViewModel
             Log("日期:" + DateTime.Now.ToExtString());
             Log("目标1:" + FilePath1);
             Log("目标2:" + FilePath2);
-
             Log("分析系统准备中...");
-            Log("初始化Temp文件夹...");
             InitTempDirectory();
-            Log("Temp文件夹初始化完毕。");
             UnzipFileName = "开始校对...";
             LoadFlag1 = false;
             LoadFlag2 = false;
@@ -695,24 +693,14 @@ namespace FilesCompare.ViewModel
         {
             try
             {
-                DirectoryInfo dir1 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp1");
-                DirectoryInfo dir2 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp2");
-                if (Directory.Exists("Temp1"))
+                if (!Directory.Exists("Temp1"))
                 {
-                    dir1.Delete(true);
+                    Directory.CreateDirectory("Temp1");
                 }
-                if (Directory.Exists("Temp2"))
+                if (!Directory.Exists("Temp2"))
                 {
-                    dir2.Delete(true);
+                    Directory.CreateDirectory("Temp2");
                 }
-
-                Log("Temp1创建完毕。");
-                Directory.CreateDirectory("Temp1");
-                Log("Temp2创建完毕。");
-                Directory.CreateDirectory("Temp2");
-
-                Log("Temp1初始化完毕。");
-                Log("Temp2初始化完毕。");
             }
             catch (Exception)
             {
@@ -1245,7 +1233,43 @@ namespace FilesCompare.ViewModel
         private void CloseExecute(object parameter)
         {
             SaveIgnores();
+            ClearTemp();
             m_View.DataContext = null;
+            (m_View as Window).Hide();
+        }
+
+        /// <summary>
+        /// 后台清空临时文件夹
+        /// </summary>
+        private void ClearTemp()
+        {
+            BackgroundWorker bg = new BackgroundWorker();
+            bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, a) =>
+            {
+                //删除临时目录文件
+                try
+                {
+                    DirectoryInfo dir1 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp1");
+                    DirectoryInfo dir2 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp2");
+                    if (Directory.Exists("Temp1"))
+                    {
+                        dir1.Delete(true);
+                    }
+                    if (Directory.Exists("Temp2"))
+                    {
+                        dir2.Delete(true);
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            }));
+            bg.RunWorkerCompleted += bg_RunWorkerCompleted;
+            bg.RunWorkerAsync();
+        }
+
+        private void bg_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
             m_View.Close();
         }
 
