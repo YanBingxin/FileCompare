@@ -177,7 +177,7 @@
                                 <VirtualizingStackPanel/>
                             </ItemsPanelTemplate>
                         </DataGrid.ItemsPanel>
-                        <DataGrid.Columns>
+                    <DataGrid.Columns>
                             <DataGridTemplateColumn Header="操作">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -199,13 +199,17 @@
                             <DataGridTemplateColumn Header="文件">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
+                                            <TextBlock Text="{Binding JarParentName, StringFormat={}[{0}]}" FontFamily="Italic" Foreground="#FF3F3FC9">
+                                            </TextBlock>
+                                            <TextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        </StackPanel>
                                         <DataTemplate.Triggers>
                                             <DataTrigger Binding="{Binding DifTag}" Value="True">
-                                                <Setter TargetName="txtFile" Property="Background" Value="Yellow"/>
+                                                <Setter TargetName="sp" Property="Background" Value="Yellow"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding DifTag}" Value="False">
-                                                <Setter TargetName="txtFile" Property="Background" Value="LightGreen"/>
+                                                <Setter TargetName="sp" Property="Background" Value="LightGreen"/>
                                             </DataTrigger>
                                         </DataTemplate.Triggers>
                                     </DataTemplate>
@@ -266,13 +270,17 @@
                             <DataGridTemplateColumn Header="文件">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock x:Name="txtFile" Foreground="Black"  Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
+                                            <TextBlock Text="{Binding JarParentName, StringFormat={}[{0}]}" FontFamily="Italic" Foreground="#FF3F3FC9">
+                                            </TextBlock>
+                                            <TextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        </StackPanel>
                                         <DataTemplate.Triggers>
                                             <DataTrigger Binding="{Binding DifTag}" Value="True">
-                                                <Setter TargetName="txtFile" Property="Background" Value="Yellow"/>
+                                                <Setter TargetName="sp" Property="Background" Value="Yellow"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding DifTag}" Value="False">
-                                                <Setter TargetName="txtFile" Property="Background" Value="LightPink"/>
+                                                <Setter TargetName="sp" Property="Background" Value="LightPink"/>
                                             </DataTrigger>
                                         </DataTemplate.Triggers>
                                     </DataTemplate>

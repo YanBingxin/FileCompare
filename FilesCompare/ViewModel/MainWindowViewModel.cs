@@ -691,6 +691,9 @@ namespace FilesCompare.ViewModel
         private void LoadIgnores()
         {
             string config = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "过滤关键词", Environment.CurrentDirectory + @"\Compare.cfg");
+            FilePath1 = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "目标1", Environment.CurrentDirectory + @"\Compare.cfg");
+            FilePath2 = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "目标2", Environment.CurrentDirectory + @"\Compare.cfg");
+
             Config = config;
             if (string.IsNullOrEmpty(config))
                 return;
@@ -1009,7 +1012,7 @@ namespace FilesCompare.ViewModel
                 FNode foder = new FNode();
                 foder.FFullName = node.FFullName.Replace(".jar", "").Replace(".zip", "");//解压缩节点目录全名
                 foder.FName = node.FName.Replace(".jar", "").Replace(".zip", "");//解压缩节点目录名
-                foder.Child = LoadFiles(foder.FFullName);//获取子目录文件(夹)
+                foder.Child = LoadFiles(foder.FFullName, node.FName);//获取子目录文件(夹)
                 tempList.Add(foder);
             }
             lock (SysObject)
@@ -1019,6 +1022,49 @@ namespace FilesCompare.ViewModel
             return tempList;
         }
 
+        /// <summary>
+        /// 检索jar包下所有字文件(夹)附加jar包标示
+        /// </summary>
+        /// <param name="pathName"></param>
+        /// <returns></returns>
+        private ObservableCollection<FNode> LoadFiles(string pathName, string jarName)
+        {
+            ObservableCollection<FNode> tempList = new ObservableCollection<FNode>();
+            //检索当前目录所有文件和目录节点
+            try
+            {
+                tempList = new ObservableCollection<FNode>((from f in Directory.GetFiles(pathName)
+                                                            select new FNode()
+                                                            {
+                                                                FFullName = f,
+                                                                FName = f.Replace(pathName + "\\", ""),
+                                                                JarParentName = jarName,
+                                                                IsFile = true
+                                                            }).Concat(from d in Directory.GetDirectories(pathName)
+                                                                      select new FNode()
+                                                                      {
+                                                                          FFullName = d,
+                                                                          FName = d.Replace(pathName + "\\", ""),
+                                                                          Child = LoadFiles(d, jarName),
+                                                                          JarParentName = jarName
+                                                                      }));
+            }
+            catch (Exception ex)
+            {
+                Log(string.Format(@"
+// 异常信息
+// 加载文件时出现异常
+// {0}
+", ex.Message));
+            }
+            //双线程引起不同步，导致文件数总显示不对，并发引起的问题，找了半天。
+            lock (SysObject)
+            {
+                NumMD5 += tempList.Count();
+            }
+
+            return tempList;
+        }
         #endregion
 
         #region 比对文件
@@ -1183,6 +1229,8 @@ namespace FilesCompare.ViewModel
             //}
             //config = config.TrimEnd('|');
             CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "过滤关键词", config, Environment.CurrentDirectory + @"\Compare.cfg");
+            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "目标1", FilePath1, Environment.CurrentDirectory + @"\Compare.cfg");
+            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "目标2", FilePath2, Environment.CurrentDirectory + @"\Compare.cfg");
         }
 
         /// <summary>

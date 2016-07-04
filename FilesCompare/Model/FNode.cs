@@ -130,5 +130,27 @@ namespace FilesCompare.Model
                 this.RaisePropertyChanged("Child");
             }
         }
+
+
+        /// <summary>
+        /// 所属jar包
+        /// </summary>
+        private string _jarParentName = string.Empty;
+        /// <summary>
+        /// 获取或设置所属jar包
+        /// </summary>
+        public string JarParentName
+        {
+            get
+            {
+                return _jarParentName;
+            }
+            set
+            {
+                _jarParentName = value;
+                RaisePropertyChanged("JarParentName");
+            }
+        }
+
     }
 }
