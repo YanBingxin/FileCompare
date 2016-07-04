@@ -655,6 +655,9 @@ namespace FilesCompare.ViewModel
             Log("目标2:" + FilePath2);
 
             Log("分析系统准备中...");
+            Log("初始化Temp文件夹...");
+            InitTempDirectory();
+            Log("Temp文件夹初始化完毕。");
             UnzipFileName = "开始校对...";
             LoadFlag1 = false;
             LoadFlag2 = false;
@@ -683,6 +686,38 @@ namespace FilesCompare.ViewModel
             timer.Tick -= Count;
             timer.Tick += Count;
             Log("计时器准备就绪。");
+        }
+
+        /// <summary>
+        /// 初始临时文件夹
+        /// </summary>
+        private void InitTempDirectory()
+        {
+            try
+            {
+                DirectoryInfo dir1 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp1");
+                DirectoryInfo dir2 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp2");
+                if (Directory.Exists("Temp1"))
+                {
+                    dir1.Delete(true);
+                }
+                if (Directory.Exists("Temp2"))
+                {
+                    dir2.Delete(true);
+                }
+
+                Log("Temp1创建完毕。");
+                Directory.CreateDirectory("Temp1");
+                Log("Temp2创建完毕。");
+                Directory.CreateDirectory("Temp2");
+
+                Log("Temp1初始化完毕。");
+                Log("Temp2初始化完毕。");
+            }
+            catch (Exception)
+            {
+                Log("临时文件夹创建异常。");
+            }
         }
 
         /// <summary>
@@ -783,11 +818,11 @@ namespace FilesCompare.ViewModel
             bg3.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, a) =>
             {
 #if Release
-                UnZipFiles(ZipFiles1);
+                UnZipFiles(ZipFiles1, "Temp1");
                 Log("目标1压缩文件解压完毕。");
                 UnzipFileName = "解压完毕。";
 
-                UnCompressFiles1 = LoadFiles(ZipFiles1);
+                UnCompressFiles1 = LoadFiles(ZipFiles1, "Temp1");
 #endif
                 Log("目标1解压文件加载完毕。");
                 UnZipFlag1 = true;
@@ -810,11 +845,11 @@ namespace FilesCompare.ViewModel
             bg4.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, a) =>
             {
 #if Release
-                UnZipFiles(ZipFiles2);
+                UnZipFiles(ZipFiles2, "Temp2");
                 Log("目标2压缩文件解压完毕。");
                 UnzipFileName = "解压完毕。";
 
-                UnCompressFiles2 = LoadFiles(ZipFiles2);
+                UnCompressFiles2 = LoadFiles(ZipFiles2, "Temp2");
 #endif
 
                 Log("目标2解压文件加载完毕。");
@@ -904,8 +939,9 @@ namespace FilesCompare.ViewModel
         /// <summary>
         /// 解压缩.zip.jar文件
         /// </summary>
-        private void UnZipFiles(ObservableCollection<FNode> collection)
+        private void UnZipFiles(ObservableCollection<FNode> collection, string location)
         {
+            string rootName = location == "Temp1" ? FilePath1 : FilePath2;
             foreach (var file in collection)
             {
                 try
@@ -919,7 +955,7 @@ namespace FilesCompare.ViewModel
                         Log("解压：" + file.FFullName);
                         UnzipFileName = file.FFullName;
                     }
-                    string folderName = file.FFullName.Replace(".zip", "").Replace(".jar", "");
+                    string folderName = file.FFullName.Replace(".zip", "").Replace(".jar", "").Replace(rootName, location);
                     UnCompressHelper.UnZipDir(file.FFullName, folderName, false);
                 }
                 catch (Exception e)
@@ -1001,8 +1037,9 @@ namespace FilesCompare.ViewModel
         /// </summary>
         /// <param name="collection"></param>
         /// <returns></returns>
-        private ObservableCollection<FNode> LoadFiles(ObservableCollection<FNode> collection)
+        private ObservableCollection<FNode> LoadFiles(ObservableCollection<FNode> collection, string location)
         {
+            string rootName = location == "Temp1" ? FilePath1 : FilePath2;
             ObservableCollection<FNode> tempList = new ObservableCollection<FNode>();
             foreach (var node in collection)
             {
@@ -1010,7 +1047,7 @@ namespace FilesCompare.ViewModel
                     continue;
 
                 FNode foder = new FNode();
-                foder.FFullName = node.FFullName.Replace(".jar", "").Replace(".zip", "");//解压缩节点目录全名
+                foder.FFullName = node.FFullName.Replace(".jar", "").Replace(".zip", "").Replace(rootName, Environment.CurrentDirectory + "/" + location);//解压缩节点目录全名
                 foder.FName = node.FName.Replace(".jar", "").Replace(".zip", "");//解压缩节点目录名
                 foder.Child = LoadFiles(foder.FFullName, node.FName);//获取子目录文件(夹)
                 tempList.Add(foder);
@@ -1128,9 +1165,10 @@ namespace FilesCompare.ViewModel
                     {
                         ZipFiles1.Add(item.f1);
                         ZipFiles2.Add(item.f2);
+                        continue;
                     }
-                    //DifFiles1.Add(item.f1);
-                    //DifFiles2.Add(item.f2);
+                    DifFiles1.Add(item.f1);
+                    DifFiles2.Add(item.f2);
                 }
                 //当前已校对文件数(包含文件夹)
                 NumDif += collection1.Count + collection2.Count;
