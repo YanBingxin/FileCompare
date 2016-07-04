@@ -46,6 +46,10 @@ namespace FilesCompare.ViewModel
 
         #region 字段
         /// <summary>
+        /// 每次解压将在temp1、2下生成该序号的文件，防止重复出错
+        /// </summary>
+        private static int TEMPNUMBER = 0;
+        /// <summary>
         /// 同步锁对象
         /// </summary>
         private static readonly object SysObject = new object();
@@ -624,6 +628,7 @@ namespace FilesCompare.ViewModel
         private void InitData()
         {
             btnContent = string.Format("开始分析");
+            TEMPNUMBER = 0;
         }
         #endregion
 
@@ -643,6 +648,7 @@ namespace FilesCompare.ViewModel
         /// <param name="prarmeter"></param>
         private void CompareExecute(object prarmeter)
         {
+            TEMPNUMBER++;
             InitDataForCompare();
             CompareFiles();
         }
@@ -943,7 +949,7 @@ namespace FilesCompare.ViewModel
                         Log("解压：" + file.FFullName);
                         UnzipFileName = file.FFullName;
                     }
-                    string folderName = file.FFullName.Replace(".zip", "").Replace(".jar", "").Replace(rootName, location);
+                    string folderName = file.FFullName.Replace(".zip", "").Replace(".jar", "").Replace(rootName, location + "/" + TEMPNUMBER.ToString());
                     UnCompressHelper.UnZipDir(file.FFullName, folderName, false);
                 }
                 catch (Exception e)
@@ -1035,7 +1041,7 @@ namespace FilesCompare.ViewModel
                     continue;
 
                 FNode foder = new FNode();
-                foder.FFullName = node.FFullName.Replace(".jar", "").Replace(".zip", "").Replace(rootName, Environment.CurrentDirectory + "/" + location);//解压缩节点目录全名
+                foder.FFullName = node.FFullName.Replace(".jar", "").Replace(".zip", "").Replace(rootName, Environment.CurrentDirectory + "/" + location + "/" + TEMPNUMBER.ToString());//解压缩节点目录全名
                 foder.FName = node.FName.Replace(".jar", "").Replace(".zip", "");//解压缩节点目录名
                 foder.Child = LoadFiles(foder.FFullName, node.FName);//获取子目录文件(夹)
                 tempList.Add(foder);
