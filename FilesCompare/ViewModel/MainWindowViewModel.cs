@@ -656,14 +656,6 @@ namespace FilesCompare.ViewModel
         /// </summary>
         private IMainWindowView m_View;
         /// <summary>
-        /// 运算线程
-        /// </summary>
-        private Thread _desThread;
-        /// <summary>
-        /// 计时线程
-        /// </summary>
-        private Thread _countThread;
-        /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="view"></param>
@@ -830,6 +822,7 @@ namespace FilesCompare.ViewModel
                     {
                         Log("文件差异分析中...");
                         LoadFlag1 = LoadFlag2 = false;
+
                         Compare(NormalFiles1, NormalFiles2);
                         FirstCompare = true;
                         Log("文件差异分析完毕。");
@@ -869,6 +862,7 @@ namespace FilesCompare.ViewModel
 
             timer.Start();
         }
+
         /// <summary>
         /// 第一次比较完毕
         /// </summary>
