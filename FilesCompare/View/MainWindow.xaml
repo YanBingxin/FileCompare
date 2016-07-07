@@ -28,7 +28,7 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="35"/>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5">
@@ -154,7 +154,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Grid Grid.Row="3" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="3" >
+        <Grid Grid.Row="3" Grid.RowSpan="1" Grid.Column="1" Grid.ColumnSpan="3" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="auto"/>
@@ -331,7 +331,20 @@
                 <TextBlock Grid.Row="3" FontSize="12" Text="{Binding NumDif,StringFormat=已校对文件(夹)数：{0}}"/>
             </Grid>
         </Grid>
-
+        <StackPanel Background="LightGray" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontFamily" Value="幼圆"/>
+                </Style>
+            </StackPanel.Resources>
+            <TextBlock Text="合计" FontSize="16" Margin="20,0,20,0" VerticalAlignment="Center"/>
+            <TextBlock Text="多出:" Background="LightGreen" FontSize="16" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding More}" MinWidth="30" FontSize="16" VerticalAlignment="Center"/>
+            <TextBlock Text="缺少:" Background="LightPink" FontSize="16" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Less}" MinWidth="30" FontSize="16" VerticalAlignment="Center"/>
+            <TextBlock Text="差异:" Background="Yellow" FontSize="16" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Changed}" MinWidth="30" FontSize="16" VerticalAlignment="Center"/>
+        </StackPanel>
         <TextBlock Grid.Column="1"
                    Grid.Row="5"
                    Grid.ColumnSpan="2"

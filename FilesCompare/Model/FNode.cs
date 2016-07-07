@@ -99,7 +99,7 @@ namespace FilesCompare.Model
         /// </summary>
         private bool? _difTag = null;
         /// <summary>
-        /// 获取或设置是否为文件
+        /// 获取或设置差异类型 修改：true；多,少：false
         /// </summary>
         public bool? DifTag
         {

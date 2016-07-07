@@ -60,6 +60,78 @@ namespace FilesCompare.ViewModel
         #endregion
 
         #region 属性
+
+        /// <summary>
+        /// 1比2多出数量
+        /// </summary>
+        private int _more;
+        /// <summary>
+        /// 获取或设置1比2多出数量
+        /// </summary>
+        public int More
+        {
+            get
+            {
+                return _more;
+            }
+            set
+            {
+                if (_more == value)
+                {
+                    return;
+                }
+                _more = value;
+                RaisePropertyChanged(() => More);
+            }
+        }
+
+        /// <summary>
+        /// 2比1多出数量
+        /// </summary>
+        private int _less;
+        /// <summary>
+        /// 获取或设置2比1多出数量
+        /// </summary>
+        public int Less
+        {
+            get
+            {
+                return _less;
+            }
+            set
+            {
+                if (_less == value)
+                {
+                    return;
+                }
+                _less = value;
+                RaisePropertyChanged(() => Less);
+            }
+        }
+
+        /// <summary>
+        /// 1比2修改数量
+        /// </summary>
+        private int _changed;
+        /// <summary>
+        /// 获取或设置1比2修改数量
+        /// </summary>
+        public int Changed
+        {
+            get
+            {
+                return _changed;
+            }
+            set
+            {
+                if (_changed == value)
+                {
+                    return;
+                }
+                _changed = value;
+                RaisePropertyChanged(() => Changed);
+            }
+        }
         /// <summary>
         /// 过滤字符串
         /// </summary>
@@ -663,6 +735,9 @@ namespace FilesCompare.ViewModel
             Log("分析系统准备中...");
             InitTempDirectory();
             UnzipFileName = "开始校对...";
+            More = 0;
+            Less = 0;
+            Changed = 0;
             LoadFlag1 = false;
             LoadFlag2 = false;
             FirstCompare = false;
@@ -925,6 +1000,10 @@ namespace FilesCompare.ViewModel
         /// <param name="e"></param>
         private void Completed(object sender, RunWorkerCompletedEventArgs e)
         {
+            More = Result1.Where(f => f.DifTag == false).Count();
+            Less = Result2.Where(f => f.DifTag == false).Count();
+            Changed = Result1.Where(f => f.DifTag == true).Count();
+
             Log("结果加载完毕。");
             Log("\r\n");
         }
