@@ -14,8 +14,7 @@ using FilesCompare.CompareHelper;
 using System.IO;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
-using FilesCompare.Common;
-using FilesCompare.View;
+using System.Threading.Tasks;
 
 namespace FilesCompare.ViewModel
 {
@@ -161,7 +160,6 @@ namespace FilesCompare.ViewModel
             }
         }
 
-
         private ObservableCollection<string> _ignores;
         /// <summary>
         /// 过滤关键字
@@ -195,126 +193,6 @@ namespace FilesCompare.ViewModel
             {
                 _logs = value;
                 RaisePropertyChanged(() => Logs);
-            }
-        }
-
-        /// <summary>
-        /// 1加载状态
-        /// </summary>
-        private bool _loadFlag1;
-        /// <summary>
-        /// 获取或设置1加载状态
-        /// </summary>
-        public bool LoadFlag1
-        {
-            get
-            {
-                return _loadFlag1;
-            }
-            set
-            {
-                _loadFlag1 = value;
-                RaisePropertyChanged(() => LoadFlag1);
-            }
-        }
-
-        /// <summary>
-        /// 2加载状态
-        /// </summary>
-        private bool _loadFlag2;
-        /// <summary>
-        /// 获取或设置2加载状态
-        /// </summary>
-        public bool LoadFlag2
-        {
-            get
-            {
-                return _loadFlag2;
-            }
-            set
-            {
-                _loadFlag2 = value;
-                RaisePropertyChanged(() => LoadFlag2);
-            }
-        }
-
-        /// <summary>
-        /// 1解压状态
-        /// </summary>
-        private bool _unZipFlag1;
-        /// <summary>
-        /// 获取或设置1解压状态
-        /// </summary>
-        public bool UnZipFlag1
-        {
-            get
-            {
-                return _unZipFlag1;
-            }
-            set
-            {
-                _unZipFlag1 = value;
-                RaisePropertyChanged(() => UnZipFlag1);
-            }
-        }
-
-        /// <summary>
-        /// 第一次比较完毕状态
-        /// </summary>
-        private bool _firstCompare;
-        /// <summary>
-        /// 获取或设置第一次比较完毕状态
-        /// </summary>
-        public bool FirstCompare
-        {
-            get
-            {
-                return _firstCompare;
-            }
-            set
-            {
-                _firstCompare = value;
-                RaisePropertyChanged(() => FirstCompare);
-            }
-        }
-
-        /// <summary>
-        /// 2解压状态
-        /// </summary>
-        private bool _unZipFlag2;
-        /// <summary>
-        /// 获取或设置2解压状态
-        /// </summary>
-        public bool UnZipFlag2
-        {
-            get
-            {
-                return _unZipFlag2;
-            }
-            set
-            {
-                _unZipFlag2 = value;
-                RaisePropertyChanged(() => UnZipFlag2);
-            }
-        }
-
-        /// <summary>
-        /// 第2次比较完毕状态
-        /// </summary>
-        private bool _secondCompare;
-        /// <summary>
-        /// 获取或设置第2次比较完毕状态
-        /// </summary>
-        public bool SecondCompare
-        {
-            get
-            {
-                return _secondCompare;
-            }
-            set
-            {
-                _secondCompare = value;
-                RaisePropertyChanged(() => SecondCompare);
             }
         }
 
@@ -725,16 +603,15 @@ namespace FilesCompare.ViewModel
             Log("目标1:" + FilePath1);
             Log("目标2:" + FilePath2);
             Log("分析系统准备中...");
+
             InitTempDirectory();
+
             UnzipFileName = "开始校对...";
+
             More = 0;
             Less = 0;
             Changed = 0;
-            LoadFlag1 = false;
-            LoadFlag2 = false;
-            FirstCompare = false;
-            UnZipFlag1 = false;
-            UnZipFlag2 = false;
+
             NormalFiles1.Clear();
             NormalFiles2.Clear();
 
@@ -752,6 +629,7 @@ namespace FilesCompare.ViewModel
 
             NumMD5 = 0;
             NumDif = 0;
+
             Log("系统数据初始化完毕。");
             Time = 0;
             timer.Tick -= Count;
@@ -807,58 +685,30 @@ namespace FilesCompare.ViewModel
         private void CompareFiles()
         {
             Log("初步分析准备中...");
-            BackgroundWorker bg1 = new BackgroundWorker();
-            BackgroundWorker bg2 = new BackgroundWorker();
-
-            bg1.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((sender, e) =>
+            BackgroundWorker bg = new BackgroundWorker();
+            bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((sender, e) =>
             {
-                NormalFiles1 = LoadFiles(FilePath1);
-                Log("目标1文件系统加载完毕。");
-                LoadFlag1 = true;
-
-                lock (SysObject)
+                Parallel.Invoke(new Action(() =>
                 {
-                    if (LoadFlag1 && LoadFlag2)
-                    {
-                        Log("文件差异分析中...");
-                        LoadFlag1 = LoadFlag2 = false;
-
-                        Compare(NormalFiles1, NormalFiles2);
-                        FirstCompare = true;
-                        Log("文件差异分析完毕。");
-                    }
-                }
-            }));
-            bg2.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((sender, e) =>
-            {
-                NormalFiles2 = LoadFiles(FilePath2);
-                Log("目标2文件系统加载完毕。");
-                LoadFlag2 = true;
-
-                lock (SysObject)
+                    Log("目标1文件系统加载中...");
+                    NormalFiles1 = LoadFiles(FilePath1);
+                    Log("目标1文件系统加载完毕。");
+                }), new Action(() =>
                 {
-                    if (LoadFlag1 && LoadFlag2)
-                    {
-                        Log("初步文件差异分析中...");
-                        LoadFlag1 = LoadFlag2 = false;
-                        Compare(NormalFiles1, NormalFiles2);
-                        FirstCompare = true;
-                        Log("初步文件差异分析完毕。");
-                    }
-                }
+                    Log("目标2文件系统加载中...");
+                    NormalFiles2 = LoadFiles(FilePath2);
+                    Log("目标2文件系统加载完毕。");
+                }));
+
+                Log("文件差异分析中...");
+                Compare(NormalFiles1, NormalFiles2);
+                Log("文件差异分析完毕。");
             }));
 
-            bg1.RunWorkerCompleted += CompareCompeleted;
-            bg2.RunWorkerCompleted += CompareCompeleted;
+            bg.RunWorkerCompleted += CompareCompeleted;
             Log("初步分析准备完毕。");
-
             Log("开始初步分析文件...");
-
-            bg1.RunWorkerAsync();
-            Log("目标1文件系统加载中...");
-
-            bg2.RunWorkerAsync();
-            Log("目标2文件系统加载中...");
+            bg.RunWorkerAsync();
 
             timer.Start();
         }
@@ -870,80 +720,38 @@ namespace FilesCompare.ViewModel
         /// <param name="e"></param>
         private void CompareCompeleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (!FirstCompare)
-                return;
-            FirstCompare = false;
-
             Log("压缩文件(.jar.zip)分析系统启动中...");
-            BackgroundWorker bg3 = new BackgroundWorker();
-            BackgroundWorker bg4 = new BackgroundWorker();
-
-            bg3.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, a) =>
+            BackgroundWorker bg = new BackgroundWorker();
+            bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, a) =>
             {
-#if Release
-                UnZipFiles(ZipFiles1, "Temp1");
-                Log("目标1压缩文件解压完毕。");
+                Parallel.Invoke(new Action(() =>
+                {
+                    Log("目标1压缩文件解压中...");
+                    UnZipFiles(ZipFiles1, "Temp1");
+                    Log("目标1压缩文件解压完毕。");
+                    UnCompressFiles1 = LoadFiles(ZipFiles1, "Temp1");
+                    Log("目标1解压文件加载完毕。");
+                }), new Action(() =>
+                {
+                    Log("目标2压缩文件解压中...");
+                    UnZipFiles(ZipFiles2, "Temp2");
+                    Log("目标2压缩文件解压完毕。");
+                    UnCompressFiles2 = LoadFiles(ZipFiles2, "Temp2");
+                    Log("目标2解压文件加载完毕。");
+                }));
                 UnzipFileName = "解压完毕。";
 
-                UnCompressFiles1 = LoadFiles(ZipFiles1, "Temp1");
-#endif
-                Log("目标1解压文件加载完毕。");
-                UnZipFlag1 = true;
-
-                lock (SysObject)
-                {
-                    if (UnZipFlag1 && UnZipFlag2)
-                    {
-                        Log("压缩文件差异分析中...");
-
-                        UnZipFlag1 = UnZipFlag2 = false;
-                        UnzipFileName = "校对中...";
-                        Compare(UnCompressFiles1, UnCompressFiles2);
-                        UnzipFileName = "校对完毕。";
-                        SecondCompare = true;
-                        Log("压缩文件差异分析完毕。");
-                    }
-                }
-            }));
-            bg4.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, a) =>
-            {
-#if Release
-                UnZipFiles(ZipFiles2, "Temp2");
-                Log("目标2压缩文件解压完毕。");
-                UnzipFileName = "解压完毕。";
-
-                UnCompressFiles2 = LoadFiles(ZipFiles2, "Temp2");
-#endif
-
-                Log("目标2解压文件加载完毕。");
-                UnZipFlag2 = true;
-
-                lock (SysObject)
-                {
-                    if (UnZipFlag1 && UnZipFlag2)
-                    {
-                        Log("压缩文件差异分析中...");
-
-                        UnZipFlag1 = UnZipFlag2 = false;
-                        UnzipFileName = "校对中...";
-                        Compare(UnCompressFiles1, UnCompressFiles2);
-                        UnzipFileName = "校对完毕。";
-                        SecondCompare = true;
-                        Log("压缩文件差异分析完毕。");
-                    }
-                }
-
+                Log("压缩文件差异分析中...");
+                UnzipFileName = "校对中...";
+                Compare(UnCompressFiles1, UnCompressFiles2);
+                UnzipFileName = "校对完毕。";
+                Log("压缩文件差异分析完毕。");
             }));
 
-            bg3.RunWorkerCompleted += SecondCompareCompeleted;
-            bg4.RunWorkerCompleted += SecondCompareCompeleted;
+            bg.RunWorkerCompleted += SecondCompareCompeleted;
             Log("压缩文件(.jar.zip)分析系统已就绪。");
 
-            bg3.RunWorkerAsync();
-            Log("目标1压缩文件解压中...");
-
-            bg4.RunWorkerAsync();
-            Log("目标2压缩文件解压中...");
+            bg.RunWorkerAsync();
         }
         /// <summary>
         /// 第二次比较完毕
@@ -952,9 +760,6 @@ namespace FilesCompare.ViewModel
         /// <param name="e"></param>
         private void SecondCompareCompeleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (!SecondCompare)
-                return;
-            SecondCompare = false;
             NumDif = NumMD5;//无意义，为了使使用者安心。由于分析包含目录结构，实际校对数<=总数。(例如多出文件夹，将不比较子目录文件)
             Log("文件分析系统校对完毕。");
 
