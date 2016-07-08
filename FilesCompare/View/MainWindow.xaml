@@ -84,16 +84,25 @@
         </Grid>
 
         <Border Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="2" Background="LightGray"/>
-        <TextBlock Grid.Column="1" Grid.Row="1" Width="65" Text="白名单:" FontFamily="幼圆"/>
-        <TextBox Grid.Row="1" Grid.Column="2" ToolTip="以'|'号分隔" Text="{Binding Config, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
-        <Grid Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2">
+       
+        <Grid Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="75"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="75"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="新文件>" FontFamily="幼圆" Grid.Column="0">
+
+            <TextBlock Grid.Column="0" Grid.Row="0" Width="65" Text="黑名单:" FontFamily="幼圆"/>
+            <TextBox Grid.Row="0" Grid.Column="1" ToolTip="以'|'号分隔" Text="{Binding Config, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
+            <TextBlock Grid.Column="2" Grid.Row="0" Width="65" Text="仅比对:" FontFamily="幼圆"/>
+            <TextBox Grid.Row="0" Grid.Column="3" ToolTip="以'|'号分隔" Text="{Binding xx, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
+            
+            <TextBlock Text="新文件>" FontFamily="幼圆" Grid.Column="0" Grid.Row="1">
                 <TextBlock.TextEffects>
                     <TextEffect PositionStart="3" PositionCount="1" >
                         <TextEffect.Transform>
@@ -111,10 +120,10 @@
                     </EventTrigger>
                 </TextBlock.Triggers>
             </TextBlock>
-            <TextBox Grid.Column="1" 
+            <TextBox Grid.Column="1" Grid.Row="1"
                  Style="{StaticResource OpenPathTBXStyle}"
                  Text="{Binding FilePath1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-            <TextBlock Text="旧文件>" FontFamily="幼圆" Grid.Column="2">
+            <TextBlock Text="旧文件>" FontFamily="幼圆" Grid.Column="2" Grid.Row="1">
                 <TextBlock.TextEffects>
                     <TextEffect PositionStart="3" PositionCount="1" >
                         <TextEffect.Transform>
@@ -132,7 +141,7 @@
                     </EventTrigger>
                 </TextBlock.Triggers>
             </TextBlock>
-            <TextBox Grid.Column="3" 
+            <TextBox Grid.Column="3" Grid.Row="1"
                  Style="{StaticResource OpenPathTBXStyle}"
                  Text="{Binding FilePath2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
         </Grid>
