@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:UC="clr-namespace:FilesCompare.Common">
+
     <VisualBrush x:Key="TipBrush" Opacity="0.3" AlignmentX="Left" AlignmentY="Center">
         <VisualBrush.Visual>
             <TextBlock Text="" FontStyle="Italic"/>

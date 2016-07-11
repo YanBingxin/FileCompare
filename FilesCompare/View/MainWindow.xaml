@@ -11,6 +11,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Style/ybx_GraySimpleStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="TextBlock">
+                <Setter Property="ToolTip" Value="{Binding Text,RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="FontSize" Value="16"/>
+            </Style>
             <converter:PathConverter x:Key="PathConverter"/>
             <converter:JarNameConverter x:Key="JarNameConverter"/>
         </ResourceDictionary>
@@ -84,7 +90,7 @@
         </Grid>
 
         <Border Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="2" Background="LightGray"/>
-       
+
         <Grid Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -97,11 +103,11 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" Grid.Row="0" Width="65" Text="黑名单:" FontFamily="幼圆"/>
+            <TextBlock Grid.Column="0" Grid.Row="0" Text="黑名单:" FontFamily="幼圆"/>
             <TextBox Grid.Row="0" Grid.Column="1" ToolTip="以'|'号分隔" Text="{Binding Config, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
-            <TextBlock Grid.Column="2" Grid.Row="0" Width="65" Text="仅比对:" FontFamily="幼圆"/>
+            <TextBlock Grid.Column="2" Grid.Row="0" Text="仅比对:" FontFamily="幼圆"/>
             <TextBox Grid.Row="0" Grid.Column="3" ToolTip="以'|'号分隔" Text="{Binding xx, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
-            
+
             <TextBlock Text="新文件>" FontFamily="幼圆" Grid.Column="0" Grid.Row="1">
                 <TextBlock.TextEffects>
                     <TextEffect PositionStart="3" PositionCount="1" >
@@ -192,7 +198,7 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Vertical">
-                                            <Image x:Name="file" Tag="{Binding}" MouseLeftButtonDown="file_MouseLeftButtonDown" Height="20" Stretch="Uniform" Source="..\Style\File.ico"/>
+                                            <Image x:Name="file" Tag="{Binding}" ToolTip="打开文件所在目录" MouseLeftButtonDown="file_MouseLeftButtonDown" Height="20" Stretch="Uniform" Source="..\Style\File.ico"/>
                                             <!--<Image x:Name="folder" MouseLeftButtonDown="file_MouseLeftButtonDown" Tag="{Binding FFullName}" Height="20" Stretch="Uniform" Source="..\Style\folder.ico" Visibility="Collapsed"/>-->
                                         </StackPanel>
                                         <DataTemplate.Triggers>
@@ -210,9 +216,15 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
-                                            <TextBlock Text="{Binding JarParentName,Converter={StaticResource JarNameConverter}}" FontFamily="Italic" Foreground="#FFD7AB69">
+                                            <TextBlock FontFamily="Italic" Foreground="#FFD7AB69" ToolTip="{Binding JarParentName}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource JarNameConverter}">
+                                                        <Binding Path="DataContext.FilePath1" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
+                                                        <Binding Path="JarParentName"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
                                             </TextBlock>
-                                            <TextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                            <TextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FName}" ToolTip="{Binding FFullName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                                         </StackPanel>
                                         <DataTemplate.Triggers>
                                             <DataTrigger Binding="{Binding DifTag}" Value="True">
@@ -228,7 +240,7 @@
                             <DataGridTemplateColumn Header="全路径">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock x:Name="txtFile" Foreground="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <TextBlock x:Name="txtFile" ToolTip="{Binding FFullName}" Foreground="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                             <TextBlock.Text>
                                                 <MultiBinding Converter="{StaticResource PathConverter}">
                                                     <Binding Path="DataContext.FilePath1" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
@@ -260,7 +272,7 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Vertical">
-                                            <Image x:Name="file" Tag="{Binding}" MouseLeftButtonDown="file_MouseLeftButtonDown" Height="20" Stretch="Uniform" Source="..\Style\File.ico"/>
+                                            <Image x:Name="file" Tag="{Binding}" ToolTip="打开文件所在目录" MouseLeftButtonDown="file_MouseLeftButtonDown" Height="20" Stretch="Uniform" Source="..\Style\File.ico"/>
                                             <!--<Image x:Name="folder" MouseLeftButtonDown="file_MouseLeftButtonDown" Tag="{Binding FFullName}" Height="20" Stretch="Uniform" Source="..\Style\folder.ico" Visibility="Collapsed"/>-->
                                         </StackPanel>
                                         <DataTemplate.Triggers>
@@ -281,9 +293,15 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
-                                            <TextBlock Text="{Binding JarParentName,Converter={StaticResource JarNameConverter}}" FontFamily="Italic" Foreground="#FFD7AB69">
+                                            <TextBlock FontFamily="Italic" ToolTip="{Binding JarParentName}" Foreground="#FFD7AB69">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource JarNameConverter}">
+                                                        <Binding Path="DataContext.FilePath2" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
+                                                        <Binding Path="JarParentName"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
                                             </TextBlock>
-                                            <TextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                            <TextBlock x:Name="txtFile" ToolTip="{Binding FFullName}" Foreground="Black" Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                                         </StackPanel>
                                         <DataTemplate.Triggers>
                                             <DataTrigger Binding="{Binding DifTag}" Value="True">
@@ -299,7 +317,7 @@
                             <DataGridTemplateColumn Header="全路径">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock x:Name="txtFile" Foreground="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <TextBlock x:Name="txtFile" ToolTip="{Binding FFullName}" Foreground="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                             <TextBlock.Text>
                                                 <MultiBinding Converter="{StaticResource PathConverter}">
                                                     <Binding Path="DataContext.FilePath2" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
