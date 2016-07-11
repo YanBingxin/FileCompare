@@ -109,7 +109,7 @@
             <TextBlock Grid.Column="0" Grid.Row="0" Text="黑名单:" FontFamily="幼圆"/>
             <TextBox Grid.Row="0" TabIndex="0" Grid.Column="1" ToolTip="以'|'号分隔" Text="{Binding Config, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
             <TextBlock Grid.Column="2" Grid.Row="0" Text="仅比对:" FontFamily="幼圆"/>
-            <TextBox Grid.Row="0" TabIndex="1" Grid.Column="3" ToolTip="以'|'号分隔" Text="{Binding xx, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
+            <TextBox Grid.Row="0" TabIndex="1" Grid.Column="3" ToolTip="以'|'号分隔" Text="{Binding Prefer, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
 
             <TextBlock Text="新文件>" FontFamily="幼圆" Grid.Column="0" Grid.Row="1">
                 <TextBlock.TextEffects>

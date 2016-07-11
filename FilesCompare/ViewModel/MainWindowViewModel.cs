@@ -131,6 +131,9 @@ namespace FilesCompare.ViewModel
                 RaisePropertyChanged(() => Changed);
             }
         }
+
+        public string Prefer { get; set; }
+
         /// <summary>
         /// 过滤字符串
         /// </summary>
@@ -664,19 +667,11 @@ namespace FilesCompare.ViewModel
         /// </summary>
         private void LoadIgnores()
         {
-            string config = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "过滤关键词", Environment.CurrentDirectory + @"\Compare.cfg");
+            Config = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "过滤关键词", Environment.CurrentDirectory + @"\Compare.cfg");
+            Prefer = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "搜索关键词", Environment.CurrentDirectory + @"\Compare.cfg");
             FilePath1 = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "目标1", Environment.CurrentDirectory + @"\Compare.cfg");
             FilePath2 = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "目标2", Environment.CurrentDirectory + @"\Compare.cfg");
-
-            Config = config;
-            if (string.IsNullOrEmpty(config))
-                return;
-
-            Ignores.Clear();
-            foreach (var key in config.Split('|'))
-            {
-                Ignores.Add(key);
-            }
+            Logs = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "日志", Environment.CurrentDirectory + @"\Compare.cfg").Replace("#^#", "\r\n");
         }
 
         /// <summary>
@@ -1164,16 +1159,12 @@ namespace FilesCompare.ViewModel
                 File.Create("Compare.cfg");
             }
 
-            string config = string.Empty;
-            config = Config ?? string.Empty;
-            //foreach (var key in Ignores)
-            //{
-            //    config += key + "|";
-            //}
-            //config = config.TrimEnd('|');
-            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "过滤关键词", config, Environment.CurrentDirectory + @"\Compare.cfg");
+            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "过滤关键词", Config, Environment.CurrentDirectory + @"\Compare.cfg");
+            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "搜索关键词", Prefer, Environment.CurrentDirectory + @"\Compare.cfg");
             CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "目标1", FilePath1, Environment.CurrentDirectory + @"\Compare.cfg");
             CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "目标2", FilePath2, Environment.CurrentDirectory + @"\Compare.cfg");
+            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "日志", Logs.Replace("\r\n", "#^#"), Environment.CurrentDirectory + @"\Compare.cfg");
+
         }
 
         /// <summary>
@@ -1189,5 +1180,6 @@ namespace FilesCompare.ViewModel
             }
         }
         #endregion
+
     }
 }
