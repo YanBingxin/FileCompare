@@ -775,7 +775,7 @@ namespace FilesCompare.ViewModel
 
                     if (i > 0 && i % 40 == 0)
                     {
-                        Thread.Sleep(500);
+                        Thread.Sleep(250);
                     }
                     System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
@@ -818,26 +818,19 @@ namespace FilesCompare.ViewModel
             {
                 try
                 {
-                    //过滤文件类型
-                    if (Ignore(file))
-                        continue;
-
-                    lock (SysObject)
-                    {
-                        Log("解压：" + file.FFullName);
-                        UnzipFileName = file.FFullName;
-                    }
+                    Log("解压：" + file.FFullName);
+                    UnzipFileName = file.FFullName;
                     string folderName = file.FFullName.Replace(".zip", "").Replace(".jar", "").Replace(rootName, location + "/" + TEMPNUMBER.ToString());
                     UnCompressHelper.UnZipDir(file.FFullName, folderName, false);
                 }
                 catch (Exception e)
                 {
                     Log(string.Format(@"
-// 异常信息
-// 解压时出现异常
-// 文件名:{0}
-// 详细信息:{1}
-", file.FFullName, e.Message));
+                    // 异常信息
+                    // 解压时出现异常
+                    // 文件名:{0}
+                    // 详细信息:{1}
+                    ", file.FFullName, e.Message));
                     MessageBox.Show("解压文件失败：" + file.FFullName + e.Message + e.ToString(), "提示");
                 }
             }
@@ -921,7 +914,7 @@ namespace FilesCompare.ViewModel
                 FNode foder = new FNode();
                 foder.FFullName = node.FFullName.Replace(".jar", "").Replace(".zip", "").Replace(rootName, Environment.CurrentDirectory + "/" + location + "/" + TEMPNUMBER.ToString());//解压缩节点目录全名
                 foder.FName = node.FName.Replace(".jar", "").Replace(".zip", "");//解压缩节点目录名
-                foder.Child = LoadFiles(foder.FFullName, node.FName);//获取子目录文件(夹)
+                foder.Child = LoadFiles(foder.FFullName, node.FFullName);//获取子目录文件(夹)
                 tempList.Add(foder);
             }
             lock (SysObject)
@@ -1035,6 +1028,10 @@ namespace FilesCompare.ViewModel
                     //将改变的jar，zip文件捕获，后续解压缩二次比较
                     if (item.f1.FFullName.Contains(".zip") || item.f1.FFullName.Contains(".jar"))
                     {
+                        //过滤文件类型
+                        if (Ignore(item.f1))
+                            continue;
+
                         ZipFiles1.Add(item.f1);
                         ZipFiles2.Add(item.f2);
                         continue;
