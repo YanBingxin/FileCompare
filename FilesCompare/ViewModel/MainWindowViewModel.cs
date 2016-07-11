@@ -132,7 +132,50 @@ namespace FilesCompare.ViewModel
             }
         }
 
-        public string Prefer { get; set; }
+        /// <summary>
+        /// 仅比对配置
+        /// </summary>
+        private string _prefer = string.Empty;
+        /// <summary>
+        /// 获取或设置仅比对配置
+        /// </summary>
+        public string Prefer
+        {
+            get
+            {
+                return _prefer;
+            }
+            set
+            {
+                _prefer = value;
+                RaisePropertyChanged("Prefer");
+
+                Prefers.Clear();
+                foreach (var key in _prefer.Split('|'))
+                {
+                    if (string.IsNullOrEmpty(key))
+                        continue;
+                    Prefers.Add(key);
+                }
+                RaisePropertyChanged("Prefers");
+            }
+        }
+
+        private ObservableCollection<string> _prefers;
+        /// <summary>
+        /// 仅比对关键字
+        /// </summary>
+        public ObservableCollection<string> Prefers
+        {
+            get
+            {
+                return _prefers ?? (_prefers = new ObservableCollection<string>());
+            }
+            set
+            {
+                _prefers = value;
+            }
+        }
 
         /// <summary>
         /// 过滤字符串
@@ -830,6 +873,24 @@ namespace FilesCompare.ViewModel
             }
             return false;
         }
+        /// <summary>
+        /// 检查是否是要比对的文件
+        /// </summary>
+        /// <param name="fname"></param>
+        /// <returns></returns>
+        private bool IsPrefer(string fname)
+        {
+            if (Prefers.Count == 0)
+            {
+                return true;
+            }
+            foreach (var key in Prefers)
+            {
+                if (fname.Contains(key))
+                    return true;
+            }
+            return false;
+        }
         #endregion
 
         #region 加载文件
@@ -845,14 +906,14 @@ namespace FilesCompare.ViewModel
             try
             {
                 tempList = new ObservableCollection<FNode>((from f in Directory.GetFiles(pathName)
-                                                            where Ignore(f) == false
+                                                            where Ignore(f.Replace(pathName + "\\", "")) == false && IsPrefer(f.Replace(pathName + "\\", ""))
                                                             select new FNode()
                                                             {
                                                                 FFullName = f,
                                                                 FName = f.Replace(pathName + "\\", ""),
                                                                 IsFile = true
                                                             }).Concat(from d in Directory.GetDirectories(pathName)
-                                                                      where Ignore(d) == false
+                                                                      //where Ignore(d) == false
                                                                       select new FNode()
                                                                       {
                                                                           FFullName = d,
@@ -913,7 +974,7 @@ namespace FilesCompare.ViewModel
             try
             {
                 tempList = new ObservableCollection<FNode>((from f in Directory.GetFiles(pathName)
-                                                            where Ignore(f) == false
+                                                            //where Ignore(f.Replace(pathName + "\\", "")) == false
                                                             select new FNode()
                                                             {
                                                                 FFullName = f,
@@ -921,7 +982,7 @@ namespace FilesCompare.ViewModel
                                                                 JarParentName = jarName,
                                                                 IsFile = true
                                                             }).Concat(from d in Directory.GetDirectories(pathName)
-                                                                      where Ignore(d) == false
+                                                                      //where Ignore(d) == false
                                                                       select new FNode()
                                                                       {
                                                                           FFullName = d,
