@@ -546,7 +546,7 @@ namespace FilesCompare.ViewModel
             m_View.DataContext = this;
             InitData();
             InitCommand();
-            LoadIgnores();
+            LoadConfig();
             InitTempDirectory();
         }
 
@@ -573,7 +573,6 @@ namespace FilesCompare.ViewModel
         private void InitData()
         {
             btnContent = string.Format("开始分析");
-            TEMPNUMBER = 0;
         }
         #endregion
 
@@ -752,10 +751,6 @@ namespace FilesCompare.ViewModel
             {
                 for (int i = 0; i < DifFiles1.Count; i++)
                 {
-                    //过虑忽略文件
-                    if (Ignore(DifFiles1[i]))
-                        continue;
-
                     if (i > 0 && i % 40 == 0)
                     {
                         Thread.Sleep(250);
@@ -824,13 +819,13 @@ namespace FilesCompare.ViewModel
         /// <summary>
         /// 检查是否是要过滤的文件
         /// </summary>
-        /// <param name="file"></param>
+        /// <param name="fname"></param>
         /// <returns></returns>
-        private bool Ignore(FNode file)
+        private bool Ignore(string fname)
         {
             foreach (var key in Ignores)
             {
-                if (file.FName.Contains(key))
+                if (fname.Contains(key))
                     return true;
             }
             return false;
@@ -850,12 +845,14 @@ namespace FilesCompare.ViewModel
             try
             {
                 tempList = new ObservableCollection<FNode>((from f in Directory.GetFiles(pathName)
+                                                            where Ignore(f) == false
                                                             select new FNode()
                                                             {
                                                                 FFullName = f,
                                                                 FName = f.Replace(pathName + "\\", ""),
                                                                 IsFile = true
                                                             }).Concat(from d in Directory.GetDirectories(pathName)
+                                                                      where Ignore(d) == false
                                                                       select new FNode()
                                                                       {
                                                                           FFullName = d,
@@ -866,10 +863,10 @@ namespace FilesCompare.ViewModel
             catch (Exception ex)
             {
                 Log(string.Format(@"
-// 异常信息
-// 加载文件时出现异常
-// {0}
-", ex.Message));
+                // 异常信息
+                // 加载文件时出现异常
+                // {0}
+                ", ex.Message));
             }
             //双线程引起不同步，导致文件数总显示不对，并发引起的问题，找了半天。
             lock (SysObject)
@@ -891,9 +888,6 @@ namespace FilesCompare.ViewModel
             ObservableCollection<FNode> tempList = new ObservableCollection<FNode>();
             foreach (var node in collection)
             {
-                if (Ignore(node))
-                    continue;
-
                 FNode foder = new FNode();
                 foder.FFullName = node.FFullName.Replace(".jar", "").Replace(".zip", "").Replace(rootName, Environment.CurrentDirectory + "/" + location + "/" + TEMPNUMBER.ToString());//解压缩节点目录全名
                 foder.FName = node.FName.Replace(".jar", "").Replace(".zip", "");//解压缩节点目录名
@@ -919,6 +913,7 @@ namespace FilesCompare.ViewModel
             try
             {
                 tempList = new ObservableCollection<FNode>((from f in Directory.GetFiles(pathName)
+                                                            where Ignore(f) == false
                                                             select new FNode()
                                                             {
                                                                 FFullName = f,
@@ -926,6 +921,7 @@ namespace FilesCompare.ViewModel
                                                                 JarParentName = jarName,
                                                                 IsFile = true
                                                             }).Concat(from d in Directory.GetDirectories(pathName)
+                                                                      where Ignore(d) == false
                                                                       select new FNode()
                                                                       {
                                                                           FFullName = d,
@@ -937,10 +933,10 @@ namespace FilesCompare.ViewModel
             catch (Exception ex)
             {
                 Log(string.Format(@"
-// 异常信息
-// 加载文件时出现异常
-// {0}
-", ex.Message));
+                // 异常信息
+                // 加载文件时出现异常
+                // {0}
+                ", ex.Message));
             }
             //双线程引起不同步，导致文件数总显示不对，并发引起的问题，找了半天。
             lock (SysObject)
@@ -1011,10 +1007,6 @@ namespace FilesCompare.ViewModel
                     //将改变的jar，zip文件捕获，后续解压缩二次比较
                     if (item.f1.FFullName.Contains(".zip") || item.f1.FFullName.Contains(".jar"))
                     {
-                        //过滤文件类型
-                        if (Ignore(item.f1))
-                            continue;
-
                         ZipFiles1.Add(item.f1);
                         ZipFiles2.Add(item.f2);
                         continue;
@@ -1034,10 +1026,10 @@ namespace FilesCompare.ViewModel
             {
                 MessageBox.Show(ex.Message + ex.ToString());
                 Log(string.Format(@"
-// 异常信息
-// 校对时出现异常
-// {0}
-", ex.Message));
+                // 异常信息
+                // 校对时出现异常
+                // {0}
+                ", ex.Message));
             }
             return true;
 
@@ -1071,8 +1063,10 @@ namespace FilesCompare.ViewModel
         /// <summary>
         /// 加载过滤关键字
         /// </summary>
-        private void LoadIgnores()
+        private void LoadConfig()
         {
+            string tempLever = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "临时文件级数", Environment.CurrentDirectory + @"\Compare.cfg");
+            TEMPNUMBER = string.IsNullOrEmpty(tempLever) ? 0 : Convert.ToInt32(tempLever);
             Config = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "过滤关键词", Environment.CurrentDirectory + @"\Compare.cfg");
             Prefer = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "搜索关键词", Environment.CurrentDirectory + @"\Compare.cfg");
             FilePath1 = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "目标1", Environment.CurrentDirectory + @"\Compare.cfg");
@@ -1090,6 +1084,7 @@ namespace FilesCompare.ViewModel
                 File.Create("Compare.cfg");
             }
 
+            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "临时文件级数", TEMPNUMBER.ToString(), Environment.CurrentDirectory + @"\Compare.cfg");
             CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "过滤关键词", Config, Environment.CurrentDirectory + @"\Compare.cfg");
             CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "搜索关键词", Prefer, Environment.CurrentDirectory + @"\Compare.cfg");
             CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "目标1", FilePath1, Environment.CurrentDirectory + @"\Compare.cfg");
@@ -1165,6 +1160,7 @@ namespace FilesCompare.ViewModel
 
         private void bg_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "临时文件级数", "0", Environment.CurrentDirectory + @"\Compare.cfg");
             m_View.Close();
         }
 

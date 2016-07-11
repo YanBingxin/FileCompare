@@ -291,8 +291,8 @@ namespace FilesCompare.Common
         public static string Read(string section, string key, string path)
         {
             Encoding enc = Encoding.Default;
-            StringBuilder temp = new StringBuilder(1024);
-            int i = GetPrivateProfileString(section, key, "", temp, 1024, path);
+            StringBuilder temp = new StringBuilder(102400);
+            int i = GetPrivateProfileString(section, key, "", temp, 102400, path);
             byte[] buff = Encoding.Default.GetBytes(temp.ToString());
             return enc.GetString(buff);
         }
