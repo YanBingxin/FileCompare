@@ -21,6 +21,9 @@
             <converter:JarNameConverter x:Key="JarNameConverter"/>
         </ResourceDictionary>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Gesture="Enter" Command="{Binding DescryptCommand}"/>
+    </Window.InputBindings>
     <Grid Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"></ColumnDefinition>
@@ -104,9 +107,9 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0" Grid.Row="0" Text="黑名单:" FontFamily="幼圆"/>
-            <TextBox Grid.Row="0" Grid.Column="1" ToolTip="以'|'号分隔" Text="{Binding Config, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
+            <TextBox Grid.Row="0" TabIndex="0" Grid.Column="1" ToolTip="以'|'号分隔" Text="{Binding Config, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
             <TextBlock Grid.Column="2" Grid.Row="0" Text="仅比对:" FontFamily="幼圆"/>
-            <TextBox Grid.Row="0" Grid.Column="3" ToolTip="以'|'号分隔" Text="{Binding xx, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
+            <TextBox Grid.Row="0" TabIndex="1" Grid.Column="3" ToolTip="以'|'号分隔" Text="{Binding xx, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
 
             <TextBlock Text="新文件>" FontFamily="幼圆" Grid.Column="0" Grid.Row="1">
                 <TextBlock.TextEffects>
@@ -127,6 +130,7 @@
                 </TextBlock.Triggers>
             </TextBlock>
             <TextBox Grid.Column="1" Grid.Row="1"
+                     TabIndex="2"
                  Style="{StaticResource OpenPathTBXStyle}"
                  Text="{Binding FilePath1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
             <TextBlock Text="旧文件>" FontFamily="幼圆" Grid.Column="2" Grid.Row="1">
@@ -148,16 +152,18 @@
                 </TextBlock.Triggers>
             </TextBlock>
             <TextBox Grid.Column="3" Grid.Row="1"
+                     TabIndex="3"
                  Style="{StaticResource OpenPathTBXStyle}"
                  Text="{Binding FilePath2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
         </Grid>
 
         <Button Grid.Column="3" 
+                TabIndex="4"
                 Grid.Row="1" 
                 Grid.RowSpan="2"
                 Content="{Binding btnContent}"
                 Command="{Binding DescryptCommand}"
-                Background="LightGray"
+                Background="LightGray" Cursor="Hand"
                >
             <Button.Style>
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButtonStyle}">
@@ -351,7 +357,7 @@
                 </Grid.RowDefinitions>
                 <Border Grid.Row="0" Background="Gray"/>
                 <TextBlock Text="运行日志" Foreground="White" Grid.Row="0" HorizontalAlignment="Center"></TextBlock>
-                <TextBox Grid.Row="1" Foreground="Black" HorizontalAlignment="Stretch" Grid.RowSpan="2" Text="{Binding Logs, UpdateSourceTrigger=PropertyChanged}" 
+                <TextBox TabIndex="5" Grid.Row="1" Foreground="Black" HorizontalAlignment="Stretch" Grid.RowSpan="2" Text="{Binding Logs, UpdateSourceTrigger=PropertyChanged}" 
                          FontSize="12" BorderThickness="1" Margin="0,0,0,1" SnapsToDevicePixels="True"
                          Style="{StaticResource DownClearButtonTextBoxStyle}" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 </TextBox>
