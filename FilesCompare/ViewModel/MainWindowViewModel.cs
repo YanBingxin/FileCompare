@@ -59,6 +59,149 @@ namespace FilesCompare.ViewModel
         #endregion
 
         #region 属性
+        /// <summary>
+        /// 黑名单是否应用于普通(非解压后)文件
+        /// </summary>
+        private bool _ignoreOnFiles = true;
+        /// <summary>
+        /// 获取或设置黑名单是否应用于普通(非解压后)文件
+        /// </summary>
+        public bool IgnoreOnFiles
+        {
+            get
+            {
+                return _ignoreOnFiles;
+            }
+            set
+            {
+                if (_ignoreOnFiles == value)
+                {
+                    return;
+                }
+                _ignoreOnFiles = value;
+                RaisePropertyChanged(() => IgnoreOnFiles);
+            }
+        }
+
+        /// <summary>
+        /// 黑名单是否应用于普通(非解压后)文件夹
+        /// </summary>
+        private bool _ignoreOnFolders = false;
+        /// <summary>
+        /// 获取或设置黑名单是否应用于普通(非解压后)文件夹
+        /// </summary>
+        public bool IgnoreOnFolders
+        {
+            get
+            {
+                return _ignoreOnFolders;
+            }
+            set
+            {
+                if (_ignoreOnFolders == value)
+                {
+                    return;
+                }
+                _ignoreOnFolders = value;
+                RaisePropertyChanged(() => IgnoreOnFolders);
+            }
+        }
+
+        /// <summary>
+        /// 黑名单是否应用于解压后文件
+        /// </summary>
+        private bool _ignoreOnUCFiles = false;
+        /// <summary>
+        /// 获取或设置黑名单是否应用于解压后文件
+        /// </summary>
+        public bool IgnoreOnUCFiles
+        {
+            get
+            {
+                return _ignoreOnUCFiles;
+            }
+            set
+            {
+                if (_ignoreOnUCFiles == value)
+                {
+                    return;
+                }
+                _ignoreOnUCFiles = value;
+                RaisePropertyChanged(() => IgnoreOnUCFiles);
+            }
+        }
+
+        /// <summary>
+        /// 黑名单是否应用于解压后文件夹
+        /// </summary>
+        private bool _ignoreOnUCFolders = false;
+        /// <summary>
+        /// 获取或设置黑名单是否应用于解压后文件夹
+        /// </summary>
+        public bool IgnoreOnUCFolders
+        {
+            get
+            {
+                return _ignoreOnUCFolders;
+            }
+            set
+            {
+                if (_ignoreOnUCFolders == value)
+                {
+                    return;
+                }
+                _ignoreOnUCFolders = value;
+                RaisePropertyChanged(() => IgnoreOnUCFolders);
+            }
+        }
+
+        /// <summary>
+        /// 白明单是否应用文件
+        /// </summary>
+        private bool _preferOnFiles = true;
+        /// <summary>
+        /// 获取或设置白明单是否应用于文件
+        /// </summary>
+        public bool PreferOnFiles
+        {
+            get
+            {
+                return _preferOnFiles;
+            }
+            set
+            {
+                if (_preferOnFiles == value)
+                {
+                    return;
+                }
+                _preferOnFiles = value;
+                RaisePropertyChanged(() => PreferOnFiles);
+            }
+        }
+
+        /// <summary>
+        /// 白明单是否应用于解压后文件
+        /// </summary>
+        private bool _preferOnUCFiles = false;
+        /// <summary>
+        /// 获取或设置白明单是否应用于解压后文件
+        /// </summary>
+        public bool PreferOnUCFiles
+        {
+            get
+            {
+                return _preferOnUCFiles;
+            }
+            set
+            {
+                if (_preferOnUCFiles == value)
+                {
+                    return;
+                }
+                _preferOnUCFiles = value;
+                RaisePropertyChanged(() => PreferOnUCFiles);
+            }
+        }
 
         /// <summary>
         /// 1比2多出数量
@@ -149,27 +292,18 @@ namespace FilesCompare.ViewModel
             {
                 _prefer = value;
                 RaisePropertyChanged("Prefer");
-
-                Prefers.Clear();
-                foreach (var key in _prefer.Split('|'))
-                {
-                    if (string.IsNullOrEmpty(key))
-                        continue;
-                    Prefers.Add(key);
-                }
-                RaisePropertyChanged("Prefers");
             }
         }
 
-        private ObservableCollection<string> _prefers;
+        private ObservableCollection<StringWraper> _prefers;
         /// <summary>
         /// 仅比对关键字
         /// </summary>
-        public ObservableCollection<string> Prefers
+        public ObservableCollection<StringWraper> Prefers
         {
             get
             {
-                return _prefers ?? (_prefers = new ObservableCollection<string>());
+                return _prefers ?? (_prefers = new ObservableCollection<StringWraper>());
             }
             set
             {
@@ -180,41 +314,32 @@ namespace FilesCompare.ViewModel
         /// <summary>
         /// 过滤字符串
         /// </summary>
-        private string _config = string.Empty;
+        private string _ignore = string.Empty;
         /// <summary>
         /// 获取或设置过滤字符串
         /// </summary>
-        public string Config
+        public string Ignore
         {
             get
             {
-                return _config;
+                return _ignore;
             }
             set
             {
-                _config = value;
-                RaisePropertyChanged("Config");
-
-                Ignores.Clear();
-                foreach (var key in _config.Split('|'))
-                {
-                    if (string.IsNullOrEmpty(key))
-                        continue;
-                    Ignores.Add(key);
-                }
-                RaisePropertyChanged("Ignores");
+                _ignore = value;
+                RaisePropertyChanged(() => Ignore);
             }
         }
 
-        private ObservableCollection<string> _ignores;
+        private ObservableCollection<StringWraper> _ignores;
         /// <summary>
         /// 过滤关键字
         /// </summary>
-        public ObservableCollection<string> Ignores
+        public ObservableCollection<StringWraper> Ignores
         {
             get
             {
-                return _ignores ?? (_ignores = new ObservableCollection<string>());
+                return _ignores ?? (_ignores = new ObservableCollection<StringWraper>());
             }
             set
             {
@@ -347,26 +472,6 @@ namespace FilesCompare.ViewModel
             {
                 _numDif = value;
                 RaisePropertyChanged(() => NumDif);
-            }
-        }
-
-        /// <summary>
-        /// 总文件(夹)数
-        /// </summary>
-        private int _numAll;
-        /// <summary>
-        /// 总文件(夹)数
-        /// </summary>
-        public int NumAll
-        {
-            get
-            {
-                return _numAll;
-            }
-            set
-            {
-                _numAll = value;
-                RaisePropertyChanged(() => NumAll);
             }
         }
 
@@ -864,11 +969,11 @@ namespace FilesCompare.ViewModel
         /// </summary>
         /// <param name="fname"></param>
         /// <returns></returns>
-        private bool Ignore(string fname)
+        private bool IsIgnore(string fname)
         {
             foreach (var key in Ignores)
             {
-                if (fname.Contains(key))
+                if (fname.Contains(key.Value))
                     return true;
             }
             return false;
@@ -886,7 +991,7 @@ namespace FilesCompare.ViewModel
             }
             foreach (var key in Prefers)
             {
-                if (fname.Contains(key))
+                if (fname.Contains(key.Value))
                     return true;
             }
             return false;
@@ -906,14 +1011,14 @@ namespace FilesCompare.ViewModel
             try
             {
                 tempList = new ObservableCollection<FNode>((from f in Directory.GetFiles(pathName)
-                                                            where Ignore(f.Replace(pathName + "\\", "")) == false && IsPrefer(f.Replace(pathName + "\\", ""))
+                                                            where IsIgnore(f.Replace(pathName + "\\", "")) == false && IsPrefer(f.Replace(pathName + "\\", ""))
                                                             select new FNode()
                                                             {
                                                                 FFullName = f,
                                                                 FName = f.Replace(pathName + "\\", ""),
                                                                 IsFile = true
                                                             }).Concat(from d in Directory.GetDirectories(pathName)
-                                                                      //where Ignore(d) == false
+                                                                      where IgnoreOnFolders == false || IsIgnore(d) == false
                                                                       select new FNode()
                                                                       {
                                                                           FFullName = d,
@@ -974,7 +1079,7 @@ namespace FilesCompare.ViewModel
             try
             {
                 tempList = new ObservableCollection<FNode>((from f in Directory.GetFiles(pathName)
-                                                            //where Ignore(f.Replace(pathName + "\\", "")) == false
+                                                            where (IgnoreOnUCFiles == false || IsIgnore(f.Replace(pathName + "\\", "")) == false) && (PreferOnUCFiles == false || IsPrefer(f.Replace(pathName + "\\", "")))//对解压后文件根据配置应用黑名单和白名单校验
                                                             select new FNode()
                                                             {
                                                                 FFullName = f,
@@ -982,7 +1087,7 @@ namespace FilesCompare.ViewModel
                                                                 JarParentName = jarName,
                                                                 IsFile = true
                                                             }).Concat(from d in Directory.GetDirectories(pathName)
-                                                                      //where Ignore(d) == false
+                                                                      where IgnoreOnUCFolders == false || IsIgnore(d.Replace(pathName + "\\", "")) == false
                                                                       select new FNode()
                                                                       {
                                                                           FFullName = d,
@@ -1126,13 +1231,35 @@ namespace FilesCompare.ViewModel
         /// </summary>
         private void LoadConfig()
         {
-            string tempLever = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "临时文件级数", Environment.CurrentDirectory + @"\Compare.cfg");
-            TEMPNUMBER = string.IsNullOrEmpty(tempLever) ? 0 : Convert.ToInt32(tempLever);
-            Config = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "过滤关键词", Environment.CurrentDirectory + @"\Compare.cfg");
-            Prefer = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "搜索关键词", Environment.CurrentDirectory + @"\Compare.cfg");
-            FilePath1 = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "目标1", Environment.CurrentDirectory + @"\Compare.cfg");
-            FilePath2 = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "目标2", Environment.CurrentDirectory + @"\Compare.cfg");
-            Logs = CommonMethod.Read("立思辰文件比对工具2.0--by ybx", "日志", Environment.CurrentDirectory + @"\Compare.cfg").Replace("#^#", "\r\n");
+            try
+            {
+                string tempLever = GetValue("临时文件级数");
+                string ignoreOnFiles = GetValue("黑名单-包含文件");
+                string ignoreOnFolders = GetValue("黑名单-包含文件夹");
+                string ignoreOnUCFiles = GetValue("黑名单-包含解压缩后文件");
+                string ignoreOnUCFolders = GetValue("黑名单-包含解压缩后文件夹");
+                string preferOnFiles = GetValue("白名单-包含文件");
+                string preferOnUCFiles = GetValue("白名单-包含解压缩后文件");
+                Ignore = GetValue("黑名单");
+                Prefer = GetValue("白名单");
+                FilePath1 = GetValue("目标1");
+                FilePath2 = GetValue("目标2");
+                Logs = GetValue("日志").Replace("#^#", "\r\n");
+                ConfigToDataGrid();
+                IgnoreOnFiles = string.IsNullOrEmpty(ignoreOnFiles) ? true : bool.Parse(ignoreOnFiles);
+                PreferOnFiles = string.IsNullOrEmpty(preferOnFiles) ? true : bool.Parse(preferOnFiles);
+                TEMPNUMBER = Convert.ToInt32(tempLever);
+                IgnoreOnFolders = bool.Parse(ignoreOnFolders);
+                IgnoreOnUCFiles = bool.Parse(ignoreOnUCFiles);
+                IgnoreOnUCFolders = bool.Parse(ignoreOnUCFolders);
+                PreferOnUCFiles = bool.Parse(preferOnUCFiles);
+            }
+            catch (Exception ex)
+            {
+                //                Log(string.Format(@"异常信息：配置文件读取异常!
+                //                已创建配置文件。
+                //异常原因：配置升级或首次运行。", ex.Message));
+            }
         }
 
         /// <summary>
@@ -1145,12 +1272,84 @@ namespace FilesCompare.ViewModel
                 File.Create("Compare.cfg");
             }
 
-            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "临时文件级数", TEMPNUMBER.ToString(), Environment.CurrentDirectory + @"\Compare.cfg");
-            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "过滤关键词", Config, Environment.CurrentDirectory + @"\Compare.cfg");
-            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "搜索关键词", Prefer, Environment.CurrentDirectory + @"\Compare.cfg");
-            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "目标1", FilePath1, Environment.CurrentDirectory + @"\Compare.cfg");
-            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "目标2", FilePath2, Environment.CurrentDirectory + @"\Compare.cfg");
-            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "日志", Logs.Replace("\r\n", "#^#"), Environment.CurrentDirectory + @"\Compare.cfg");
+            SetValue("临时文件级数", TEMPNUMBER.ToString());
+            SetValue("黑名单", Ignore);
+            SetValue("白名单", Prefer);
+            SetValue("黑名单-包含文件", IgnoreOnFiles.ToString());
+            SetValue("黑名单-包含文件夹", IgnoreOnFolders.ToString());
+            SetValue("黑名单-包含解压缩后文件", IgnoreOnUCFiles.ToString());
+            SetValue("黑名单-包含解压缩后文件夹", IgnoreOnUCFolders.ToString());
+            SetValue("白名单-包含文件", PreferOnFiles.ToString());
+            SetValue("白名单-包含解压缩后文件", PreferOnUCFiles.ToString());
+            SetValue("目标1", FilePath1);
+            SetValue("目标2", FilePath2);
+            SetValue("日志", Logs.Replace("\r\n", "#^#"));
+        }
+
+        /// <summary>
+        /// 通过读取配置设置黑白名单
+        /// </summary>
+        private void ConfigToDataGrid()
+        {
+            Ignores.Clear();
+            Prefers.Clear();
+            foreach (var key in Ignore.Split('|'))
+            {
+                if (string.IsNullOrEmpty(key))
+                    continue;
+                Ignores.Add(new StringWraper() { Value = key });
+            }
+            foreach (var key in Prefer.Split('|'))
+            {
+                if (string.IsNullOrEmpty(key))
+                    continue;
+                Prefers.Add(new StringWraper() { Value = key });
+            }
+        }
+
+        /// <summary>
+        /// 通过设置datagrid更新config
+        /// </summary>
+        public void DataGridToConfig()
+        {
+            Ignore = string.Empty;
+            Prefer = string.Empty;
+
+            foreach (var item in Ignores)
+            {
+                if (string.IsNullOrEmpty(item.Value))
+                    continue;
+                Ignore += item.Value + "|";
+            }
+            foreach (var item in Prefers)
+            {
+                if (string.IsNullOrEmpty(item.Value))
+                    continue;
+                Prefer += item.Value + "|";
+            }
+
+            Ignore = Ignore.TrimEnd('|');
+            Prefer = Prefer.TrimEnd('|');
+        }
+
+        /// <summary>
+        /// 根据配置键获取值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private string GetValue(string key)
+        {
+            return CommonMethod.Read("立思辰文件比对工具2.0--by ybx", key, Environment.CurrentDirectory + @"\Compare.cfg");
+        }
+
+        /// <summary>
+        /// 根据配置键设置值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private void SetValue(string key, string value)
+        {
+            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", key, value, Environment.CurrentDirectory + @"\Compare.cfg");
         }
         #endregion
         #endregion

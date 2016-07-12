@@ -109,7 +109,6 @@
                             Background="{TemplateBinding Background}">
                         <DockPanel LastChildFill="True" HorizontalAlignment="{TemplateBinding HorizontalAlignment}">
                             <Button x:Name="Part_ClearButton" 
-                                    UC:TextBoxHelper.IsClearButton="True" 
                                     Content="配置" 
                                     DockPanel.Dock="Right" 
                                     Focusable="False"
@@ -210,17 +209,19 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="White"/>
                             <Setter Property="Effect">
                                 <Setter.Value>
-                                    <DropShadowEffect BlurRadius="13" Color="DimGray"  ShadowDepth="1" Opacity="0.7"/>
+                                    <DropShadowEffect BlurRadius="4" Color="DimGray"  ShadowDepth="0.51" Opacity="0.7"/>
                                 </Setter.Value>
                             </Setter>
                             <Setter TargetName="bd" Property="Background" Value="DimGray"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Foreground" Value="White"/>
                             <Setter Property="RenderTransform">
                                 <Setter.Value>
-                                    <ScaleTransform ScaleX="0.9" ScaleY="0.95" CenterX="35" CenterY="20" />
+                                    <ScaleTransform ScaleX="0.98" ScaleY="0.98" CenterX="50" CenterY="25" />
                                 </Setter.Value>
                             </Setter>
                         </Trigger>

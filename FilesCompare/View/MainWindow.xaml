@@ -107,15 +107,44 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0" Grid.Row="0" Text="黑名单:" FontFamily="幼圆"/>
-            <TextBox Grid.Row="0" TabIndex="0" Grid.Column="1" ToolTip="以'|'号分隔" Text="{Binding Config, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}">
+            <TextBox Button.Click="TextBox_Click_Ignore" IsReadOnly="True"  Grid.Row="0" TabIndex="0" Grid.Column="1" ToolTip="以'|'号分隔" Text="{Binding Ignore, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}">
             </TextBox>
-            <Popup Width="352" Height="200" Grid.Row="0" Grid.Column="1">
-                <StackPanel Background="White" Margin="75,-25,-35,60" Orientation="Vertical">
-                    <DataGrid ItemsSource="{Binding Ignores}"></DataGrid>
-                </StackPanel>
+            <Popup x:Name="pupIgnore" Placement="Mouse" PopupAnimation="Scroll" Grid.Row="0" Grid.Column="1" SnapsToDevicePixels="True">
+                <Border BorderBrush="Black" BorderThickness="0.55" Background="White">
+                    <StackPanel Background="White" Orientation="Vertical" Margin="5">
+                        <TextBlock Background="DimGray" Foreground="White" Text="设置黑名单" HorizontalAlignment="Stretch" TextAlignment="Center"/>
+                        <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:包含黑名单列表中字符串的文件将不做校对!" TextWrapping="Wrap"/>
+                        <DataGrid ItemsSource="{Binding Ignores, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="过滤文件名" Width="200" Binding="{Binding Value}"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <CheckBox Content="应用于文件" IsChecked="{Binding IgnoreOnFiles, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,2"/>
+                        <CheckBox Content="应用于文件夹" IsChecked="{Binding IgnoreOnFolders, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,2"/>
+                        <CheckBox Content="应用于解压后文件" IsChecked="{Binding IgnoreOnUCFiles, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,2"/>
+                        <CheckBox Content="应用于解压后文件夹" IsChecked="{Binding IgnoreOnUCFolders, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,2"/>
+                        <Button Click="TextBox_Click_Ignore" Content="确定" Margin="0,2" Style="{StaticResource  BaseButtonStyle}"/>
+                    </StackPanel>
+                </Border>
             </Popup>
-            <TextBlock Grid.Column="2" Grid.Row="0" Text="仅比对:" FontFamily="幼圆"/>
-            <TextBox Grid.Row="0" TabIndex="1" Grid.Column="3" ToolTip="以'|'号分隔" Text="{Binding Prefer, Mode=TwoWay,UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
+            <TextBlock Grid.Column="2" Grid.Row="0" Text="白名单:" FontFamily="幼圆"/>
+            <TextBox Grid.Row="0" IsReadOnly="True" Button.Click="TextBox_Click_Prefer"  TabIndex="1" Grid.Column="3" ToolTip="以'|'号分隔" Text="{Binding Prefer, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
+            <Popup x:Name="pupPrefer" Placement="Mouse" PopupAnimation="Scroll" Grid.Row="0" Grid.Column="1" SnapsToDevicePixels="True">
+                <Border BorderBrush="Black" BorderThickness="0.55" Background="White">
+                    <StackPanel Background="White" Orientation="Vertical" Margin="5">
+                        <TextBlock Background="DimGray" Foreground="White" Text="设置白名单" HorizontalAlignment="Stretch" TextAlignment="Center"/>
+                        <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:若白名单列表不为空,&#13;将仅比对包含白名单中字符串的文件!" TextWrapping="Wrap"/>
+                        <DataGrid ItemsSource="{Binding Prefers, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="过滤文件名" Width="200" Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <CheckBox Content="应用于文件" IsChecked="{Binding PreferOnFiles, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,2"/>
+                        <CheckBox Content="应用于解压后文件" IsChecked="{Binding PreferOnUCFiles, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,2"/>
+                        <Button Click="TextBox_Click_Prefer" Content="确定" Margin="0,2" Style="{StaticResource  BaseButtonStyle}"/>
+                    </StackPanel>
+                </Border>
+            </Popup>
 
             <TextBlock Text="新文件>" FontFamily="幼圆" Grid.Column="0" Grid.Row="1">
                 <TextBlock.TextEffects>

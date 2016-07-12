@@ -87,6 +87,7 @@
     <Compile Include="Converter\PathConverter.cs" />
     <Compile Include="Model\FNode.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="Model\StringWraper.cs" />
     <Compile Include="View\WinWait.xaml.cs">
       <DependentUpon>WinWait.xaml</DependentUpon>
     </Compile>

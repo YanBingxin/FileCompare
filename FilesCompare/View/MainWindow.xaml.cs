@@ -17,6 +17,7 @@ using FilesCompare.Model;
 using FilesCompare.Common;
 using FilesCompare.CompareHelper;
 using System.Reflection;
+using FilesCompare.ViewModel;
 
 namespace FilesCompare
 {
@@ -117,6 +118,30 @@ namespace FilesCompare
                     MessageBox.Show(ex.Message);
                 }
             }
+        }
+        #endregion
+
+        #region 编辑黑白名单
+        /// <summary>
+        /// 点击编辑，弹出黑白名单编辑框
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBox_Click_Ignore(object sender, RoutedEventArgs e)
+        {
+            this.pupIgnore.IsOpen = !pupIgnore.IsOpen;
+            UpConfig();
+        }
+
+        private void TextBox_Click_Prefer(object sender, RoutedEventArgs e)
+        {
+            this.pupPrefer.IsOpen = !pupPrefer.IsOpen;
+            UpConfig();
+        }
+
+        private void UpConfig()
+        {
+            (this.DataContext as MainWindowViewModel).DataGridToConfig();
         }
         #endregion
     }
