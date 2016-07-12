@@ -928,7 +928,7 @@ namespace FilesCompare.ViewModel
             More = Result1.Where(f => f.DifTag == false).Count();
             Less = Result2.Where(f => f.DifTag == false).Count();
             Changed = Result1.Where(f => f.DifTag == true).Count();
-
+            Log(string.Format(@"合计  多出:{0},缺少:{1},差异:{2}", More, Less, Changed));
             Log("结果加载完毕。");
             Log("\r\n");
         }

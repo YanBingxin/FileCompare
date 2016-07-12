@@ -113,8 +113,12 @@
                                     DockPanel.Dock="Right" 
                                     Focusable="False"
                                     Width="auto" 
-                                    Template="{DynamicResource ClearButtonTemplate}"
                                     FontSize="{TemplateBinding FontSize}">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Image Source="Set.ico" Stretch="Uniform" ToolTip="编辑"/>
+                                    </ControlTemplate>
+                                </Button.Template>
                             </Button>
                             <ScrollViewer x:Name="PART_ContentHost" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" DockPanel.Dock="Left" Background="{TemplateBinding Background}"/>
                         </DockPanel>

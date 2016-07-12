@@ -87,7 +87,7 @@
                 </Button>
             </StackPanel>
             <StackPanel x:Name="stpTitle" Orientation="Horizontal" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2">
-                <Image Source="..\Style\navwj.ico" Margin="10,5,0,5"/>
+                <Image Source="..\Style\Title2.ico" Margin="10,5,0,5"/>
                 <TextBlock Text="文件差异分析系统" FontFamily="幼圆" Foreground="White" Width="auto" HorizontalAlignment="Left" Margin="12,0,0,0"/>
             </StackPanel>
         </Grid>

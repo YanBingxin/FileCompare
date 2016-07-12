@@ -40,7 +40,7 @@
     <StartupObject>FilesCompare.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>navwj.ico</ApplicationIcon>
+    <ApplicationIcon>Style\Title2.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -324,10 +324,12 @@
     <Resource Include="Style\OpenFile.png" />
     <Resource Include="Style\folder.ico" />
     <Resource Include="Style\File.ico" />
-    <Resource Include="Style\navwj.ico" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Reference\Diffuse\add_path.exe" />
+    <Resource Include="Style\Title2.ico" />
+    <Resource Include="Style\Title1.ico" />
+    <Resource Include="Style\Set.ico" />
     <Resource Include="Reference\Diffuse\AUTHORS.txt" />
     <Resource Include="Reference\Diffuse\ChangeLog.txt" />
     <Resource Include="Reference\Diffuse\ChangeLog_ru.txt" />
