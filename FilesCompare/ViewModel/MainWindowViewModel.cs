@@ -890,7 +890,6 @@ namespace FilesCompare.ViewModel
         /// <param name="e"></param>
         private void SecondCompareCompeleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            NumDif = NumMD5;//无意义，为了使使用者安心。由于分析包含目录结构，实际校对数<=总数。(例如多出文件夹，将不比较子目录文件)
             Log("文件分析系统校对完毕。");
 
             //缓冲加载结果，防卡死
@@ -913,6 +912,7 @@ namespace FilesCompare.ViewModel
             bg.RunWorkerCompleted += Completed;
             bg.RunWorkerAsync();
 
+            NumDif = NumMD5;//无意义，为了使使用者安心。由于分析包含目录结构，实际校对数<=总数。(例如多出文件夹，将不比较子目录文件)
             timer.Stop();
             Log("计时器已终止。");
             Log("结果加载中...");
@@ -1011,7 +1011,7 @@ namespace FilesCompare.ViewModel
             try
             {
                 tempList = new ObservableCollection<FNode>((from f in Directory.GetFiles(pathName)
-                                                            where IsIgnore(f.Replace(pathName + "\\", "")) == false && IsPrefer(f.Replace(pathName + "\\", ""))
+                                                            where (IgnoreOnFiles == false || IsIgnore(f.Replace(pathName + "\\", "")) == false) && (PreferOnFiles == false || IsPrefer(f.Replace(pathName + "\\", "")))
                                                             select new FNode()
                                                             {
                                                                 FFullName = f,
