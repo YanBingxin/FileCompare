@@ -860,7 +860,7 @@ namespace FilesCompare.ViewModel
         /// </summary>
         private void InitDataForCompare()
         {
-            Log("日期:" + DateTime.Now.ToExtString());
+            Log("日期:" + DateTime.Now.ToExtString("yyyy-MM-dd HH:mm:ss"));
             Log("目标1:" + FilePath1);
             Log("目标2:" + FilePath2);
             Log("分析系统准备中...");
@@ -1329,7 +1329,8 @@ namespace FilesCompare.ViewModel
 
                         for (int i = 0; i < DifFiles1.Count; i++)
                         {
-                            if ((SearchOnFiles == true && (DifFiles1[i].FName.Contains(searchPara) || DifFiles2[i].FName.Contains(searchPara)))
+                            if (string.IsNullOrEmpty(searchPara)
+                                || (SearchOnFiles == true && (DifFiles1[i].FName.Contains(searchPara) || DifFiles2[i].FName.Contains(searchPara)))
                                 || (SearchOnFolders == true && (DifFiles1[i].FFullName.Contains(searchPara) || DifFiles2[i].FFullName.Contains(searchPara)))
                                 || (SearchByUCFiles == true && (DifFiles1[i].JarParentName.Contains(searchPara) || DifFiles2[i].JarParentName.Contains(searchPara))))
                             {

@@ -70,9 +70,9 @@ namespace FilesCompare.Common
         /// </summary>
         /// <param name="dateTime"></param>
         /// <returns></returns>
-        public static string ToExtString(this DateTime dateTime)
+        public static string ToExtString(this DateTime dateTime, string format = "yyyy-MM-dd")
         {
-            return dateTime.ToString("yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo);
+            return dateTime.ToString(format, DateTimeFormatInfo.InvariantInfo);
         }
 
         /// <summary>
