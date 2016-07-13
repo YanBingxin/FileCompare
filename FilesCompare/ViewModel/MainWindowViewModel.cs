@@ -860,7 +860,6 @@ namespace FilesCompare.ViewModel
         /// </summary>
         private void InitDataForCompare()
         {
-            Log("\r\n");
             Log("日期:" + DateTime.Now.ToExtString());
             Log("目标1:" + FilePath1);
             Log("目标2:" + FilePath2);
@@ -1005,7 +1004,7 @@ namespace FilesCompare.ViewModel
             Log("文件分析系统校对完毕。");
 
             //缓冲加载结果，防卡死
-            LoadResult(SearchPara);
+            LoadResult(SearchPara, true);
 #if Release
             NumDif = NumMD5;//无意义，为了使使用者安心。由于分析包含目录结构，实际校对数<=总数。(例如多出文件夹，将不比较子目录文件)
 #endif
@@ -1014,19 +1013,6 @@ namespace FilesCompare.ViewModel
             Log("结果加载中...");
         }
 
-        /// <summary>
-        /// 结果加载完毕
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Completed(object sender, RunWorkerCompletedEventArgs e)
-        {
-            More = Result1.Where(f => f.DifTag == false).Count();
-            Less = Result2.Where(f => f.DifTag == false).Count();
-            Changed = Result1.Where(f => f.DifTag == true).Count();
-            Log(string.Format(@"合计  多出:{0},缺少:{1},差异:{2}", More, Less, Changed));
-            Log("结果加载完毕。");
-        }
         #endregion
 
         #region 解压缩文件
@@ -1299,10 +1285,15 @@ namespace FilesCompare.ViewModel
         #endregion
 
         #region 搜索结果
-        public void LoadResult(string searchPara)
+        /// <summary>
+        /// 后台异步加载结果
+        /// </summary>
+        /// <param name="searchPara">搜索符号</param>
+        /// <param name="isLog">是否记录日志</param>
+        public void LoadResult(string searchPara, bool isLog = false)
         {
             BackgroundWorker bg = new BackgroundWorker();
-            bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, a) =>
+            bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, e) =>
             {
                 System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
@@ -1342,9 +1333,32 @@ namespace FilesCompare.ViewModel
                         }
                     }
                 }
+                //是否记录日志
+                if (isLog)
+                {
+                    More = DifFiles1.Where(f => f.DifTag == false).Count();
+                    Less = DifFiles2.Where(f => f.DifTag == false).Count();
+                    Changed = Result1.Where(f => f.DifTag == true).Count();
+                    Log(string.Format(@"合计  多出:{0},缺少:{1},差异:{2}", More, Less, Changed));
+                    Log("结果加载完毕。");
+                    Log(string.Empty);
+                }
             }));
             bg.RunWorkerCompleted += Completed;
             bg.RunWorkerAsync();
+        }
+
+
+        /// <summary>
+        /// 结果加载完毕
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Completed(object sender, RunWorkerCompletedEventArgs e)
+        {
+            More = Result1.Where(f => f.DifTag == false).Count();
+            Less = Result2.Where(f => f.DifTag == false).Count();
+            Changed = Result1.Where(f => f.DifTag == true).Count();
         }
         #endregion
 
