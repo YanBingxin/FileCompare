@@ -1296,8 +1296,14 @@ namespace FilesCompare.ViewModel
             bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, e) =>
             {
                 //默认搜索字符串为空，全部加载
-                if (string.IsNullOrEmpty(searchPara))
+                if (isLog)
                 {
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        Result1.Clear();
+                        Result2.Clear();
+                    }));
+
                     for (int i = 0; i < DifFiles1.Count; i++)
                     {
                         if (i > 0 && i % 500 == 0)
@@ -1339,10 +1345,10 @@ namespace FilesCompare.ViewModel
                 //是否记录日志
                 if (isLog)
                 {
-                    More = DifFiles1.Where(f => f.DifTag == false).Count();
-                    Less = DifFiles2.Where(f => f.DifTag == false).Count();
-                    Changed = DifFiles1.Where(f => f.DifTag == true).Count();
-                    Log(string.Format(@"合计  多出:{0},缺少:{1},差异:{2}", More, Less, Changed));
+                    int more = DifFiles1.Where(f => f.DifTag == false).Count();
+                    int less = DifFiles2.Where(f => f.DifTag == false).Count();
+                    int changed = DifFiles1.Where(f => f.DifTag == true).Count();
+                    Log(string.Format(@"合计  多出:{0},缺少:{1},差异:{2}", more, less, changed));
                     Log("结果加载完毕。");
                     Log(string.Empty);
                 }
