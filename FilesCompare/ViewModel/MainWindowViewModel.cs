@@ -1295,36 +1295,23 @@ namespace FilesCompare.ViewModel
             BackgroundWorker bg = new BackgroundWorker();
             bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, e) =>
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                lock (SysObject)
                 {
-                    Result1.Clear();
-                    Result2.Clear();
-                }));
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        Result1.Clear();
+                        Result2.Clear();
+                    }));
 
-                //默认搜索字符串为空，全部加载
-                if (string.IsNullOrEmpty(searchPara))
-                {
-                    for (int i = 0; i < DifFiles1.Count; i++)
+                    //默认搜索字符串为空，全部加载
+                    if (string.IsNullOrEmpty(searchPara))
                     {
-                        if (i > 0 && i % 500 == 0)
+                        for (int i = 0; i < DifFiles1.Count; i++)
                         {
-                            Thread.Sleep(100);
-                        }
-                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                        {
-                            Result1.Add(DifFiles1[i]);
-                            Result2.Add(DifFiles2[i]);
-                        }));
-                    }
-                }
-                else//有搜索字符时执行搜索过滤
-                {
-                    for (int i = 0; i < DifFiles1.Count; i++)
-                    {
-                        if ((SearchOnFiles == true && (DifFiles1[i].FName.Contains(searchPara) || DifFiles2[i].FName.Contains(searchPara)))
-                            || (SearchOnFolders == true && (DifFiles1[i].FFullName.Contains(searchPara) || DifFiles2[i].FFullName.Contains(searchPara)))
-                            || (SearchByUCFiles == true && (DifFiles1[i].JarParentName.Contains(searchPara) || DifFiles2[i].JarParentName.Contains(searchPara))))
-                        {
+                            if (i > 0 && i % 500 == 0)
+                            {
+                                Thread.Sleep(100);
+                            }
                             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                             {
                                 Result1.Add(DifFiles1[i]);
@@ -1332,22 +1319,37 @@ namespace FilesCompare.ViewModel
                             }));
                         }
                     }
-                }
-                //是否记录日志
-                if (isLog)
-                {
-                    More = DifFiles1.Where(f => f.DifTag == false).Count();
-                    Less = DifFiles2.Where(f => f.DifTag == false).Count();
-                    Changed = Result1.Where(f => f.DifTag == true).Count();
-                    Log(string.Format(@"合计  多出:{0},缺少:{1},差异:{2}", More, Less, Changed));
-                    Log("结果加载完毕。");
-                    Log(string.Empty);
+                    else//有搜索字符时执行搜索过滤
+                    {
+                        for (int i = 0; i < DifFiles1.Count; i++)
+                        {
+                            if ((SearchOnFiles == true && (DifFiles1[i].FName.Contains(searchPara) || DifFiles2[i].FName.Contains(searchPara)))
+                                || (SearchOnFolders == true && (DifFiles1[i].FFullName.Contains(searchPara) || DifFiles2[i].FFullName.Contains(searchPara)))
+                                || (SearchByUCFiles == true && (DifFiles1[i].JarParentName.Contains(searchPara) || DifFiles2[i].JarParentName.Contains(searchPara))))
+                            {
+                                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    Result1.Add(DifFiles1[i]);
+                                    Result2.Add(DifFiles2[i]);
+                                }));
+                            }
+                        }
+                    }
+                    //是否记录日志
+                    if (isLog)
+                    {
+                        More = DifFiles1.Where(f => f.DifTag == false).Count();
+                        Less = DifFiles2.Where(f => f.DifTag == false).Count();
+                        Changed = Result1.Where(f => f.DifTag == true).Count();
+                        Log(string.Format(@"合计  多出:{0},缺少:{1},差异:{2}", More, Less, Changed));
+                        Log("结果加载完毕。");
+                        Log(string.Empty);
+                    }
                 }
             }));
             bg.RunWorkerCompleted += Completed;
             bg.RunWorkerAsync();
         }
-
 
         /// <summary>
         /// 结果加载完毕
