@@ -257,11 +257,13 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
-                                            <TextBlock FontFamily="Italic" VerticalAlignment="Center" Foreground="#FFD7AB69" ToolTip="{Binding JarParentName}">
+                                            <TextBlock FontFamily="Italic" VerticalAlignment="Center" Foreground="#FFD7AB69" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}">
                                                 <TextBlock.Text>
                                                     <MultiBinding Converter="{StaticResource JarNameConverter}">
                                                         <Binding Path="DataContext.FilePath1" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
                                                         <Binding Path="JarParentName"/>
+                                                        <Binding Path="FFullName"/>
+                                                        <Binding Path="FName"/>
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                             </TextBlock>
@@ -278,7 +280,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="全路径">
+                            <!--<DataGridTemplateColumn Header="全路径">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock x:Name="txtFile" ToolTip="{Binding FFullName}" Foreground="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -299,7 +301,7 @@
                                         </DataTemplate.Triggers>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                            </DataGridTemplateColumn>-->
                         </DataGrid.Columns>
                     </DataGrid>
                     <DataGrid x:Name="dgOld" ScrollViewer.ScrollChanged="DataGrid_ScrollChanged"  CanUserAddRows="False" RowBackground="#FFD4D0D0" AlternatingRowBackground="#FFD4D0D0" Grid.Column="1" RowHeight="22" HorizontalAlignment="Stretch" AutoGenerateColumns="False" Margin="1" ItemsSource="{Binding Result2, UpdateSourceTrigger=PropertyChanged}" PreviewMouseDoubleClick="DataGrid_PreviewMouseDoubleClick" SelectionMode="Single">
@@ -334,11 +336,13 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
-                                            <TextBlock FontFamily="Italic" VerticalAlignment="Center" ToolTip="{Binding JarParentName}" Foreground="#FFD7AB69">
+                                            <TextBlock FontFamily="Italic" VerticalAlignment="Center" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Foreground="#FFD7AB69">
                                                 <TextBlock.Text>
                                                     <MultiBinding Converter="{StaticResource JarNameConverter}">
                                                         <Binding Path="DataContext.FilePath2" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
                                                         <Binding Path="JarParentName"/>
+                                                        <Binding Path="FFullName"/>
+                                                        <Binding Path="FName"/>
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                             </TextBlock>
@@ -355,7 +359,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="全路径">
+                            <!--<DataGridTemplateColumn Header="全路径">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock x:Name="txtFile" ToolTip="{Binding FFullName}" Foreground="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -376,7 +380,7 @@
                                         </DataTemplate.Triggers>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                            </DataGridTemplateColumn>-->
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

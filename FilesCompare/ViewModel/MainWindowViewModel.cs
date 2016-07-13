@@ -1295,12 +1295,6 @@ namespace FilesCompare.ViewModel
             BackgroundWorker bg = new BackgroundWorker();
             bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, e) =>
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    Result1.Clear();
-                    Result2.Clear();
-                }));
-
                 //默认搜索字符串为空，全部加载
                 if (string.IsNullOrEmpty(searchPara))
                 {
@@ -1321,6 +1315,12 @@ namespace FilesCompare.ViewModel
                 {
                     lock (SysObject)
                     {
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            Result1.Clear();
+                            Result2.Clear();
+                        }));
+
                         for (int i = 0; i < DifFiles1.Count; i++)
                         {
                             if ((SearchOnFiles == true && (DifFiles1[i].FName.Contains(searchPara) || DifFiles2[i].FName.Contains(searchPara)))
@@ -1341,7 +1341,7 @@ namespace FilesCompare.ViewModel
                 {
                     More = DifFiles1.Where(f => f.DifTag == false).Count();
                     Less = DifFiles2.Where(f => f.DifTag == false).Count();
-                    Changed = Result1.Where(f => f.DifTag == true).Count();
+                    Changed = DifFiles1.Where(f => f.DifTag == true).Count();
                     Log(string.Format(@"合计  多出:{0},缺少:{1},差异:{2}", More, Less, Changed));
                     Log("结果加载完毕。");
                     Log(string.Empty);

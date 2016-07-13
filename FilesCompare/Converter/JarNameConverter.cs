@@ -12,8 +12,19 @@ namespace FilesCompare.Converter
         #region IMultiValueConverter 成员
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            string jarName = values[1].ToString().Replace(values[0].ToString(), "..");
-            return string.IsNullOrEmpty(jarName) ? string.Empty : "[" + jarName + "]";
+            try
+            {
+                if (string.IsNullOrEmpty(values[3].ToString()))
+                {
+                    return string.Empty;
+                }
+                string jarName = values[1].ToString().Replace(values[0].ToString(), "..");
+                return string.IsNullOrEmpty(jarName) ? values[2].ToString().Replace(values[0].ToString(), "..").Replace(values[3].ToString(), "") : "[" + jarName + "]";
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
