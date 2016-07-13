@@ -1295,31 +1295,31 @@ namespace FilesCompare.ViewModel
             BackgroundWorker bg = new BackgroundWorker();
             bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, e) =>
             {
-                lock (SysObject)
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        Result1.Clear();
-                        Result2.Clear();
-                    }));
+                    Result1.Clear();
+                    Result2.Clear();
+                }));
 
-                    //默认搜索字符串为空，全部加载
-                    if (string.IsNullOrEmpty(searchPara))
+                //默认搜索字符串为空，全部加载
+                if (string.IsNullOrEmpty(searchPara))
+                {
+                    for (int i = 0; i < DifFiles1.Count; i++)
                     {
-                        for (int i = 0; i < DifFiles1.Count; i++)
+                        if (i > 0 && i % 500 == 0)
                         {
-                            if (i > 0 && i % 500 == 0)
-                            {
-                                Thread.Sleep(100);
-                            }
-                            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                            {
-                                Result1.Add(DifFiles1[i]);
-                                Result2.Add(DifFiles2[i]);
-                            }));
+                            Thread.Sleep(100);
                         }
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            Result1.Add(DifFiles1[i]);
+                            Result2.Add(DifFiles2[i]);
+                        }));
                     }
-                    else//有搜索字符时执行搜索过滤
+                }
+                else//有搜索字符时执行搜索过滤
+                {
+                    lock (SysObject)
                     {
                         for (int i = 0; i < DifFiles1.Count; i++)
                         {
@@ -1335,16 +1335,16 @@ namespace FilesCompare.ViewModel
                             }
                         }
                     }
-                    //是否记录日志
-                    if (isLog)
-                    {
-                        More = DifFiles1.Where(f => f.DifTag == false).Count();
-                        Less = DifFiles2.Where(f => f.DifTag == false).Count();
-                        Changed = Result1.Where(f => f.DifTag == true).Count();
-                        Log(string.Format(@"合计  多出:{0},缺少:{1},差异:{2}", More, Less, Changed));
-                        Log("结果加载完毕。");
-                        Log(string.Empty);
-                    }
+                }
+                //是否记录日志
+                if (isLog)
+                {
+                    More = DifFiles1.Where(f => f.DifTag == false).Count();
+                    Less = DifFiles2.Where(f => f.DifTag == false).Count();
+                    Changed = Result1.Where(f => f.DifTag == true).Count();
+                    Log(string.Format(@"合计  多出:{0},缺少:{1},差异:{2}", More, Less, Changed));
+                    Log("结果加载完毕。");
+                    Log(string.Empty);
                 }
             }));
             bg.RunWorkerCompleted += Completed;
