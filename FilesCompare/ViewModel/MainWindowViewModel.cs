@@ -961,6 +961,7 @@ namespace FilesCompare.ViewModel
         /// <param name="e"></param>
         private void CompareCompeleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            LoadResult(_searchPara);
             Log("压缩文件(.jar.zip)分析系统启动中...");
             BackgroundWorker bg = new BackgroundWorker();
             bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, a) =>
