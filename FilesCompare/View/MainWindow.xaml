@@ -133,7 +133,7 @@
                 <Border BorderBrush="Black" BorderThickness="0.55" Background="White">
                     <StackPanel Background="White" Orientation="Vertical" Margin="5">
                         <TextBlock Background="DimGray" Foreground="White" Text="设置白名单" HorizontalAlignment="Stretch" TextAlignment="Center"/>
-                        <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:若白名单列表不为空,&#13;将仅比对包含白名单中字符串的文件!" TextWrapping="Wrap"/>
+                        <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:当白名单列表不为空且应用于文件时,&#13;将仅比对包含白名单中字符串的文件!" TextWrapping="Wrap"/>
                         <DataGrid MinHeight="100" ItemsSource="{Binding Prefers, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="文件名" Width="200" Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></DataGridTextColumn>
@@ -386,17 +386,31 @@
             <Grid Grid.Column="2" Background="LightGray">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Border Grid.Row="0" Background="Gray"/>
-                <TextBlock Text="运行日志" Foreground="White" Grid.Row="0" HorizontalAlignment="Center"></TextBlock>
-                <TextBox TabIndex="5" Grid.Row="1" Foreground="Black" HorizontalAlignment="Stretch" Grid.RowSpan="2" Text="{Binding Logs, UpdateSourceTrigger=PropertyChanged}" 
+                <Expander ExpandDirection="Down" Background="Gray" Grid.Row="0">
+                    <Expander.Header>
+                        <TextBlock Text="结果搜索" Foreground="White" HorizontalAlignment="Center"></TextBlock>
+                    </Expander.Header>
+                    <StackPanel Orientation="Vertical" Margin="0,0,0,5">
+                        <DockPanel LastChildFill="True" Background="WhiteSmoke" HorizontalAlignment="Stretch">
+                            <TextBlock Text="搜索" FontFamily="幼圆" FontSize="14" VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                            <TextBox Margin="1" Text="{Binding SearchPara,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" FontSize="14" Style="{StaticResource  ClearButtonTextBoxStyle}" VerticalAlignment="Stretch" Height="25" MinWidth="100" />
+                        </DockPanel>
+                        <CheckBox IsChecked="{Binding SearchOnFiles,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="根据文件名搜索" Foreground="White"/>
+                        <CheckBox IsChecked="{Binding SearchOnFolders,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="根据文件夹名搜索" Foreground="White"/>
+                        <CheckBox IsChecked="{Binding SearchByUCFiles,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="根据解压前所在压缩文件名搜索" Foreground="White"/>
+                    </StackPanel>
+                </Expander>
+                <Expander ExpandDirection="Down" Background="Gray" Grid.Row="1">
+                    <Expander.Header>
+                        <TextBlock Text="运行日志" Foreground="White" HorizontalAlignment="Center"></TextBlock>
+                    </Expander.Header>
+                    <TextBox MinHeight="500" MaxHeight="500" Grid.Row="1" VerticalAlignment="Stretch" Background="WhiteSmoke" TabIndex="5"  Foreground="Black" HorizontalAlignment="Stretch"  Text="{Binding Logs, UpdateSourceTrigger=PropertyChanged}" 
                          FontSize="12" BorderThickness="1" Margin="0,0,0,1" SnapsToDevicePixels="True"
                          Style="{StaticResource DownClearButtonTextBoxStyle}" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                </TextBox>
-                <TextBlock Grid.Row="3" FontSize="12" Text="{Binding NumDif,StringFormat=已校对文件(夹)数：{0}}"/>
+                    </TextBox>
+                </Expander>
             </Grid>
         </Grid>
         <StackPanel Background="LightGray" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
@@ -418,8 +432,13 @@
                    Grid.ColumnSpan="2"
                    HorizontalAlignment="Left"
                    Width="auto"
-                   FontSize="12"
-                   Text="{Binding NumMD5, UpdateSourceTrigger=PropertyChanged, StringFormat=总文件(夹):{0}}">
+                   FontSize="12">
+            <TextBlock.Text>
+                <MultiBinding StringFormat="校对进度:{1}/{0}">
+                    <Binding Path="NumMD5" UpdateSourceTrigger="PropertyChanged"/>
+                    <Binding Path="NumDif" UpdateSourceTrigger="PropertyChanged"/>
+                </MultiBinding>
+            </TextBlock.Text>
         </TextBlock>
         <TextBlock Grid.Column="2"
                    Grid.Row="5"
@@ -429,7 +448,7 @@
         <TextBlock Grid.Column="3"
                    Grid.Row="5"
                    FontSize="12"
-                   Text="{Binding Time, UpdateSourceTrigger=PropertyChanged,StringFormat=已花费：{0}秒}">
+                   Text="{Binding Time, UpdateSourceTrigger=PropertyChanged,StringFormat=本次用时：{0}秒}">
         </TextBlock>
     </Grid>
 </Window>

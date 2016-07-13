@@ -41,7 +41,7 @@ namespace FilesCompare.CompareHelper
             }
             catch (System.Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                throw ex;
             }
             return strResult;
         }

@@ -59,6 +59,112 @@ namespace FilesCompare.ViewModel
         #endregion
 
         #region 属性
+        #region 结果搜索
+
+        /// <summary>
+        /// 搜索应用于文件
+        /// </summary>
+        private bool _searchOnFiles;
+        /// <summary>
+        /// 获取或设置搜索应用于文件
+        /// </summary>
+        public bool SearchOnFiles
+        {
+            get
+            {
+                return _searchOnFiles;
+            }
+            set
+            {
+                if (_searchOnFiles == value)
+                {
+                    return;
+                }
+                _searchOnFiles = value;
+                RaisePropertyChanged("SearchOnFiles");
+                LoadResult(_searchPara);
+            }
+        }
+
+        /// <summary>
+        /// 搜索应用于文件夹
+        /// </summary>
+        private bool _searchOnFolders;
+        /// <summary>
+        /// 获取或设置搜索应用于文件夹
+        /// </summary>
+        public bool SearchOnFolders
+        {
+            get
+            {
+                return _searchOnFolders;
+            }
+            set
+            {
+                if (_searchOnFolders == value)
+                {
+                    return;
+                }
+                _searchOnFolders = value;
+                RaisePropertyChanged("SearchOnFolders");
+                LoadResult(_searchPara);
+            }
+        }
+
+        /// <summary>
+        /// 搜索根据压缩文件(夹)
+        /// </summary>
+        private bool _searchByUCFiles;
+        /// <summary>
+        /// 搜索根据压缩文件(夹)
+        /// </summary>
+        public bool SearchByUCFiles
+        {
+            get
+            {
+                return _searchByUCFiles;
+            }
+            set
+            {
+                if (_searchByUCFiles == value)
+                {
+                    return;
+                }
+                _searchByUCFiles = value;
+                RaisePropertyChanged("SearchOnUCFiles");
+                LoadResult(_searchPara);
+            }
+        }
+
+
+        /// <summary>
+        /// 搜索参数
+        /// </summary>
+        private string _searchPara;
+        /// <summary>
+        /// 获取或设置搜索参数
+        /// </summary>
+        public string SearchPara
+        {
+            get
+            {
+                return _searchPara;
+            }
+            set
+            {
+                if (_searchPara == value)
+                {
+                    return;
+                }
+                _searchPara = value;
+                RaisePropertyChanged("SearchPara");
+                LoadResult(_searchPara);
+            }
+        }
+
+        #endregion
+
+        #region 黑名单
         /// <summary>
         /// 黑名单是否应用于普通(非解压后)文件
         /// </summary>
@@ -156,6 +262,44 @@ namespace FilesCompare.ViewModel
         }
 
         /// <summary>
+        /// 黑名单字符串
+        /// </summary>
+        private string _ignore = string.Empty;
+        /// <summary>
+        /// 获取或设置黑名单字符串
+        /// </summary>
+        public string Ignore
+        {
+            get
+            {
+                return _ignore;
+            }
+            set
+            {
+                _ignore = value;
+                RaisePropertyChanged(() => Ignore);
+            }
+        }
+
+        private ObservableCollection<StringWraper> _ignores;
+        /// <summary>
+        /// 黑名单关键字
+        /// </summary>
+        public ObservableCollection<StringWraper> Ignores
+        {
+            get
+            {
+                return _ignores ?? (_ignores = new ObservableCollection<StringWraper>());
+            }
+            set
+            {
+                _ignores = value;
+            }
+        }
+        #endregion
+
+        #region 白名单
+        /// <summary>
         /// 白明单是否应用文件
         /// </summary>
         private bool _preferOnFiles = true;
@@ -203,6 +347,44 @@ namespace FilesCompare.ViewModel
             }
         }
 
+        /// <summary>
+        /// 白名单配置
+        /// </summary>
+        private string _prefer = string.Empty;
+        /// <summary>
+        /// 获取或设置白名单配置
+        /// </summary>
+        public string Prefer
+        {
+            get
+            {
+                return _prefer;
+            }
+            set
+            {
+                _prefer = value;
+                RaisePropertyChanged("Prefer");
+            }
+        }
+
+        private ObservableCollection<StringWraper> _prefers;
+        /// <summary>
+        /// 白名单关键字
+        /// </summary>
+        public ObservableCollection<StringWraper> Prefers
+        {
+            get
+            {
+                return _prefers ?? (_prefers = new ObservableCollection<StringWraper>());
+            }
+            set
+            {
+                _prefers = value;
+            }
+        }
+        #endregion
+
+        #region 统计数量
         /// <summary>
         /// 1比2多出数量
         /// </summary>
@@ -274,79 +456,9 @@ namespace FilesCompare.ViewModel
                 RaisePropertyChanged(() => Changed);
             }
         }
+        #endregion
 
-        /// <summary>
-        /// 仅比对配置
-        /// </summary>
-        private string _prefer = string.Empty;
-        /// <summary>
-        /// 获取或设置仅比对配置
-        /// </summary>
-        public string Prefer
-        {
-            get
-            {
-                return _prefer;
-            }
-            set
-            {
-                _prefer = value;
-                RaisePropertyChanged("Prefer");
-            }
-        }
-
-        private ObservableCollection<StringWraper> _prefers;
-        /// <summary>
-        /// 仅比对关键字
-        /// </summary>
-        public ObservableCollection<StringWraper> Prefers
-        {
-            get
-            {
-                return _prefers ?? (_prefers = new ObservableCollection<StringWraper>());
-            }
-            set
-            {
-                _prefers = value;
-            }
-        }
-
-        /// <summary>
-        /// 过滤字符串
-        /// </summary>
-        private string _ignore = string.Empty;
-        /// <summary>
-        /// 获取或设置过滤字符串
-        /// </summary>
-        public string Ignore
-        {
-            get
-            {
-                return _ignore;
-            }
-            set
-            {
-                _ignore = value;
-                RaisePropertyChanged(() => Ignore);
-            }
-        }
-
-        private ObservableCollection<StringWraper> _ignores;
-        /// <summary>
-        /// 过滤关键字
-        /// </summary>
-        public ObservableCollection<StringWraper> Ignores
-        {
-            get
-            {
-                return _ignores ?? (_ignores = new ObservableCollection<StringWraper>());
-            }
-            set
-            {
-                _ignores = value;
-            }
-        }
-
+        #region 界面显示状态属性
         /// <summary>
         /// 日志
         /// </summary>
@@ -508,7 +620,9 @@ namespace FilesCompare.ViewModel
                 this.RaisePropertyChanged(() => btnContent);
             }
         }
+        #endregion
 
+        #region 缓存
         private ObservableCollection<FNode> _fs1;
         /// <summary>
         /// 原始文件系统1，(未解压.jar.zip)
@@ -678,6 +792,7 @@ namespace FilesCompare.ViewModel
             }
         }
         #endregion
+        #endregion
 
         #region 初始化
         /// <summary>
@@ -710,11 +825,6 @@ namespace FilesCompare.ViewModel
             DragMoveCommand = new RelayCommand(DragMoveExecute);
         }
 
-        private void OpenPathExecute(object obj)
-        {
-            MessageBox.Show(obj.ToString());
-        }
-
         /// <summary>
         /// 初始数据
         /// </summary>
@@ -725,6 +835,7 @@ namespace FilesCompare.ViewModel
         #endregion
 
         #region 方法处理
+        #region 校对文件处理
         /// <summary>
         /// 是否可以开始分析
         /// </summary>
@@ -749,6 +860,7 @@ namespace FilesCompare.ViewModel
         /// </summary>
         private void InitDataForCompare()
         {
+            Log("\r\n");
             Log("日期:" + DateTime.Now.ToExtString());
             Log("目标1:" + FilePath1);
             Log("目标2:" + FilePath2);
@@ -893,26 +1005,10 @@ namespace FilesCompare.ViewModel
             Log("文件分析系统校对完毕。");
 
             //缓冲加载结果，防卡死
-            BackgroundWorker bg = new BackgroundWorker();
-            bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, a) =>
-            {
-                for (int i = 0; i < DifFiles1.Count; i++)
-                {
-                    if (i > 0 && i % 40 == 0)
-                    {
-                        Thread.Sleep(250);
-                    }
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        Result1.Add(DifFiles1[i]);
-                        Result2.Add(DifFiles2[i]);
-                    }));
-                }
-            }));
-            bg.RunWorkerCompleted += Completed;
-            bg.RunWorkerAsync();
-
+            LoadResult(SearchPara);
+#if Release
             NumDif = NumMD5;//无意义，为了使使用者安心。由于分析包含目录结构，实际校对数<=总数。(例如多出文件夹，将不比较子目录文件)
+#endif
             timer.Stop();
             Log("计时器已终止。");
             Log("结果加载中...");
@@ -930,8 +1026,8 @@ namespace FilesCompare.ViewModel
             Changed = Result1.Where(f => f.DifTag == true).Count();
             Log(string.Format(@"合计  多出:{0},缺少:{1},差异:{2}", More, Less, Changed));
             Log("结果加载完毕。");
-            Log("\r\n");
         }
+        #endregion
 
         #region 解压缩文件
         /// <summary>
@@ -957,7 +1053,7 @@ namespace FilesCompare.ViewModel
                     // 文件名:{0}
                     // 详细信息:{1}
                     ", file.FFullName, e.Message));
-                    MessageBox.Show("解压文件失败：" + file.FFullName + e.Message + e.ToString(), "提示");
+                    //MessageBox.Show("解压文件失败：" + file.FFullName + e.Message + e.ToString(), "提示");
                 }
             }
         }
@@ -1190,7 +1286,6 @@ namespace FilesCompare.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + ex.ToString());
                 Log(string.Format(@"
                 // 异常信息
                 // 校对时出现异常
@@ -1201,6 +1296,56 @@ namespace FilesCompare.ViewModel
 
         }
 
+        #endregion
+
+        #region 搜索结果
+        public void LoadResult(string searchPara)
+        {
+            BackgroundWorker bg = new BackgroundWorker();
+            bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, a) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    Result1.Clear();
+                    Result2.Clear();
+                }));
+
+                //默认搜索字符串为空，全部加载
+                if (string.IsNullOrEmpty(searchPara))
+                {
+                    for (int i = 0; i < DifFiles1.Count; i++)
+                    {
+                        if (i > 0 && i % 500 == 0)
+                        {
+                            Thread.Sleep(100);
+                        }
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            Result1.Add(DifFiles1[i]);
+                            Result2.Add(DifFiles2[i]);
+                        }));
+                    }
+                }
+                else//有搜索字符时执行搜索过滤
+                {
+                    for (int i = 0; i < DifFiles1.Count; i++)
+                    {
+                        if ((SearchOnFiles == true && (DifFiles1[i].FName.Contains(searchPara) || DifFiles2[i].FName.Contains(searchPara)))
+                            || (SearchOnFolders == true && (DifFiles1[i].FFullName.Contains(searchPara) || DifFiles2[i].FFullName.Contains(searchPara)))
+                            || (SearchByUCFiles == true && (DifFiles1[i].JarParentName.Contains(searchPara) || DifFiles2[i].JarParentName.Contains(searchPara))))
+                        {
+                            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                            {
+                                Result1.Add(DifFiles1[i]);
+                                Result2.Add(DifFiles2[i]);
+                            }));
+                        }
+                    }
+                }
+            }));
+            bg.RunWorkerCompleted += Completed;
+            bg.RunWorkerAsync();
+        }
         #endregion
 
         #region 日志，计时
@@ -1240,19 +1385,29 @@ namespace FilesCompare.ViewModel
                 string ignoreOnUCFolders = GetValue("黑名单-包含解压缩后文件夹");
                 string preferOnFiles = GetValue("白名单-包含文件");
                 string preferOnUCFiles = GetValue("白名单-包含解压缩后文件");
+                string searchOnFiles = GetValue("搜索参数-根据文件名搜索");
+                string searchOnFolders = GetValue("搜索参数-根据文件夹名搜索");
+                string searchByUCFiles = GetValue("搜索参数-根据压缩文件名搜索");
+
                 Ignore = GetValue("黑名单");
                 Prefer = GetValue("白名单");
                 FilePath1 = GetValue("目标1");
                 FilePath2 = GetValue("目标2");
+                SearchPara = GetValue("搜索参数-搜索符");
                 Logs = GetValue("日志").Replace("#^#", "\r\n");
                 ConfigToDataGrid();
+
                 IgnoreOnFiles = string.IsNullOrEmpty(ignoreOnFiles) ? true : bool.Parse(ignoreOnFiles);
                 PreferOnFiles = string.IsNullOrEmpty(preferOnFiles) ? true : bool.Parse(preferOnFiles);
+                SearchOnFiles = string.IsNullOrEmpty(searchOnFiles) ? true : bool.Parse(searchOnFiles);
+                SearchByUCFiles = string.IsNullOrEmpty(searchByUCFiles) ? true : bool.Parse(searchByUCFiles);
+
                 TEMPNUMBER = Convert.ToInt32(tempLever);
                 IgnoreOnFolders = bool.Parse(ignoreOnFolders);
                 IgnoreOnUCFiles = bool.Parse(ignoreOnUCFiles);
                 IgnoreOnUCFolders = bool.Parse(ignoreOnUCFolders);
                 PreferOnUCFiles = bool.Parse(preferOnUCFiles);
+                SearchOnFolders = bool.Parse(searchOnFolders);
             }
             catch (Exception ex)
             {
@@ -1283,6 +1438,10 @@ namespace FilesCompare.ViewModel
             SetValue("白名单-包含解压缩后文件", PreferOnUCFiles.ToString());
             SetValue("目标1", FilePath1);
             SetValue("目标2", FilePath2);
+            SetValue("搜索参数-搜索符", SearchPara);
+            SetValue("搜索参数-根据文件名搜索", SearchOnFiles.ToString());
+            SetValue("搜索参数-根据文件夹名搜索", SearchOnFolders.ToString());
+            SetValue("搜索参数-根据压缩文件名搜索", SearchByUCFiles.ToString());
             SetValue("日志", Logs.Replace("\r\n", "#^#"));
         }
 
