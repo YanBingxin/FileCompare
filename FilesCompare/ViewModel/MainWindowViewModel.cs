@@ -1003,7 +1003,8 @@ namespace FilesCompare.ViewModel
         private void SecondCompareCompeleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Log("文件分析系统校对完毕。");
-
+            //由于白名单无法对文件夹过滤，导致结果出现部分文件夹级结果，若白名单应用，则过滤掉结果中的文件夹
+            CheckResFolders(PreferOnFiles, PreferOnUCFiles);
             //缓冲加载结果，防卡死
             LoadResult(SearchPara, true);
 #if Release
@@ -1012,6 +1013,34 @@ namespace FilesCompare.ViewModel
             timer.Stop();
             Log("计时器已终止。");
             Log("结果加载中...");
+        }
+        /// <summary>
+        /// 过滤结果中不适用白名单的文件结果
+        /// </summary>
+        /// <param name="PreferOnFiles"></param>
+        /// <param name="PreferOnUCFiles"></param>
+        private void CheckResFolders(bool PreferOnFiles, bool PreferOnUCFiles)
+        {
+            if (PreferOnFiles && Prefers.Count > 0)//过滤普通文件结果
+            {
+                for (int i = 0; i < DifFiles1.Count; i++)
+                {
+                    if (DifFiles1[i].IsFile == false || DifFiles2[i].IsFile == false && (DifFiles1[i].JarParentName == string.Empty && DifFiles2[i].JarParentName == string.Empty))
+                    {
+                        DifFiles1[i] = DifFiles2[i] = new FNode() { IsFile = null };
+                    }
+                }
+            }
+            if (PreferOnUCFiles && Prefers.Count > 0)
+            {
+                for (int i = 0; i < DifFiles1.Count; i++)
+                {
+                    if (DifFiles1[i].IsFile == false || DifFiles2[i].IsFile == false && (DifFiles1[i].JarParentName != string.Empty && DifFiles2[i].JarParentName != string.Empty))
+                    {
+                        DifFiles1[i] = DifFiles2[i] = new FNode() { IsFile = null };
+                    }
+                }
+            }
         }
 
         #endregion
@@ -1056,7 +1085,7 @@ namespace FilesCompare.ViewModel
         {
             foreach (var key in Ignores)
             {
-                if (fname.Contains(key.Value))
+                if (!string.IsNullOrEmpty(key.Value) && fname.Contains(key.Value))
                     return true;
             }
             return false;
@@ -1074,7 +1103,7 @@ namespace FilesCompare.ViewModel
             }
             foreach (var key in Prefers)
             {
-                if (fname.Contains(key.Value))
+                if (!string.IsNullOrEmpty(key.Value) && fname.Contains(key.Value))
                     return true;
             }
             return false;
@@ -1094,7 +1123,7 @@ namespace FilesCompare.ViewModel
             try
             {
                 tempList = new ObservableCollection<FNode>((from f in Directory.GetFiles(pathName)
-                                                            where (IgnoreOnFiles == false || IsIgnore(f.Replace(pathName + "\\", "")) == false) && (PreferOnFiles == false || IsPrefer(f.Replace(pathName + "\\", "")))
+                                                            where (IgnoreOnFiles == false || IsIgnore(f) == false) && (PreferOnFiles == false || IsPrefer(f))
                                                             select new FNode()
                                                             {
                                                                 FFullName = f,
@@ -1162,7 +1191,7 @@ namespace FilesCompare.ViewModel
             try
             {
                 tempList = new ObservableCollection<FNode>((from f in Directory.GetFiles(pathName)
-                                                            where (IgnoreOnUCFiles == false || IsIgnore(f.Replace(pathName + "\\", "")) == false) && (PreferOnUCFiles == false || IsPrefer(f.Replace(pathName + "\\", "")))//对解压后文件根据配置应用黑名单和白名单校验
+                                                            where (IgnoreOnUCFiles == false || IsIgnore(f) == false) && (PreferOnUCFiles == false || IsPrefer(f))//对解压后文件根据配置应用黑名单和白名单校验
                                                             select new FNode()
                                                             {
                                                                 FFullName = f,
@@ -1170,7 +1199,7 @@ namespace FilesCompare.ViewModel
                                                                 JarParentName = jarName,
                                                                 IsFile = true
                                                             }).Concat(from d in Directory.GetDirectories(pathName)
-                                                                      where IgnoreOnUCFolders == false || IsIgnore(d.Replace(pathName + "\\", "")) == false
+                                                                      where IgnoreOnUCFolders == false || IsIgnore(d) == false
                                                                       select new FNode()
                                                                       {
                                                                           FFullName = d,
@@ -1307,6 +1336,10 @@ namespace FilesCompare.ViewModel
 
                     for (int i = 0; i < DifFiles1.Count; i++)
                     {
+                        if (DifFiles1[i].FName == string.Empty && DifFiles2[i].FName == string.Empty)
+                        {
+                            continue;
+                        }
                         if (i > 0 && i % 500 == 0)
                         {
                             Thread.Sleep(100);
@@ -1330,6 +1363,10 @@ namespace FilesCompare.ViewModel
 
                         for (int i = 0; i < DifFiles1.Count; i++)
                         {
+                            if (DifFiles1[i].FName == string.Empty && DifFiles2[i].FName == string.Empty)
+                            {
+                                continue;
+                            }
                             if (string.IsNullOrEmpty(searchPara)
                                 || (SearchOnFiles == true && (DifFiles1[i].FName.Contains(searchPara) || DifFiles2[i].FName.Contains(searchPara)))
                                 || (SearchOnFolders == true && (DifFiles1[i].FFullName.Contains(searchPara) || DifFiles2[i].FFullName.Contains(searchPara)))
