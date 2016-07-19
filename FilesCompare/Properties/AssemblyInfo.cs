@@ -7,13 +7,13 @@ using System.Windows;
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("FilesCompare")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("文件校对工具")]
+[assembly: AssemblyDescription("对文件夹级校对文件差异的工具")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("FilesCompare")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2016")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany("颜家大饼")]
+[assembly: AssemblyProduct("文件校对工具")]
+[assembly: AssemblyCopyright("Copyright © 颜家大饼 2016")]
+[assembly: AssemblyTrademark("暂无")]
 [assembly: AssemblyCulture("")]
 
 // 将 ComVisible 设置为 false 使此程序集中的类型

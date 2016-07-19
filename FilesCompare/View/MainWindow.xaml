@@ -114,7 +114,7 @@
                 <Border BorderBrush="Black" BorderThickness="0.55" Background="White">
                     <StackPanel Background="White" Orientation="Vertical" Margin="5">
                         <TextBlock Background="DimGray" Foreground="White" Text="设置黑名单" HorizontalAlignment="Stretch" TextAlignment="Center"/>
-                        <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:包含黑名单列表中字符串的文件将不做校对!" TextWrapping="Wrap"/>
+                        <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:&#13;        若文件(全路径名)包含黑名单列表中关键字&#13;则该文件将不做校对!" TextWrapping="Wrap"/>
                         <DataGrid MinHeight="100" ItemsSource="{Binding Ignores, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="文件名" Width="200" Binding="{Binding Value}"></DataGridTextColumn>
@@ -134,7 +134,7 @@
                 <Border BorderBrush="Black" BorderThickness="0.55" Background="White">
                     <StackPanel Background="White" Orientation="Vertical" Margin="5">
                         <TextBlock Background="DimGray" Foreground="White" Text="设置白名单" HorizontalAlignment="Stretch" TextAlignment="Center"/>
-                        <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:当白名单列表不为空且应用于文件时,&#13;将仅比对包含白名单中字符串的文件!" TextWrapping="Wrap"/>
+                        <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:&#13;       仅在文件(全路径名)包含白名单列表中关键字时,&#13;才会对该文件进行比对！" TextWrapping="Wrap"/>
                         <DataGrid MinHeight="100" ItemsSource="{Binding Prefers, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="文件名" Width="200" Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></DataGridTextColumn>
