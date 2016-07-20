@@ -101,10 +101,12 @@
     <Compile Include="CompareHelper\DiffHelper.cs" />
     <Compile Include="CompareHelper\MD5Helper.cs" />
     <Compile Include="CompareHelper\UnCompressHelper.cs" />
+    <Compile Include="CompareHelper\ZipHelper.cs" />
     <Compile Include="Converter\JarNameConverter.cs" />
     <Compile Include="Converter\PathConverter.cs" />
     <Compile Include="Model\FNode.cs" />
     <Compile Include="Style\PopubEx.cs" />
+    <Compile Include="Style\SelectableTextBlock.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Model\StringWraper.cs" />
     <Compile Include="View\WinWait.xaml.cs">

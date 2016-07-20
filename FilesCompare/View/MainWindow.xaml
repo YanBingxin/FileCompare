@@ -107,7 +107,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" Grid.Row="0" Text="黑名单:" FontFamily="幼圆"/>
+            <TextBlock Grid.Column="0" Grid.Row="0" Text="黑名单※" FontFamily="幼圆"/>
             <TextBox Button.Click="TextBox_Click_Ignore" IsReadOnly="True"  Grid.Row="0" TabIndex="0" Grid.Column="1" ToolTip="以'|'号分隔" Text="{Binding Ignore, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}">
             </TextBox>
             <ctrl:PopubEx x:Name="pupIgnore" Placement="Mouse" PopupAnimation="Scroll" Grid.Row="0" Grid.Column="1" SnapsToDevicePixels="True">
@@ -117,7 +117,7 @@
                         <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:&#13;        若文件(全路径名)包含黑名单列表中关键字&#13;则该文件将不做校对!" TextWrapping="Wrap"/>
                         <DataGrid MinHeight="100" ItemsSource="{Binding Ignores, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="文件名" Width="200" Binding="{Binding Value}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="文件名/关键字" Width="200" Binding="{Binding Value}"></DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                         <CheckBox Content="应用于文件" IsChecked="{Binding IgnoreOnFiles, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,2"/>
@@ -128,7 +128,7 @@
                     </StackPanel>
                 </Border>
             </ctrl:PopubEx>
-            <TextBlock Grid.Column="2" Grid.Row="0" Text="白名单:" FontFamily="幼圆"/>
+            <TextBlock Grid.Column="2" Grid.Row="0" Text="白名单√" FontFamily="幼圆"/>
             <TextBox Grid.Row="0" IsReadOnly="True" Button.Click="TextBox_Click_Prefer"  TabIndex="1" Grid.Column="3" ToolTip="以'|'号分隔" Text="{Binding Prefer, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
             <ctrl:PopubEx x:Name="pupPrefer" Placement="Mouse" PopupAnimation="Scroll" Grid.Row="0" Grid.Column="1" SnapsToDevicePixels="True">
                 <Border BorderBrush="Black" BorderThickness="0.55" Background="White">
@@ -137,7 +137,7 @@
                         <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:&#13;       仅在文件(全路径名)包含白名单列表中关键字时,&#13;才会对该文件进行比对！" TextWrapping="Wrap"/>
                         <DataGrid MinHeight="100" ItemsSource="{Binding Prefers, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="文件名" Width="200" Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="文件名/关键字" Width="200" Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                         <CheckBox Content="应用于文件" IsChecked="{Binding PreferOnFiles, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,2"/>
@@ -236,7 +236,7 @@
                             </ItemsPanelTemplate>
                         </DataGrid.ItemsPanel>
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="操作">
+                            <DataGridTemplateColumn Header="打开位置">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Vertical">
@@ -258,17 +258,17 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
-                                            <TextBlock FontFamily="Italic" VerticalAlignment="Center" Foreground="#FFD7AB69" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}">
-                                                <TextBlock.Text>
+                                            <ctrl:SelectableTextBlock FontFamily="Italic" VerticalAlignment="Center" Foreground="#FFD7AB69" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}">
+                                                <ctrl:SelectableTextBlock.Text>
                                                     <MultiBinding Converter="{StaticResource JarNameConverter}">
                                                         <Binding Path="DataContext.FilePath1" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
                                                         <Binding Path="JarParentName"/>
                                                         <Binding Path="FFullName"/>
                                                         <Binding Path="FName"/>
                                                     </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                            <TextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FName}" ToolTip="{Binding FFullName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                                </ctrl:SelectableTextBlock.Text>
+                                            </ctrl:SelectableTextBlock>
+                                            <ctrl:SelectableTextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FName}" ToolTip="{Binding FFullName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                                         </StackPanel>
                                         <DataTemplate.Triggers>
                                             <DataTrigger Binding="{Binding DifTag}" Value="True">
@@ -312,7 +312,7 @@
                             </ItemsPanelTemplate>
                         </DataGrid.ItemsPanel>
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="操作">
+                            <DataGridTemplateColumn Header="打开位置">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Vertical">
@@ -337,17 +337,17 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
-                                            <TextBlock FontFamily="Italic" VerticalAlignment="Center" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Foreground="#FFD7AB69">
-                                                <TextBlock.Text>
+                                            <ctrl:SelectableTextBlock FontFamily="Italic" VerticalAlignment="Center" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Foreground="#FFD7AB69">
+                                                <ctrl:SelectableTextBlock.Text>
                                                     <MultiBinding Converter="{StaticResource JarNameConverter}">
                                                         <Binding Path="DataContext.FilePath2" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
                                                         <Binding Path="JarParentName"/>
                                                         <Binding Path="FFullName"/>
                                                         <Binding Path="FName"/>
                                                     </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                            <TextBlock x:Name="txtFile" ToolTip="{Binding FFullName}" Foreground="Black" Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                                </ctrl:SelectableTextBlock.Text>
+                                            </ctrl:SelectableTextBlock>
+                                            <ctrl:SelectableTextBlock x:Name="txtFile" ToolTip="{Binding FFullName}" Foreground="Black" Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                                         </StackPanel>
                                         <DataTemplate.Triggers>
                                             <DataTrigger Binding="{Binding DifTag}" Value="True">
@@ -392,8 +392,9 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Expander ExpandDirection="Down" Background="Gray" Grid.Row="0">
+                <Expander ExpandDirection="Down" Background="Gray" Grid.Row="1">
                     <Expander.Header>
                         <TextBlock Text="结果搜索" Foreground="White" HorizontalAlignment="Center"></TextBlock>
                     </Expander.Header>
@@ -407,7 +408,7 @@
                         <CheckBox IsChecked="{Binding SearchByUCFiles,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="根据解压前所在压缩文件名搜索" Foreground="White"/>
                     </StackPanel>
                 </Expander>
-                <Expander ExpandDirection="Down" Background="Gray" Grid.Row="1">
+                <Expander ExpandDirection="Down" Background="Gray" Grid.Row="2">
                     <Expander.Header>
                         <TextBlock Text="运行日志" Foreground="White" HorizontalAlignment="Center"></TextBlock>
                     </Expander.Header>
@@ -415,6 +416,15 @@
                          FontSize="12" BorderThickness="1" Margin="0,0,0,1" SnapsToDevicePixels="True"
                          Style="{StaticResource DownClearButtonTextBoxStyle}" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     </TextBox>
+                </Expander>
+                <Expander ExpandDirection="Down" Background="Gray" Grid.Row="0">
+                    <Expander.Header>
+                        <TextBlock Text="导入导出" Foreground="White" HorizontalAlignment="Center"></TextBlock>
+                    </Expander.Header>
+                    <StackPanel Orientation="Vertical">
+                        <Button FontSize="13" Command="{Binding ImportCommand}" Content="导入分析结果←" Margin="2" Style="{StaticResource  BaseButtonStyle}"></Button>
+                        <Button FontSize="13" Command="{Binding ExportCommand}" Content="导出分析结果→"  Style="{StaticResource  BaseButtonStyle}"></Button>
+                    </StackPanel>
                 </Expander>
             </Grid>
         </Grid>

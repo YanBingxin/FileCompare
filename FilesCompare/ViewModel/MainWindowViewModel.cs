@@ -41,6 +41,14 @@ namespace FilesCompare.ViewModel
         /// 拖动命令
         /// </summary>
         public ICommand DragMoveCommand { get; set; }
+        /// <summary>
+        /// 导出命令
+        /// </summary>
+        public ICommand ExportCommand { set; get; }
+        /// <summary>
+        /// 导入命令
+        /// </summary>
+        public ICommand ImportCommand { set; get; }
         #endregion
 
         #region 字段
@@ -823,6 +831,8 @@ namespace FilesCompare.ViewModel
             MaxCommand = new RelayCommand(MaxWindowExecute);
             CloseCommand = new RelayCommand(CloseExecute);
             DragMoveCommand = new RelayCommand(DragMoveExecute);
+            ExportCommand = new RelayCommand(ExportExecute);
+            ImportCommand = new RelayCommand(ImportExecute);
         }
 
         /// <summary>
@@ -1570,6 +1580,28 @@ namespace FilesCompare.ViewModel
         private void SetValue(string key, string value)
         {
             CommonMethod.Write("立思辰文件比对工具2.0--by ybx", key, value, Environment.CurrentDirectory + @"\Compare.cfg");
+        }
+        #endregion
+
+        #region 导入导出
+        /// <summary>
+        /// 导出分析结果
+        /// </summary>
+        /// <param name="obj"></param>
+        private void ExportExecute(object obj)
+        {
+            using (ZipHelper zh = new ZipHelper(FilePath2))
+            {
+                zh.ZipFolder(@"C:\Users\Dell\Desktop\xxx.zip");
+            }
+        }
+        /// <summary>
+        /// 导入分析结果
+        /// </summary>
+        /// <param name="obj"></param>
+        private void ImportExecute(object obj)
+        {
+
         }
         #endregion
         #endregion
