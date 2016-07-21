@@ -13,6 +13,10 @@ namespace FilesCompare.CompareHelper
         /// 源文件夹路径
         /// </summary>
         public string SourceFolderPath { set; get; }
+        /// <summary>
+        /// 异常日志
+        /// </summary>
+        public string ExceptionLog { set; get; }
 
         public ZipHelper(string path)
         {
@@ -41,15 +45,22 @@ namespace FilesCompare.CompareHelper
         {
             foreach (FileInfo fi in di.GetFiles())
             {
-                string relativePath = fi.FullName.Replace(SourceFolderPath, string.Empty);
-                relativePath = relativePath.Replace("\\", "/");
-
-                Uri uri = new Uri(relativePath, UriKind.Relative);
-                PackagePart part = package.CreatePart(uri, System.Net.Mime.MediaTypeNames.Application.Zip);
-
-                using (FileStream fs = fi.OpenRead())
+                try
                 {
-                    CopyStream(fs, part.GetStream());
+                    string relativePath = fi.FullName.Replace(SourceFolderPath, string.Empty);
+                    relativePath = relativePath.Replace("\\", "/");
+
+                    Uri uri = new Uri(relativePath, UriKind.Relative);
+                    PackagePart part = package.CreatePart(uri, System.Net.Mime.MediaTypeNames.Application.Zip);
+
+                    using (FileStream fs = fi.OpenRead())
+                    {
+                        CopyStream(fs, part.GetStream());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ExceptionLog += "文件名:" + fi.Name + "详细:" + ex.Message;
                 }
             }
 
@@ -74,8 +85,31 @@ namespace FilesCompare.CompareHelper
 
         public void Dispose()
         {
-            this.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!m_disposed)
+            {
+                if (disposing)
+                {
+                    // Release managed resources
+                }
+
+                // Release unmanaged resources
+
+                m_disposed = true;
+            }
+        }
+
+        ~ZipHelper()
+        {
+            Dispose(false);
+        }
+
+        private bool m_disposed;
 
         #endregion
     }

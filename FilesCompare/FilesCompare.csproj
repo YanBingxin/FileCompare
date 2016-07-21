@@ -98,7 +98,9 @@
     <Compile Include="Common\Particle.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\TextBoxHelper.cs" />
+    <Compile Include="CompareHelper\CopyFileWithDir.cs" />
     <Compile Include="CompareHelper\DiffHelper.cs" />
+    <Compile Include="CompareHelper\FileTypeRelative.cs" />
     <Compile Include="CompareHelper\MD5Helper.cs" />
     <Compile Include="CompareHelper\UnCompressHelper.cs" />
     <Compile Include="CompareHelper\ZipHelper.cs" />

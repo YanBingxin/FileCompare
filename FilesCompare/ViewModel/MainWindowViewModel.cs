@@ -67,6 +67,14 @@ namespace FilesCompare.ViewModel
         #endregion
 
         #region 属性
+        public string ExportPath
+        {
+            get
+            {
+                return "Export\\" + TEMPNUMBER.ToString() + "\\";
+            }
+        }
+
         #region 结果搜索
 
         /// <summary>
@@ -1590,9 +1598,42 @@ namespace FilesCompare.ViewModel
         /// <param name="obj"></param>
         private void ExportExecute(object obj)
         {
-            using (ZipHelper zh = new ZipHelper(FilePath2))
+            //复制到导出文件夹
+            Parallel.Invoke(delegate { CopyResults(Result1, FilePath1, 1); }, delegate { CopyResults(Result2, FilePath2, 2); });
+            //using (ZipHelper zh = new ZipHelper(FilePath2))
+            //{
+            //    zh.ZipFolder(@"C:\Users\Dell\Desktop\xxx.zip");
+            //    MessageBox.Show(zh.ExceptionLog);
+            //}
+        }
+
+        private void CopyResults(ObservableCollection<FNode> collection, string rootPath, int id)
+        {
+            if (string.IsNullOrEmpty(rootPath))
+                return;
+
+            string originName = Path.GetFileName(rootPath);
+            string targetPath = Directory.GetCurrentDirectory() + "\\" + ExportPath + id + "\\" + originName;
+
+            foreach (var fd in collection)
             {
-                zh.ZipFolder(@"C:\Users\Dell\Desktop\xxx.zip");
+                if (string.IsNullOrEmpty(fd.FFullName))
+                    continue;
+                //普通文件
+                if (string.IsNullOrEmpty(fd.JarParentName))
+                {
+                    if (fd.IsFile == true)
+                        CopyFileWithDir.CopyFile(fd.FFullName, rootPath, targetPath);
+                    if (fd.IsFile == false)
+                        CopyFileWithDir.CopyFolder(fd.FFullName, rootPath, targetPath);
+                }
+                else//压缩解压后文件
+                {
+                    //if (fd.IsFile == true)
+                    //    CopyFileWithDir.CopyFile(fd.FFullName, rootPath, Directory.GetCurrentDirectory() + "\\" + ExportPath);
+                    //if (fd.IsFile == false)
+                    //    CopyFileWithDir.CopyFolder(fd.FFullName, rootPath, Directory.GetCurrentDirectory() + "\\" + ExportPath);
+                }
             }
         }
         /// <summary>
@@ -1653,6 +1694,7 @@ namespace FilesCompare.ViewModel
                 {
                     DirectoryInfo dir1 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp1");
                     DirectoryInfo dir2 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp2");
+                    DirectoryInfo dir3 = new DirectoryInfo(Environment.CurrentDirectory + @"/Export"); 
                     if (Directory.Exists("Temp1"))
                     {
                         dir1.Delete(true);
@@ -1660,6 +1702,10 @@ namespace FilesCompare.ViewModel
                     if (Directory.Exists("Temp2"))
                     {
                         dir2.Delete(true);
+                    }
+                    if (Directory.Exists("Export"))
+                    {
+                        dir3.Delete(true);
                     }
                 }
                 catch (Exception)
