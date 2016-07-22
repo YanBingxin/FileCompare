@@ -24,7 +24,7 @@ namespace FilesCompare.CompareHelper
             string newf2FullName = f2.FFullName.Replace(f2.FName, "");//java文件2全路径
 
             //反编译.class文件为.java文件
-            if (f1.FFullName.Contains(".class") && f2.FFullName.Contains(".class"))
+            if (f1.FFullName.EndsWith(".class") && f2.FFullName.EndsWith(".class"))
             {
                 cmd += diskName;
                 cmd += "&cd " + curRunPath;

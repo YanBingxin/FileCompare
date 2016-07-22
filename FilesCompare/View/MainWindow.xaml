@@ -404,7 +404,7 @@
                             <TextBox Margin="1" Text="{Binding SearchPara,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" FontSize="14" Style="{StaticResource  ClearButtonTextBoxStyle}" VerticalAlignment="Stretch" Height="25" MinWidth="100" />
                         </DockPanel>
                         <CheckBox IsChecked="{Binding SearchOnFiles,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="根据文件名搜索" Foreground="White"/>
-                        <CheckBox IsChecked="{Binding SearchOnFolders,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="根据文件夹名搜索" Foreground="White"/>
+                        <CheckBox IsChecked="{Binding SearchOnFolders,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="根据文件全路径名搜索" Foreground="White"/>
                         <CheckBox IsChecked="{Binding SearchByUCFiles,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="根据解压前所在压缩文件名搜索" Foreground="White"/>
                     </StackPanel>
                 </Expander>

@@ -1185,7 +1185,7 @@ namespace FilesCompare.ViewModel
             foreach (var node in collection)
             {
                 FNode foder = new FNode();
-                foder.FFullName = node.FFullName.Replace(".jar", "").Replace(".zip", "").Replace(rootName, Environment.CurrentDirectory + "/" + location + "/" + TEMPNUMBER.ToString());//解压缩节点目录全名
+                foder.FFullName = node.FFullName.Replace(".jar", "").Replace(".zip", "").Replace(rootName, Environment.CurrentDirectory + "\\" + location + "\\" + TEMPNUMBER.ToString());//解压缩节点目录全名
                 foder.FName = node.FName.Replace(".jar", "").Replace(".zip", "");//解压缩节点目录名
                 foder.Child = LoadFiles(foder.FFullName, node.FFullName);//获取子目录文件(夹)
                 tempList.Add(foder);
@@ -1301,7 +1301,7 @@ namespace FilesCompare.ViewModel
                     //变更为“修改”差异标识
                     item.f1.DifTag = item.f2.DifTag = true;
                     //将改变的jar，zip文件捕获，后续解压缩二次比较
-                    if (item.f1.FFullName.Contains(".zip") || item.f1.FFullName.Contains(".jar"))
+                    if (item.f1.FFullName.EndsWith(".zip") || item.f1.FFullName.EndsWith(".jar"))
                     {
                         ZipFiles1.Add(item.f1);
                         ZipFiles2.Add(item.f2);
@@ -1599,15 +1599,15 @@ namespace FilesCompare.ViewModel
         private void ExportExecute(object obj)
         {
             //复制到导出文件夹
-            Parallel.Invoke(delegate { CopyResults(Result1, FilePath1, 1); }, delegate { CopyResults(Result2, FilePath2, 2); });
-            //using (ZipHelper zh = new ZipHelper(FilePath2))
+            Parallel.Invoke(delegate { CopyResults(Result1, FilePath1, "新"); }, delegate { CopyResults(Result2, FilePath2, "旧"); });
+            //using (ZipHelper zh = new ZipHelper(Directory.GetCurrentDirectory() + "\\" + ExportPath))
             //{
             //    zh.ZipFolder(@"C:\Users\Dell\Desktop\xxx.zip");
             //    MessageBox.Show(zh.ExceptionLog);
             //}
         }
 
-        private void CopyResults(ObservableCollection<FNode> collection, string rootPath, int id)
+        private void CopyResults(ObservableCollection<FNode> collection, string rootPath, string id)
         {
             if (string.IsNullOrEmpty(rootPath))
                 return;
@@ -1629,10 +1629,10 @@ namespace FilesCompare.ViewModel
                 }
                 else//压缩解压后文件
                 {
-                    //if (fd.IsFile == true)
-                    //    CopyFileWithDir.CopyFile(fd.FFullName, rootPath, Directory.GetCurrentDirectory() + "\\" + ExportPath);
-                    //if (fd.IsFile == false)
-                    //    CopyFileWithDir.CopyFolder(fd.FFullName, rootPath, Directory.GetCurrentDirectory() + "\\" + ExportPath);
+                    if (fd.IsFile == true)
+                        CopyFileWithDir.CopyFile(fd.FFullName, fd.JarParentName.Replace(rootPath + "\\", ""), targetPath, true);
+                    if (fd.IsFile == false)
+                        CopyFileWithDir.CopyFolder(fd.FFullName, fd.JarParentName.Replace(rootPath + "\\", ""), targetPath, true);
                 }
             }
         }
@@ -1694,7 +1694,7 @@ namespace FilesCompare.ViewModel
                 {
                     DirectoryInfo dir1 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp1");
                     DirectoryInfo dir2 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp2");
-                    DirectoryInfo dir3 = new DirectoryInfo(Environment.CurrentDirectory + @"/Export"); 
+                    DirectoryInfo dir3 = new DirectoryInfo(Environment.CurrentDirectory + @"/Export");
                     if (Directory.Exists("Temp1"))
                     {
                         dir1.Delete(true);

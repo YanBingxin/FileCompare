@@ -13,7 +13,7 @@ namespace FilesCompare.CompareHelper
         /// </summary>
         /// <param name="strFullName"></param>
         /// <param name="strToPath"></param>
-        public static void CopyFile(string strFullName, string directory, string strToPath)
+        public static void CopyFile(string strFullName, string directory, string strToPath, bool isZip = false)
         {
             if (!directory.EndsWith("\\"))
             {
@@ -25,9 +25,21 @@ namespace FilesCompare.CompareHelper
             }
 
             string fileName = Path.GetFileName(strFullName);
+            string folderName = string.Empty;
+
             //取得要拷贝的文件夹名
-            string folderName = strFullName.Substring(strFullName.IndexOf(directory) + directory.Length);
-            folderName = folderName.Substring(0, folderName.Length - fileName.Length);
+            if (isZip)
+            {
+                folderName = directory;
+                string noZipFolderName = folderName.Replace(".jar", "").Replace(".zip", "");
+                folderName += strFullName.Substring(strFullName.IndexOf(noZipFolderName) + noZipFolderName.Length);
+                folderName = folderName.Substring(0, folderName.Length - fileName.Length);
+            }
+            else
+            {
+                folderName = strFullName.Substring(strFullName.IndexOf(directory) + directory.Length);
+                folderName = folderName.Substring(0, folderName.Length - fileName.Length);
+            }
 
             //如果源文件夹不存在，则创建
             if (!Directory.Exists(strToPath + folderName))
@@ -43,7 +55,7 @@ namespace FilesCompare.CompareHelper
         /// </summary>
         /// <param name="strFromPath"></param>
         /// <param name="strToPath"></param>
-        public static void CopyFolder(string strFullName, string directory, string strToPath)
+        public static void CopyFolder(string strFullName, string directory, string strToPath, bool isZip = false)
         {
             if (!directory.EndsWith("\\"))
                 directory += "\\";
@@ -51,9 +63,20 @@ namespace FilesCompare.CompareHelper
                 strToPath += "\\";
             //取得要拷贝的目录名
             string dirName = Path.GetFileName(strFullName);
+            string folderName = string.Empty;
             //取得要拷贝的父层文件夹名
-            string folderName = strFullName.Substring(strFullName.IndexOf(directory) + directory.Length);
-            folderName = folderName.Substring(0, folderName.Length - dirName.Length);
+            if (isZip)
+            {
+                folderName = directory;
+                string noZipFolderName = folderName.Replace(".jar", "").Replace(".zip", "");
+                folderName += strFullName.Substring(strFullName.IndexOf(noZipFolderName) + noZipFolderName.Length);
+                folderName = folderName.Substring(0, folderName.Length - dirName.Length);
+            }
+            else
+            {
+                folderName = strFullName.Substring(strFullName.IndexOf(directory) + directory.Length);
+                folderName = folderName.Substring(0, folderName.Length - dirName.Length);
+            }
 
             //如果文件夹不存在，则创建
             if (!Directory.Exists(strToPath + folderName + dirName))
@@ -64,11 +87,11 @@ namespace FilesCompare.CompareHelper
             //开始拷贝文件,true表示覆盖同名文件
             foreach (string file in Directory.GetFiles(strFullName))
             {
-                CopyFile(file, directory, strToPath);
+                CopyFile(file, directory, strToPath, isZip);
             }
             foreach (string folder in Directory.GetDirectories(strFullName))
             {
-                CopyFolder(folder, directory, strToPath);
+                CopyFolder(folder, directory, strToPath, isZip);
             }
         }
     }
