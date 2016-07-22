@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 
 namespace FilesCompare.CompareHelper
 {
@@ -15,6 +16,7 @@ namespace FilesCompare.CompareHelper
         /// <param name="strToPath"></param>
         public static void CopyFile(string strFullName, string directory, string strToPath, bool isZip = false)
         {
+            string exLog = string.Empty;//异常日志
             if (!directory.EndsWith("\\"))
             {
                 directory += "\\";
@@ -47,8 +49,18 @@ namespace FilesCompare.CompareHelper
                 Directory.CreateDirectory(strToPath + folderName);
             }
 
-            //开始拷贝文件,true表示覆盖同名文件
-            File.Copy(strFullName, strToPath + folderName + fileName, true);
+            try
+            {
+                //开始拷贝文件,true表示覆盖同名文件
+                File.Copy(strFullName, strToPath + folderName + fileName, true);
+            }
+            catch (Exception ex)
+            {
+                exLog += ex.Message + "-文件名:" + strFullName + "\r\n";
+            }
+            if (string.IsNullOrEmpty(exLog))
+                return;
+            MessageBox.Show(exLog);
         }
         /// <summary>
         /// 拷贝文件夹

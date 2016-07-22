@@ -15,6 +15,8 @@ using System.IO;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using FilesCompare.View;
 
 namespace FilesCompare.ViewModel
 {
@@ -71,7 +73,7 @@ namespace FilesCompare.ViewModel
         {
             get
             {
-                return "Export\\" + TEMPNUMBER.ToString() + "\\";
+                return Directory.GetCurrentDirectory() + "\\" + "Export\\" + TEMPNUMBER.ToString() + "\\";
             }
         }
 
@@ -1031,6 +1033,9 @@ namespace FilesCompare.ViewModel
             timer.Stop();
             Log("计时器已终止。");
             Log("结果加载中...");
+            WinWait win = new WinWait();
+            win.Message = "已校对完毕。";
+            win.ShowDialogEx();
         }
         /// <summary>
         /// 过滤结果中不适用白名单的文件结果
@@ -1077,17 +1082,17 @@ namespace FilesCompare.ViewModel
                     Log("解压：" + file.FFullName);
                     UnzipFileName = file.FFullName;
                     string folderName = file.FFullName.Replace(".zip", "").Replace(".jar", "").Replace(rootName, location + "/" + TEMPNUMBER.ToString());
-                    UnCompressHelper.UnZipDir(file.FFullName, folderName, false);
+                    CompressHelper.UnZipDir(file.FFullName, folderName, false);
                 }
                 catch (Exception e)
                 {
                     Log(string.Format(@"
-                    // 异常信息
-                    // 解压时出现异常
-                    // 文件名:{0}
-                    // 详细信息:{1}
+// 异常信息
+// 解压时出现异常
+// 文件名:{0}
+// 详细信息:
+// {1}
                     ", file.FFullName, e.Message));
-                    //MessageBox.Show("解压文件失败：" + file.FFullName + e.Message + e.ToString(), "提示");
                 }
             }
         }
@@ -1434,10 +1439,10 @@ namespace FilesCompare.ViewModel
         /// <param name="log"></param>
         private void Log(string log)
         {
-            lock (SysObject)
-            {
-                Logs += log + "\r\n";
-            }
+            //lock (SysObject)
+            //{
+            Logs += log + "\r\n";
+            // }
         }
 
         /// <summary>
@@ -1457,6 +1462,9 @@ namespace FilesCompare.ViewModel
         {
             try
             {
+                //管理.cpr文件类型
+                FileTypeRelative.Relative(".cpr");
+
                 string tempLever = GetValue("临时文件级数");
                 string ignoreOnFiles = GetValue("黑名单-包含文件");
                 string ignoreOnFolders = GetValue("黑名单-包含文件夹");
@@ -1488,11 +1496,8 @@ namespace FilesCompare.ViewModel
                 PreferOnUCFiles = bool.Parse(preferOnUCFiles);
                 SearchOnFolders = bool.Parse(searchOnFolders);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                //                Log(string.Format(@"异常信息：配置文件读取异常!
-                //                已创建配置文件。
-                //异常原因：配置升级或首次运行。", ex.Message));
             }
         }
 
@@ -1598,25 +1603,68 @@ namespace FilesCompare.ViewModel
         /// <param name="obj"></param>
         private void ExportExecute(object obj)
         {
-            //复制到导出文件夹
-            Parallel.Invoke(delegate { CopyResults(Result1, FilePath1, "新"); }, delegate { CopyResults(Result2, FilePath2, "旧"); });
-            //using (ZipHelper zh = new ZipHelper(Directory.GetCurrentDirectory() + "\\" + ExportPath))
-            //{
-            //    zh.ZipFolder(@"C:\Users\Dell\Desktop\xxx.zip");
-            //    MessageBox.Show(zh.ExceptionLog);
-            //}
+            //保存地址
+            string resultPath = GetResPath();
+            Log("正在导出结果...");
+            UnzipFileName = "导出结果中...";
+            BackgroundWorker bg = new BackgroundWorker();
+            bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, a) =>
+            {
+                //复制到导出文件夹
+                Parallel.Invoke(delegate { CopyResults(Result1, FilePath1, "新"); }, delegate { CopyResults(Result2, FilePath2, "旧"); });
+                CompressHelper.CompressDirectory(ExportPath, resultPath + "\\" + "比对结果.cpr");
+            }));
+
+            bg.RunWorkerCompleted += ExportCompeleted;
+            bg.RunWorkerAsync();
         }
 
+        /// <summary>
+        /// 获取结果路径
+        /// </summary>
+        /// <returns></returns>
+        private string GetResPath()
+        {
+            string res = string.Empty;
+            FolderBrowserDialog dlg = new FolderBrowserDialog();
+            dlg.Description = "请选择要比对的文件系统路径:";
+            if (dlg.ShowDialog() == DialogResult.OK)
+                res = dlg.SelectedPath;
+            return res;
+        }
+
+        /// <summary>
+        /// 导出完毕
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ExportCompeleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Log("结果导出完毕。");
+            UnzipFileName = "导出结果完毕";
+            WinWait win = new WinWait();
+            win.Message = "结果导出完毕。";
+            win.ShowDialogEx();
+        }
+
+        /// <summary>
+        /// 复制所有结果到目标文件夹
+        /// </summary>
+        /// <param name="collection">文件集合</param>
+        /// <param name="rootPath">根目录</param>
+        /// <param name="id">额外文件夹标识</param>
         private void CopyResults(ObservableCollection<FNode> collection, string rootPath, string id)
         {
             if (string.IsNullOrEmpty(rootPath))
                 return;
 
             string originName = Path.GetFileName(rootPath);
-            string targetPath = Directory.GetCurrentDirectory() + "\\" + ExportPath + id + "\\" + originName;
+            string targetPath = ExportPath + id + "\\" + originName;
 
             foreach (var fd in collection)
             {
+                UnzipFileName = fd.FFullName;
+
                 if (string.IsNullOrEmpty(fd.FFullName))
                     continue;
                 //普通文件

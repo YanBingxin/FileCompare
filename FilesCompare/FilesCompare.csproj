@@ -102,8 +102,7 @@
     <Compile Include="CompareHelper\DiffHelper.cs" />
     <Compile Include="CompareHelper\FileTypeRelative.cs" />
     <Compile Include="CompareHelper\MD5Helper.cs" />
-    <Compile Include="CompareHelper\UnCompressHelper.cs" />
-    <Compile Include="CompareHelper\ZipHelper.cs" />
+    <Compile Include="CompareHelper\CompressHelper.cs" />
     <Compile Include="Converter\JarNameConverter.cs" />
     <Compile Include="Converter\PathConverter.cs" />
     <Compile Include="Model\FNode.cs" />

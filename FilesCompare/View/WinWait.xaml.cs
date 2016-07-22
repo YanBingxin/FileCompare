@@ -22,5 +22,20 @@ namespace FilesCompare.View
         {
             InitializeComponent();
         }
+        private string _message;
+        public string Message
+        {
+            get { return _message; }
+            set
+            {
+                _message = value;
+                txtMess.Text = _message;
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

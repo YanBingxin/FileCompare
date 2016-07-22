@@ -20,7 +20,7 @@
                 <can:ParticleCanvas IsEnabled="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Direction="Shine" MinSpeed="1" MaxSpeed="5" Width="400" ParticlesBrush="LightCyan" MinSize="5" MaxSize="5" ParticlesCount="100" Height="200" X1="5" X2="395" Y1="0" Y2="0" IsShowParticles="True">
                 </can:ParticleCanvas>
             </can:AdornedControl.AdornerContent>
-            <TextBlock VerticalAlignment="Center" FontSize="16" HorizontalAlignment="Center" Text="正在处理结果中..." FontFamily="幼圆" Grid.Column="1" Grid.Row="1">
+            <TextBlock x:Name="txtMess" VerticalAlignment="Center" FontSize="16" HorizontalAlignment="Center" Text="正在处理结果中..." FontFamily="幼圆" Grid.Column="1" Grid.Row="1">
                 <TextBlock.TextEffects>
                     <TextEffect x:Name="ef" PositionStart="0" PositionCount="1" >
                         <TextEffect.Transform>
@@ -29,7 +29,7 @@
                     </TextEffect>
                 </TextBlock.TextEffects>
                 <TextBlock.Triggers>
-                    <EventTrigger RoutedEvent="Loaded">
+                    <!--<EventTrigger RoutedEvent="Loaded">
                         <BeginStoryboard>
                             <Storyboard Storyboard.TargetName="st" Storyboard.TargetProperty="Y" RepeatBehavior="Forever" AutoReverse="True">
                                 <DoubleAnimation From="0" To="-3.5" Duration="0:0:0.5"/>
@@ -44,9 +44,10 @@
                                 </Int32AnimationUsingKeyFrames>
                             </Storyboard>
                         </BeginStoryboard>
-                    </EventTrigger>
+                    </EventTrigger>-->
                 </TextBlock.Triggers>
             </TextBlock>
         </can:AdornedControl>
+        <Button Content="确定" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="60" Margin="0,0,15,5" Style="{x:Null}" Click="Button_Click"/>
     </Grid>
 </Window>

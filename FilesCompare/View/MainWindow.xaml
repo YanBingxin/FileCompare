@@ -408,7 +408,7 @@
                         <CheckBox IsChecked="{Binding SearchByUCFiles,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="根据解压前所在压缩文件名搜索" Foreground="White"/>
                     </StackPanel>
                 </Expander>
-                <Expander ExpandDirection="Down" Background="Gray" Grid.Row="2">
+                <Expander ExpandDirection="Down" IsExpanded="True" Background="Gray" Grid.Row="2">
                     <Expander.Header>
                         <TextBlock Text="运行日志" Foreground="White" HorizontalAlignment="Center"></TextBlock>
                     </Expander.Header>

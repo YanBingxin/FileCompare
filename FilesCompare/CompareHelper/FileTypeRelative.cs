@@ -10,7 +10,7 @@ namespace FilesCompare.CompareHelper
 {
     class FileTypeRelative
     {
-        public void Relative(string type)
+        public static void Relative(string type)
         {
             if (null != Registry.ClassesRoot.OpenSubKey(type))
                 return;
@@ -35,16 +35,16 @@ namespace FilesCompare.CompareHelper
             if (key == null)
             {
                 key = Registry.ClassesRoot.CreateSubKey(type);
-                key.SetValue("", "Jeebook.Reader.jb");
-                key.SetValue("Content Type", "application/jb");
+                key.SetValue("", "Compare.ybx.cpr");
+                key.SetValue("Content Type", "application/cpr");
 
-                key = Registry.ClassesRoot.CreateSubKey("Jeebook.Reader.jb");
-                key.SetValue("", "Jeebook Document");
+                key = Registry.ClassesRoot.CreateSubKey("Compare.ybx.cpr");
+                key.SetValue("", "Compare ybx");
 
                 RegistryKey keySub = key.CreateSubKey("DefaultIcon");
-                keySub.SetValue("", System.Windows.Forms.Application.StartupPath + "Jeebook.ico");
+                keySub.SetValue("", System.Windows.Forms.Application.StartupPath + "Compare.ico");
                 keySub = key.CreateSubKey("shell//open//command");
-                keySub.SetValue("", "/" + System.Windows.Forms.Application.ExecutablePath + @"//%1/");
+                keySub.SetValue("", "/" + System.Windows.Forms.Application.ExecutablePath + "//%1/");
             }
         }
     }
