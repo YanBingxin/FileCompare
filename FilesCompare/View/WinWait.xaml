@@ -7,6 +7,13 @@
         WindowStyle="None"
         xmlns:can="clr-namespace:Particles"
         >
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Style/ybx_GraySimpleStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="#FF899497" Offset="0"/>
@@ -20,7 +27,7 @@
                 <can:ParticleCanvas IsEnabled="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Direction="Shine" MinSpeed="1" MaxSpeed="5" Width="400" ParticlesBrush="LightCyan" MinSize="5" MaxSize="5" ParticlesCount="100" Height="200" X1="5" X2="395" Y1="0" Y2="0" IsShowParticles="True">
                 </can:ParticleCanvas>
             </can:AdornedControl.AdornerContent>
-            <TextBlock x:Name="txtMess" VerticalAlignment="Center" FontSize="16" HorizontalAlignment="Center" Text="正在处理结果中..." FontFamily="幼圆" Grid.Column="1" Grid.Row="1">
+            <TextBlock x:Name="txtMess" VerticalAlignment="Center" FontSize="25" HorizontalAlignment="Center" Text="正在处理结果中..." FontFamily="幼圆" Grid.Column="1" Grid.Row="1">
                 <TextBlock.TextEffects>
                     <TextEffect x:Name="ef" PositionStart="0" PositionCount="1" >
                         <TextEffect.Transform>
@@ -48,6 +55,6 @@
                 </TextBlock.Triggers>
             </TextBlock>
         </can:AdornedControl>
-        <Button Content="确定" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="60" Margin="0,0,15,5" Style="{x:Null}" Click="Button_Click"/>
+        <Button Style="{StaticResource BaseButtonStyle}" Content="确定" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="60" Margin="0,0,15,5" Click="Button_Click"/>
     </Grid>
 </Window>

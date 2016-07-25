@@ -69,6 +69,26 @@ namespace FilesCompare.ViewModel
         #endregion
 
         #region 属性
+        /// <summary>
+        /// ZIPdll库文件路径
+        /// </summary>
+        public string ZipHelperDll
+        {
+            get { return System.Environment.CurrentDirectory + "\\ICSharpCode.SharpZipLib.dll"; }
+        }
+        /// <summary>
+        /// 导入分析临时文件夹
+        /// </summary>
+        public string ImportPath
+        {
+            get
+            {
+                return System.Environment.CurrentDirectory + "\\Import\\" + TEMPNUMBER.ToString();
+            }
+        }
+        /// <summary>
+        /// 导出路径
+        /// </summary>
         public string ExportPath
         {
             get
@@ -76,7 +96,16 @@ namespace FilesCompare.ViewModel
                 return Directory.GetCurrentDirectory() + "\\" + "Export\\" + TEMPNUMBER.ToString() + "\\";
             }
         }
-
+        /// <summary>
+        /// 导出结果文件名
+        /// </summary>
+        public string ExportFileName
+        {
+            get
+            {
+                return "校对结果" + TEMPNUMBER.ToString() + ".cpr";
+            }
+        }
         #region 结果搜索
 
         /// <summary>
@@ -851,6 +880,12 @@ namespace FilesCompare.ViewModel
         private void InitData()
         {
             btnContent = string.Format("开始分析");
+            using (FileStream fs = new FileStream(ZipHelperDll, FileMode.Create))
+            {
+                fs.Write(Properties.Resources.ICSharpCode_SharpZipLib, 0, Properties.Resources.ICSharpCode_SharpZipLib.Length);
+                fs.Flush();
+                fs.Close();
+            }
         }
         #endregion
 
@@ -1034,7 +1069,7 @@ namespace FilesCompare.ViewModel
             Log("计时器已终止。");
             Log("结果加载中...");
             WinWait win = new WinWait();
-            win.Message = "已校对完毕。";
+            win.Message = "已校对完毕";
             win.ShowDialogEx();
         }
         /// <summary>
@@ -1605,6 +1640,8 @@ namespace FilesCompare.ViewModel
         {
             //保存地址
             string resultPath = GetResPath();
+            if (string.IsNullOrEmpty(resultPath))
+                return;
             Log("正在导出结果...");
             UnzipFileName = "导出结果中...";
             BackgroundWorker bg = new BackgroundWorker();
@@ -1612,7 +1649,7 @@ namespace FilesCompare.ViewModel
             {
                 //复制到导出文件夹
                 Parallel.Invoke(delegate { CopyResults(Result1, FilePath1, "新"); }, delegate { CopyResults(Result2, FilePath2, "旧"); });
-                CompressHelper.CompressDirectory(ExportPath, resultPath + "\\" + "比对结果.cpr");
+                CompressHelper.CompressDirectory(ExportPath, resultPath);
             }));
 
             bg.RunWorkerCompleted += ExportCompeleted;
@@ -1626,10 +1663,16 @@ namespace FilesCompare.ViewModel
         private string GetResPath()
         {
             string res = string.Empty;
-            FolderBrowserDialog dlg = new FolderBrowserDialog();
-            dlg.Description = "请选择要比对的文件系统路径:";
-            if (dlg.ShowDialog() == DialogResult.OK)
-                res = dlg.SelectedPath;
+            using (SaveFileDialog dlg = new SaveFileDialog())
+            {
+                dlg.AddExtension = true;
+                dlg.DefaultExt = ".cpr";
+                dlg.Filter = "校对文件 (*.cpr)|*.cpr";
+                dlg.FileName = ExportFileName;
+                dlg.Title = "请选择导出结果文件位置：";
+                if (dlg.ShowDialog() == DialogResult.OK)
+                    res = dlg.FileName;
+            }
             return res;
         }
 
@@ -1643,7 +1686,7 @@ namespace FilesCompare.ViewModel
             Log("结果导出完毕。");
             UnzipFileName = "导出结果完毕";
             WinWait win = new WinWait();
-            win.Message = "结果导出完毕。";
+            win.Message = "结果导出完毕";
             win.ShowDialogEx();
         }
 
@@ -1690,7 +1733,58 @@ namespace FilesCompare.ViewModel
         /// <param name="obj"></param>
         private void ImportExecute(object obj)
         {
-
+            string importPath = GetImportPath();
+            if (string.IsNullOrEmpty(importPath))
+                return;
+            try
+            {
+                BackgroundWorker bg = new BackgroundWorker();
+                bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((sender, e) =>
+                {
+                    CompressHelper.UnZipDir(importPath, ImportPath, false);
+                    string file1 = Directory.GetDirectories(ImportPath + "\\新")[0];
+                    string file2 = Directory.GetDirectories(ImportPath + "\\旧")[0];
+                    FilePath1 = file1;
+                    FilePath2 = file2;
+                }));
+                bg.RunWorkerCompleted += ImportCompeleted;
+                bg.RunWorkerAsync();
+                Log("正在分析校对信息...");
+                UnzipFileName = "正在分析校对信息...";
+            }
+            catch (Exception)
+            {
+                (new WinWait("该结果文件不包含校对信息")).ShowDialogEx();
+            }
+        }
+        /// <summary>
+        /// 导入完毕开始比对
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ImportCompeleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            UnzipFileName = "导入完毕";
+            CompareExecute("导入校对");
+            Log("导入完毕");
+        }
+        /// <summary>
+        /// 获取导入路径
+        /// </summary>
+        /// <returns></returns>
+        private string GetImportPath()
+        {
+            string res = string.Empty;
+            using (OpenFileDialog dlg = new OpenFileDialog())
+            {
+                dlg.AddExtension = true;
+                dlg.DefaultExt = ".cpr";
+                dlg.Filter = "校对文件 (*.cpr)|*.cpr";
+                dlg.Title = "请选择要导入文件位置：";
+                if (dlg.ShowDialog() == DialogResult.OK)
+                    res = dlg.FileName;
+            }
+            return res;
         }
         #endregion
         #endregion
@@ -1743,6 +1837,8 @@ namespace FilesCompare.ViewModel
                     DirectoryInfo dir1 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp1");
                     DirectoryInfo dir2 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp2");
                     DirectoryInfo dir3 = new DirectoryInfo(Environment.CurrentDirectory + @"/Export");
+                    DirectoryInfo dir4 = new DirectoryInfo(Environment.CurrentDirectory + @"/Import");
+
                     if (Directory.Exists("Temp1"))
                     {
                         dir1.Delete(true);
@@ -1754,6 +1850,14 @@ namespace FilesCompare.ViewModel
                     if (Directory.Exists("Export"))
                     {
                         dir3.Delete(true);
+                    }
+                    if (Directory.Exists("Import"))
+                    {
+                        dir4.Delete(true);
+                    }
+                    if (File.Exists(ZipHelperDll))
+                    {
+                        File.Delete(ZipHelperDll);
                     }
                 }
                 catch (Exception)
@@ -1783,6 +1887,5 @@ namespace FilesCompare.ViewModel
             }
         }
         #endregion
-
     }
 }

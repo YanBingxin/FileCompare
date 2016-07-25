@@ -44,7 +44,7 @@ namespace FilesCompare.CompareHelper
                 RegistryKey keySub = key.CreateSubKey("DefaultIcon");
                 keySub.SetValue("", System.Windows.Forms.Application.StartupPath + "Compare.ico");
                 keySub = key.CreateSubKey("shell//open//command");
-                keySub.SetValue("", "/" + System.Windows.Forms.Application.ExecutablePath + "//%1/");
+                keySub.SetValue("", "/" + System.Windows.Forms.Application.ExecutablePath);
             }
         }
     }
