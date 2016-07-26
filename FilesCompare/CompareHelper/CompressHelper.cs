@@ -83,6 +83,10 @@ namespace FilesCompare.CompareHelper
         /// <param name="bufferSize">读取文件的缓冲区大小</param>
         public static void CompressDirectory(string dirPath, string fileName, int level = 6, int bufferSize = 51200)
         {
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
             byte[] buffer = new byte[bufferSize];
             using (ZipOutputStream s = new ZipOutputStream(File.Create(fileName)))
             {

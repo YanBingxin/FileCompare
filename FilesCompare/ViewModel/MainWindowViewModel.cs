@@ -1023,17 +1023,21 @@ namespace FilesCompare.ViewModel
             {
                 Parallel.Invoke(new Action(() =>
                 {
+                    if (ZipFiles1.Count == 0)
+                        return;
                     Log("目标1压缩文件解压中...");
                     UnZipFiles(ZipFiles1, "Temp1");
                     Log("目标1压缩文件解压完毕。");
-                    UnCompressFiles1 = LoadFiles(ZipFiles1, "Temp1");
+                    UnCompressFiles1 = LoadFiles(Environment.CurrentDirectory + "\\Temp1" + "\\" + TEMPNUMBER.ToString(), string.Empty, string.Empty);
                     Log("目标1解压文件加载完毕。");
                 }), new Action(() =>
                 {
+                    if (ZipFiles2.Count == 0)
+                        return;
                     Log("目标2压缩文件解压中...");
                     UnZipFiles(ZipFiles2, "Temp2");
                     Log("目标2压缩文件解压完毕。");
-                    UnCompressFiles2 = LoadFiles(ZipFiles2, "Temp2");
+                    UnCompressFiles2 = LoadFiles(Environment.CurrentDirectory + "\\Temp2" + "\\" + TEMPNUMBER.ToString(), string.Empty, string.Empty);
                     Log("目标2解压文件加载完毕。");
                 }));
                 UnzipFileName = "解压完毕。";
@@ -1116,7 +1120,7 @@ namespace FilesCompare.ViewModel
                 {
                     Log("解压：" + file.FFullName);
                     UnzipFileName = file.FFullName;
-                    string folderName = file.FFullName.Replace(".zip", "").Replace(".jar", "").Replace(rootName, location + "/" + TEMPNUMBER.ToString());
+                    string folderName = file.FFullName.Replace(rootName, location + "/" + TEMPNUMBER.ToString());
                     CompressHelper.UnZipDir(file.FFullName, folderName, false);
                 }
                 catch (Exception e)
@@ -1214,36 +1218,17 @@ namespace FilesCompare.ViewModel
         }
 
         /// <summary>
-        /// 对包含.jar.zip压缩文件的集合解压后的文件系统进行加载
-        /// </summary>
-        /// <param name="collection"></param>
-        /// <returns></returns>
-        private ObservableCollection<FNode> LoadFiles(ObservableCollection<FNode> collection, string location)
-        {
-            string rootName = location == "Temp1" ? FilePath1 : FilePath2;
-            ObservableCollection<FNode> tempList = new ObservableCollection<FNode>();
-            foreach (var node in collection)
-            {
-                FNode foder = new FNode();
-                foder.FFullName = node.FFullName.Replace(".jar", "").Replace(".zip", "").Replace(rootName, Environment.CurrentDirectory + "\\" + location + "\\" + TEMPNUMBER.ToString());//解压缩节点目录全名
-                foder.FName = node.FName.Replace(".jar", "").Replace(".zip", "");//解压缩节点目录名
-                foder.Child = LoadFiles(foder.FFullName, node.FFullName);//获取子目录文件(夹)
-                tempList.Add(foder);
-            }
-            lock (SysObject)
-            {
-                NumMD5 += collection.Count();
-            }
-            return tempList;
-        }
-
-        /// <summary>
         /// 检索jar包下所有字文件(夹)附加jar包标示
         /// </summary>
         /// <param name="pathName"></param>
         /// <returns></returns>
-        private ObservableCollection<FNode> LoadFiles(string pathName, string jarName)
+        private ObservableCollection<FNode> LoadFiles(string pathName, string parentPath, string jarName)
         {
+            if (string.IsNullOrEmpty(jarName))
+            {
+                jarName = GetJarName(parentPath);
+            }
+
             ObservableCollection<FNode> tempList = new ObservableCollection<FNode>();
             //检索当前目录所有文件和目录节点
             try
@@ -1262,7 +1247,7 @@ namespace FilesCompare.ViewModel
                                                                       {
                                                                           FFullName = d,
                                                                           FName = d.Replace(pathName + "\\", ""),
-                                                                          Child = LoadFiles(d, jarName),
+                                                                          Child = LoadFiles(d, d, jarName),
                                                                           JarParentName = jarName
                                                                       }));
             }
@@ -1281,6 +1266,37 @@ namespace FilesCompare.ViewModel
             }
 
             return tempList;
+        }
+        /// <summary>
+        /// 取来自的压缩文件名称
+        /// </summary>
+        /// <param name="parentPath"></param>
+        /// <returns></returns>
+        private string GetJarName(string parentPath)
+        {
+            if (string.IsNullOrEmpty(parentPath))
+                return string.Empty;
+            string p1 = Environment.CurrentDirectory + "\\" + "Temp1" + "\\" + TEMPNUMBER.ToString();
+            string p2 = Environment.CurrentDirectory + "\\" + "Temp2" + "\\" + TEMPNUMBER.ToString();
+
+            if (parentPath.Contains(p1))
+            {
+                parentPath = parentPath.Replace(p1, FilePath1);
+            }
+            if (parentPath.Contains(p2))
+            {
+                parentPath = parentPath.Replace(p2, FilePath2);
+            }
+
+            if (parentPath.Contains(".jar"))
+            {
+                return parentPath.Substring(0, parentPath.IndexOf(".jar") + ".jar".Length);
+            }
+            if (parentPath.Contains(".zip"))
+            {
+                return parentPath.Substring(0, parentPath.IndexOf(".zip") + ".zip".Length);
+            }
+            return string.Empty;
         }
         #endregion
 
@@ -1648,7 +1664,15 @@ namespace FilesCompare.ViewModel
             bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((s, a) =>
             {
                 //复制到导出文件夹
-                Parallel.Invoke(delegate { CopyResults(Result1, FilePath1, "新"); }, delegate { CopyResults(Result2, FilePath2, "旧"); });
+                try
+                {
+                    Parallel.Invoke(delegate { CopyResults(Result1, FilePath1, "新"); }, delegate { CopyResults(Result2, FilePath2, "旧"); });
+                }
+                catch (System.AggregateException ex)
+                {
+                    string aa = "";
+                }
+                UnzipFileName = "结果文件合并中...";
                 CompressHelper.CompressDirectory(ExportPath, resultPath);
             }));
 
@@ -1706,10 +1730,15 @@ namespace FilesCompare.ViewModel
 
             foreach (var fd in collection)
             {
-                UnzipFileName = fd.FFullName;
+                UnzipFileName = fd.FFullName.Replace(rootPath, "..");
 
+                //若为空，为保证导入后校对结果，需将上级目录创建
                 if (string.IsNullOrEmpty(fd.FFullName))
+                {
+                    int index = collection.IndexOf(fd);
+                    CopyEmptyFolder(Result1[index], Result2[index], targetPath);
                     continue;
+                }
                 //普通文件
                 if (string.IsNullOrEmpty(fd.JarParentName))
                 {
@@ -1726,6 +1755,23 @@ namespace FilesCompare.ViewModel
                         CopyFileWithDir.CopyFolder(fd.FFullName, fd.JarParentName.Replace(rootPath + "\\", ""), targetPath, true);
                 }
             }
+        }
+        /// <summary>
+        /// 创建一个空的父目录保证上级目录相同
+        /// </summary>
+        /// <param name="fNode1"></param>
+        /// <param name="fNode2"></param>
+        /// <param name="targetPath"></param>
+        private void CopyEmptyFolder(FNode fNode1, FNode fNode2, string targetPath)
+        {
+            FNode node = string.IsNullOrEmpty(fNode1.FFullName) ? fNode2 : fNode1;
+            string path = node.FFullName;
+            string root = Result1.Contains(node) ? FilePath1 : FilePath2;
+            string parentDirPath = Directory.GetParent(path).FullName;
+            bool isZip = !string.IsNullOrEmpty(node.JarParentName);
+            if (isZip)
+                root = node.JarParentName.Replace(root + "\\", "");
+            CopyFileWithDir.CopyEmptyFolder(parentDirPath, root, targetPath, isZip);
         }
         /// <summary>
         /// 导入分析结果
