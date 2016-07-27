@@ -929,7 +929,7 @@ namespace FilesCompare.ViewModel
         {
             TEMPNUMBER++;
             InitDataForCompare();
-            CompareFiles();
+            CompareFiles(prarmeter);
         }
         /// <summary>
         /// 初始化比较所用数据
@@ -999,7 +999,7 @@ namespace FilesCompare.ViewModel
         /// <summary>
         /// 检索文件目录计算MD5
         /// </summary>
-        private void CompareFiles()
+        private void CompareFiles(object pararmeter)
         {
             Log("初步分析准备中...");
             BackgroundWorker bg = new BackgroundWorker();
@@ -1008,12 +1008,12 @@ namespace FilesCompare.ViewModel
                 Parallel.Invoke(new Action(() =>
                 {
                     Log("目标1文件系统加载中...");
-                    NormalFiles1 = LoadFiles(FilePath1);
+                    NormalFiles1 = pararmeter == null ? LoadFiles(FilePath1) : LoadFiles(FilePath1, "", "");
                     Log("目标1文件系统加载完毕。");
                 }), new Action(() =>
                 {
                     Log("目标2文件系统加载中...");
-                    NormalFiles2 = LoadFiles(FilePath2);
+                    NormalFiles2 = pararmeter == null ? LoadFiles(FilePath2) : LoadFiles(FilePath2, "", "");
                     Log("目标2文件系统加载完毕。");
                 }));
 
