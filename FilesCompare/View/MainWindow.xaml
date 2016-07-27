@@ -413,9 +413,9 @@
                     <Expander.Header>
                         <TextBlock Text="运行日志" Foreground="White" HorizontalAlignment="Center"></TextBlock>
                     </Expander.Header>
-                    <TextBox MinHeight="500" MaxHeight="500" Grid.Row="1" VerticalAlignment="Stretch" Background="WhiteSmoke" TabIndex="5"  Foreground="Black" HorizontalAlignment="Stretch"  Text="{Binding Logs, UpdateSourceTrigger=PropertyChanged}" 
+                    <TextBox MinHeight="500" TextChanged="TextBox_TextChanged" MaxHeight="500" Grid.Row="1" VerticalAlignment="Stretch" Background="WhiteSmoke" TabIndex="5"  Foreground="Black" HorizontalAlignment="Stretch"  Text="{Binding Logs, UpdateSourceTrigger=PropertyChanged}" 
                          FontSize="12" BorderThickness="1" Margin="0,0,0,1" SnapsToDevicePixels="True"
-                         Style="{StaticResource DownClearButtonTextBoxStyle}" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                         Style="{StaticResource DownClearButtonTextBoxStyle}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
                     </TextBox>
                 </Expander>
                 <Expander ExpandDirection="Down" Background="Gray" Grid.Row="0">

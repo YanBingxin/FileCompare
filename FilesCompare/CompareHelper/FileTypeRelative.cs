@@ -31,21 +31,21 @@ namespace FilesCompare.CompareHelper
                 return;
             }
 
-            RegistryKey key = Registry.ClassesRoot.OpenSubKey(type);
-            if (key == null)
-            {
-                key = Registry.ClassesRoot.CreateSubKey(type);
-                key.SetValue("", "Compare.ybx.cpr");
-                key.SetValue("Content Type", "application/cpr");
+            //RegistryKey key = Registry.ClassesRoot.OpenSubKey(type);
+            //if (key == null)
+            //{
+            //    key = Registry.ClassesRoot.CreateSubKey(type);
+            //    key.SetValue("", "Compare.ybx.cpr");
+            //    key.SetValue("Content Type", "application/cpr");
 
-                key = Registry.ClassesRoot.CreateSubKey("Compare.ybx.cpr");
-                key.SetValue("", "Compare ybx");
+            //    key = Registry.ClassesRoot.CreateSubKey("Compare.ybx.cpr");
+            //    key.SetValue("", "Compare ybx");
 
-                RegistryKey keySub = key.CreateSubKey("DefaultIcon");
-                keySub.SetValue("", System.Windows.Forms.Application.StartupPath + "Compare.ico");
-                keySub = key.CreateSubKey("shell//open//command");
-                keySub.SetValue("", "/" + System.Windows.Forms.Application.ExecutablePath);
-            }
+            //    RegistryKey keySub = key.CreateSubKey("DefaultIcon");
+            //    keySub.SetValue("", System.Windows.Forms.Application.StartupPath + "Compare.ico");
+            //    keySub = key.CreateSubKey("shell//open//command");
+            //    keySub.SetValue("", "/" + System.Windows.Forms.Application.ExecutablePath);
+            //}
         }
     }
 }

@@ -1224,10 +1224,10 @@ namespace FilesCompare.ViewModel
             catch (Exception ex)
             {
                 Log(string.Format(@"
-                // 异常信息
-                // 加载文件时出现异常
-                // {0}
-                ", ex.Message));
+// 异常信息
+// 加载文件时出现异常
+// {0}
+", ex.Message));
             }
             //双线程引起不同步，导致文件数总显示不对，并发引起的问题，找了半天。
             lock (SysObject)
@@ -1275,10 +1275,10 @@ namespace FilesCompare.ViewModel
             catch (Exception ex)
             {
                 Log(string.Format(@"
-                // 异常信息
-                // 加载文件时出现异常
-                // {0}
-                ", ex.Message));
+// 异常信息
+// 加载文件时出现异常
+// {0}
+", ex.Message));
             }
             //双线程引起不同步，导致文件数总显示不对，并发引起的问题，找了半天。
             lock (SysObject)
@@ -1398,10 +1398,10 @@ namespace FilesCompare.ViewModel
             catch (Exception ex)
             {
                 Log(string.Format(@"
-                // 异常信息
-                // 校对时出现异常
-                // {0}
-                ", ex.Message));
+// 异常信息
+// 校对时出现异常
+// {0}
+", ex.Message));
             }
             return true;
 
@@ -1535,7 +1535,7 @@ namespace FilesCompare.ViewModel
             try
             {
                 //管理.cpr文件类型
-                FileTypeRelative.Relative(".cpr");
+                //FileTypeRelative.Relative(".cpr");
 
                 string tempLever = GetValue("临时文件级数");
                 string ignoreOnFiles = GetValue("黑名单-包含文件");

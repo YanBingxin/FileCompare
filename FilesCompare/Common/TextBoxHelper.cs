@@ -80,13 +80,17 @@ namespace FilesCompare.Common
                 System.Windows.Controls.TextBox txt = parent as System.Windows.Controls.TextBox;
                 if (txt != null)
                 {
-                    FolderBrowserDialog dlg = new FolderBrowserDialog();
-                    dlg.SelectedPath = LastPath;
-                    dlg.Description = "请选择要比对的文件系统路径:";
-                    if (dlg.ShowDialog() == DialogResult.OK)
-                        txt.Text = dlg.SelectedPath;
+                    try
+                    {
+                        FolderBrowserDialog dlg = new FolderBrowserDialog();
+                        dlg.SelectedPath = LastPath;
+                        dlg.Description = "请选择要比对的文件系统路径:";
+                        if (dlg.ShowDialog() == DialogResult.OK)
+                            txt.Text = dlg.SelectedPath;
 
-                    LastPath = dlg.SelectedPath;
+                        LastPath = dlg.SelectedPath;
+                    }
+                    catch { }
                 }
             }
 

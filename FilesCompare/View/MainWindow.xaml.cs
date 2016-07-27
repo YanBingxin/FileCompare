@@ -53,6 +53,8 @@ namespace FilesCompare
         private void DataGrid_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int index = (sender as DataGrid).SelectedIndex;
+            if (index < 0)
+                return;
             FNode f1 = dgNew.Items[index] as FNode;
             FNode f2 = dgOld.Items[index] as FNode;
 
@@ -144,5 +146,25 @@ namespace FilesCompare
             (this.DataContext as MainWindowViewModel).DataGridToConfig();
         }
         #endregion
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox txt = (sender as TextBox);
+
+            if (e.Changes != null)
+            {
+                ScrollViewer sv = null;
+                Type t = txt.GetType();
+                try
+                {
+                    sv = t.InvokeMember("ScrollViewer", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetProperty, null, txt, null) as ScrollViewer;
+                    sv.ScrollToVerticalOffset(txt.ExtentHeight);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
     }
 }
