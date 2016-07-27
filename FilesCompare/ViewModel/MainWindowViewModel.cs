@@ -1098,7 +1098,8 @@ namespace FilesCompare.ViewModel
             win.ShowDialogEx();
         }
         /// <summary>
-        /// 过滤结果中不适用白名单的文件结果
+        /// 过滤结果中不适用白名单的文件夹结果
+        /// 由于白名单仅比对文件，但加载时无法过滤文件夹，固若白名单不为空且应用勾选，则对结果中文件夹选项进行过滤
         /// </summary>
         /// <param name="PreferOnFiles"></param>
         /// <param name="PreferOnUCFiles"></param>
