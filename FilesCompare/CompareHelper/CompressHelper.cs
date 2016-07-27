@@ -28,47 +28,48 @@ namespace FilesCompare.CompareHelper
             if (!location.EndsWith(@"/"))
                 location = location + @"/";
 
-            ZipInputStream s = new ZipInputStream(File.OpenRead(zipFileName));
-            ZipEntry theEntry;
-
-            while ((theEntry = s.GetNextEntry()) != null)//判断下一个zip 接口是否未空
+            using (ZipInputStream s = new ZipInputStream(File.OpenRead(zipFileName)))
             {
-                string directoryName = string.Empty;//下级目录名
-                string fileName = Path.GetFileName(theEntry.Name);//压缩文件名
-
-                if (!string.IsNullOrEmpty(theEntry.Name))
-                    directoryName = Path.GetDirectoryName(theEntry.Name) + @"/";
-
-                //创建目录
-                Directory.CreateDirectory(location + directoryName);
-                //创建文件
-                try
+                ZipEntry theEntry;
+                while ((theEntry = s.GetNextEntry()) != null)//判断下一个zip 接口是否未空
                 {
-                    if (!string.IsNullOrEmpty(fileName))
+                    string directoryName = string.Empty;//下级目录名
+                    string fileName = Path.GetFileName(theEntry.Name);//压缩文件名
+
+                    if (!string.IsNullOrEmpty(theEntry.Name))
+                        directoryName = Path.GetDirectoryName(theEntry.Name) + @"/";
+
+                    //创建目录
+                    Directory.CreateDirectory(location + directoryName);
+                    //创建文件
+                    try
                     {
-                        if ((File.Exists(location + directoryName + fileName) && overWrite) || (!File.Exists(location + directoryName + fileName)))
+                        if (!string.IsNullOrEmpty(fileName))
                         {
-                            FileStream streamWriter = File.Create(location + directoryName + fileName);
-                            int size = 51200;
-                            byte[] data = new byte[51200];
-                            while (true)
+                            if ((File.Exists(location + directoryName + fileName) && overWrite) || (!File.Exists(location + directoryName + fileName)))
                             {
-                                size = s.Read(data, 0, data.Length);
-                                if (size > 0)
-                                    streamWriter.Write(data, 0, size);
-                                else
-                                    break;
+                                FileStream streamWriter = File.Create(location + directoryName + fileName);
+                                int size = 51200;
+                                byte[] data = new byte[51200];
+                                while (true)
+                                {
+                                    size = s.Read(data, 0, data.Length);
+                                    if (size > 0)
+                                        streamWriter.Write(data, 0, size);
+                                    else
+                                        break;
+                                }
+                                streamWriter.Close();
                             }
-                            streamWriter.Close();
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        exLog += ex.Message + "\r\n" + "在" + zipFileName + "压缩文件中\r\n" + directoryName + fileName + "\r\n";
+                    }
                 }
-                catch (Exception ex)
-                {
-                    exLog += ex.Message + "\r\n" + "在" + zipFileName + "压缩文件中\r\n" + directoryName + fileName + "\r\n";
-                }
+                s.Close();
             }
-            s.Close();
             if (string.IsNullOrEmpty(exLog))
                 return;
             throw new Exception(exLog);

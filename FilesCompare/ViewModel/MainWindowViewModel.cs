@@ -77,6 +77,13 @@ namespace FilesCompare.ViewModel
             get { return System.Environment.CurrentDirectory + "\\ICSharpCode.SharpZipLib.dll"; }
         }
         /// <summary>
+        /// Diffdll库文件路径
+        /// </summary>
+        public string DiffHelperDll
+        {
+            get { return System.Environment.CurrentDirectory + "\\Diffuse.cpr"; }
+        }
+        /// <summary>
         /// 导入分析临时文件夹
         /// </summary>
         public string ImportPath
@@ -885,6 +892,20 @@ namespace FilesCompare.ViewModel
                 fs.Write(Properties.Resources.ICSharpCode_SharpZipLib, 0, Properties.Resources.ICSharpCode_SharpZipLib.Length);
                 fs.Flush();
                 fs.Close();
+            }
+            using (FileStream fs = new FileStream(DiffHelperDll, FileMode.Create))
+            {
+                fs.Write(Properties.Resources.Diffuse, 0, Properties.Resources.Diffuse.Length);
+                fs.Flush();
+                fs.Close();
+            }
+
+            try
+            {
+                CompressHelper.UnZipDir(DiffHelperDll, Environment.CurrentDirectory, false);
+            }
+            catch (Exception)
+            {
             }
         }
         #endregion
@@ -1884,30 +1905,26 @@ namespace FilesCompare.ViewModel
                     DirectoryInfo dir2 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp2");
                     DirectoryInfo dir3 = new DirectoryInfo(Environment.CurrentDirectory + @"/Export");
                     DirectoryInfo dir4 = new DirectoryInfo(Environment.CurrentDirectory + @"/Import");
+                    DirectoryInfo dir5 = new DirectoryInfo(Environment.CurrentDirectory + @"/Diffuse");
 
                     if (Directory.Exists("Temp1"))
-                    {
                         dir1.Delete(true);
-                    }
                     if (Directory.Exists("Temp2"))
-                    {
                         dir2.Delete(true);
-                    }
                     if (Directory.Exists("Export"))
-                    {
                         dir3.Delete(true);
-                    }
                     if (Directory.Exists("Import"))
-                    {
                         dir4.Delete(true);
-                    }
+                    if (Directory.Exists("Diffuse"))
+                        dir5.Delete(true);
+                    if (File.Exists(DiffHelperDll))
+                        File.Delete(DiffHelperDll);
                     if (File.Exists(ZipHelperDll))
-                    {
                         File.Delete(ZipHelperDll);
-                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    string mes = ex.Message;
                 }
             }));
             bg.RunWorkerCompleted += bg_RunWorkerCompleted;

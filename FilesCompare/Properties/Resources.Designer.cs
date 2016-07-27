@@ -63,6 +63,16 @@ namespace FilesCompare.Properties {
         /// <summary>
         ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
+        public static byte[] Diffuse {
+            get {
+                object obj = ResourceManager.GetObject("Diffuse", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
         public static byte[] ICSharpCode_SharpZipLib {
             get {
                 object obj = ResourceManager.GetObject("ICSharpCode_SharpZipLib", resourceCulture);

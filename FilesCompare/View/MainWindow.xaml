@@ -20,6 +20,7 @@
             </Style>
             <converter:PathConverter x:Key="PathConverter"/>
             <converter:JarNameConverter x:Key="JarNameConverter"/>
+            <converter:ImportPathConverter x:Key="ImportPathConverter"/>
         </ResourceDictionary>
     </Window.Resources>
     <Window.InputBindings>
@@ -168,7 +169,7 @@
             <TextBox Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" TextWrapping="NoWrap"
                      TabIndex="2" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}"
                  Style="{StaticResource OpenPathTBXStyle}"
-                 Text="{Binding FilePath1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                 Text="{Binding FilePath1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource ImportPathConverter}}"></TextBox>
             <TextBlock Text="旧文件>" FontFamily="幼圆" Grid.Column="2" Grid.Row="1">
                 <TextBlock.TextEffects>
                     <TextEffect PositionStart="3" PositionCount="1" >
@@ -190,7 +191,7 @@
             <TextBox Grid.Column="3" Grid.Row="1" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}"
                      TabIndex="3" HorizontalContentAlignment="Center" TextWrapping="NoWrap"
                  Style="{StaticResource OpenPathTBXStyle}"
-                 Text="{Binding FilePath2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                 Text="{Binding FilePath2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource ImportPathConverter}}"></TextBox>
         </Grid>
 
         <Button Grid.Column="3" 
