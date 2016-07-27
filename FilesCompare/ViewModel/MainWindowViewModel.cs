@@ -1180,7 +1180,7 @@ namespace FilesCompare.ViewModel
         /// <returns></returns>
         private bool IsPrefer(string fname)
         {
-            if (Prefers.Count == 0)
+            if (Prefers.Count == 0 || string.IsNullOrEmpty(Prefer))
             {
                 return true;
             }
@@ -1614,11 +1614,27 @@ namespace FilesCompare.ViewModel
                     continue;
                 Ignores.Add(new StringWraper() { Value = key });
             }
+
             foreach (var key in Prefer.Split('|'))
             {
                 if (string.IsNullOrEmpty(key))
                     continue;
                 Prefers.Add(new StringWraper() { Value = key });
+            }
+            //当黑白名单过少时，未显示美观，自动填充到9个
+            if (Ignores.Count < 9)
+            {
+                for (int i = Ignores.Count; i < 9; i++)
+                {
+                    Ignores.Add(new StringWraper() { Value = "" });
+                }
+            }
+            if (Prefers.Count < 9)
+            {
+                for (int i = Prefers.Count; i < 9; i++)
+                {
+                    Prefers.Add(new StringWraper() { Value = "" });
+                }
             }
         }
 
