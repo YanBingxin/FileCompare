@@ -1098,8 +1098,7 @@ namespace FilesCompare.ViewModel
             win.ShowDialogEx();
         }
         /// <summary>
-        /// 过滤结果中不适用白名单的文件夹结果
-        /// 由于白名单仅比对文件，但加载时无法过滤文件夹，固若白名单不为空且应用勾选，则对结果中文件夹选项进行过滤
+        /// 过滤结果中不适用白名单的文件结果
         /// </summary>
         /// <param name="PreferOnFiles"></param>
         /// <param name="PreferOnUCFiles"></param>
@@ -1655,7 +1654,7 @@ namespace FilesCompare.ViewModel
         /// <returns></returns>
         private string GetValue(string key)
         {
-            return CommonMethod.Read("立思辰文件比对工具2.0--by ybx", key, Environment.CurrentDirectory + @"\Compare.cfg");
+            return CommonMethod.Read("立思辰文件比对工具3.0--by ybx", key, Environment.CurrentDirectory + @"\Compare.cfg");
         }
 
         /// <summary>
@@ -1665,7 +1664,7 @@ namespace FilesCompare.ViewModel
         /// <returns></returns>
         private void SetValue(string key, string value)
         {
-            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", key, value, Environment.CurrentDirectory + @"\Compare.cfg");
+            CommonMethod.Write("立思辰文件比对工具3.0--by ybx", key, value, Environment.CurrentDirectory + @"\Compare.cfg");
         }
         #endregion
 

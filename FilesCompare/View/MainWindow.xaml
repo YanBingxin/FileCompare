@@ -115,10 +115,10 @@
                 <Border BorderBrush="Black" BorderThickness="0.55" Background="White">
                     <StackPanel Background="White" Orientation="Vertical" Margin="5">
                         <TextBlock Background="DimGray" Foreground="White" Text="设置黑名单" HorizontalAlignment="Stretch" TextAlignment="Center"/>
-                        <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:&#13;        若文件(全路径名)包含黑名单列表中关键字&#13;则该文件将不做校对!" TextWrapping="Wrap"/>
+                        <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:&#13;        若文件(全路径名)包含黑名单列表中关键字&#13;则该文件将被忽略(不做校对,且不会出现在结果中)" TextWrapping="Wrap"/>
                         <DataGrid MinHeight="100" ItemsSource="{Binding Ignores, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="文件名/关键字" Width="200" Binding="{Binding Value}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="文件名或关键字" Width="200" Binding="{Binding Value}"></DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                         <CheckBox Content="应用于文件" IsChecked="{Binding IgnoreOnFiles, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,2"/>
@@ -135,10 +135,10 @@
                 <Border BorderBrush="Black" BorderThickness="0.55" Background="White">
                     <StackPanel Background="White" Orientation="Vertical" Margin="5">
                         <TextBlock Background="DimGray" Foreground="White" Text="设置白名单" HorizontalAlignment="Stretch" TextAlignment="Center"/>
-                        <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:&#13;       仅在文件(全路径名)包含白名单列表中关键字时,&#13;才会对该文件进行比对！" TextWrapping="Wrap"/>
+                        <TextBlock Background="DimGray" Foreground="White" FontSize="13" Text="注意:&#13;       仅在文件(全路径名)包含白名单列表中关键字时,&#13;才会对该文件进行比对！不在白名单中的文件将被忽略" TextWrapping="Wrap"/>
                         <DataGrid MinHeight="100" ItemsSource="{Binding Prefers, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="文件名/关键字" Width="200" Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="文件名或关键字" Width="200" Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                         <CheckBox Content="应用于文件" IsChecked="{Binding PreferOnFiles, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,2"/>
