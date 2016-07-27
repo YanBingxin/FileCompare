@@ -1104,7 +1104,7 @@ namespace FilesCompare.ViewModel
         /// <param name="PreferOnUCFiles"></param>
         private void CheckResFolders(bool PreferOnFiles, bool PreferOnUCFiles)
         {
-            if (PreferOnFiles && Prefers.Count > 0)//过滤普通文件结果
+            if (PreferOnFiles && !string.IsNullOrEmpty(Prefer))//过滤普通文件结果
             {
                 for (int i = 0; i < DifFiles1.Count; i++)
                 {
@@ -1114,7 +1114,7 @@ namespace FilesCompare.ViewModel
                     }
                 }
             }
-            if (PreferOnUCFiles && Prefers.Count > 0)
+            if (PreferOnUCFiles && !string.IsNullOrEmpty(Prefer))
             {
                 for (int i = 0; i < DifFiles1.Count; i++)
                 {
