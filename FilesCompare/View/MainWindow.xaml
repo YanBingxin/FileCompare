@@ -6,6 +6,8 @@
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="NoResize"
+        AllowDrop="True"
+        Drop="Window_Drop"
         Title="MainWindow" Height="650" Width="1000">
     <Window.Resources>
         <ResourceDictionary>
@@ -230,14 +232,15 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <DataGrid x:Name="dgNew" ScrollViewer.ScrollChanged="DataGrid_ScrollChanged" CanUserAddRows="False" SelectionMode="Single" RowBackground="#FFD4D0D0" AlternatingRowBackground="#FFD4D0D0" Grid.Column="0" RowHeight="22" HorizontalAlignment="Stretch" AutoGenerateColumns="False" Margin="1" ItemsSource="{Binding Result1, UpdateSourceTrigger=PropertyChanged}" PreviewMouseDoubleClick="DataGrid_PreviewMouseDoubleClick">
+                    <DataGrid x:Name="dgNew" ScrollViewer.ScrollChanged="DataGrid_ScrollChanged" CanUserAddRows="False" SelectionMode="Single" RowBackground="#FFD4D0D0" AlternatingRowBackground="#FFD4D0D0" Grid.Column="0" RowHeight="22" HorizontalAlignment="Stretch" AutoGenerateColumns="False" Margin="1" ItemsSource="{Binding Result1, UpdateSourceTrigger=PropertyChanged}" PreviewMouseDoubleClick="DataGrid_PreviewMouseDoubleClick"
+                       >
                         <DataGrid.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <VirtualizingStackPanel/>
                             </ItemsPanelTemplate>
                         </DataGrid.ItemsPanel>
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="打开位置">
+                            <DataGridTemplateColumn Header="查看">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Vertical">
@@ -313,7 +316,7 @@
                             </ItemsPanelTemplate>
                         </DataGrid.ItemsPanel>
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="打开位置">
+                            <DataGridTemplateColumn Header="查看">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Vertical">

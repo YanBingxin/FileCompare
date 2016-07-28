@@ -23,6 +23,8 @@ namespace FilesCompare
             view.Height = SystemParameters.PrimaryScreenHeight * 0.9;
             view.Width = SystemParameters.PrimaryScreenWidth * 0.85;
             view.Show();
+            if (e != null && e.Args != null && e.Args.Count() > 0)
+                (vm as MainWindowViewModel).ImportExecute(e.Args[0]);
         }
     }
 }

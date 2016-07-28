@@ -18,8 +18,8 @@ namespace FilesCompare.CompareHelper
         public static void Diff(FNode f1, FNode f2)
         {
             string cmd = string.Empty;//命令
-            string diskName = Environment.CurrentDirectory[0] + ":";//盘符名
-            string curRunPath = Environment.CurrentDirectory + @"\Diffuse";//当前程序路径
+            string diskName = System.Windows.Forms.Application.StartupPath[0] + ":";//盘符名
+            string curRunPath = System.Windows.Forms.Application.StartupPath + @"\Diffuse";//当前程序路径
             string newf1FullName = f1.FFullName.Replace(f1.FName, "");//java文件1全路径
             string newf2FullName = f2.FFullName.Replace(f2.FName, "");//java文件2全路径
 
@@ -41,7 +41,7 @@ namespace FilesCompare.CompareHelper
                 string name1 = f1.FFullName.Replace(".class", ".java");
                 string name2 = f2.FFullName.Replace(".class", ".java");
 
-                cmd = string.Format(@"echo 代码分析中... &Diffuse\diffuse {0} {1} &echo 代码分析完毕。", name1, name2);
+                cmd = string.Format(@"echo 代码分析中... &{2}\diffuse {0} {1} &echo 代码分析完毕。", name1, name2, System.Windows.Forms.Application.StartupPath + "\\Diffuse");
                 p.StartInfo.FileName = @"C:\Windows\System32\cmd.exe";
                 p.StartInfo.Arguments = @"/c " + cmd;
                 p.StartInfo.CreateNoWindow = true;

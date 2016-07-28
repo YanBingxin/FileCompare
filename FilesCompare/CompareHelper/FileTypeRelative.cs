@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
@@ -10,42 +11,57 @@ namespace FilesCompare.CompareHelper
 {
     class FileTypeRelative
     {
-        public static void Relative(string type)
+        /// <summary>
+        /// 获取管理员权限
+        /// </summary>
+        /// <param name="type"></param>
+        public static void GetAcess(string type = "")
         {
-            if (null != Registry.ClassesRoot.OpenSubKey(type))
-                return;
-
             WindowsIdentity wi = WindowsIdentity.GetCurrent();
             WindowsPrincipal wp = new WindowsPrincipal(wi);
 
             if (!wp.IsInRole(WindowsBuiltInRole.Administrator))
             {
-                System.Diagnostics.ProcessStartInfo start = new
-                System.Diagnostics.ProcessStartInfo();
-                System.Diagnostics.Process p = new System.Diagnostics.Process();
+                ProcessStartInfo start = new ProcessStartInfo();
+                Process p = new Process();
                 start.WorkingDirectory = System.Windows.Forms.Application.StartupPath;
                 start.Verb = "runas";
                 start.FileName = System.Windows.Forms.Application.ExecutablePath;
-                System.Diagnostics.Process.Start(start);
-                Application.Exit();
+                Process.Start(start);
                 return;
             }
+        }
 
-            //RegistryKey key = Registry.ClassesRoot.OpenSubKey(type);
-            //if (key == null)
-            //{
-            //    key = Registry.ClassesRoot.CreateSubKey(type);
-            //    key.SetValue("", "Compare.ybx.cpr");
-            //    key.SetValue("Content Type", "application/cpr");
-
-            //    key = Registry.ClassesRoot.CreateSubKey("Compare.ybx.cpr");
-            //    key.SetValue("", "Compare ybx");
-
-            //    RegistryKey keySub = key.CreateSubKey("DefaultIcon");
-            //    keySub.SetValue("", System.Windows.Forms.Application.StartupPath + "Compare.ico");
-            //    keySub = key.CreateSubKey("shell//open//command");
-            //    keySub.SetValue("", "/" + System.Windows.Forms.Application.ExecutablePath);
-            //}
+        /// <summary>
+        /// 关联文件
+        /// </summary>
+        /// <param name="_FilePathString">应用程序路径</param>
+        /// <param name="p_FileTypeName">文件类型</param>
+        public static void SaveReg(string _FilePathString, string p_FileTypeName)
+        {
+            //if (null != Registry.ClassesRoot.OpenSubKey(p_FileTypeName))
+            //    return;
+            RegistryKey _RegKey = Registry.ClassesRoot.OpenSubKey("", true);              //打开注册表
+            RegistryKey _VRPkey = _RegKey.OpenSubKey(p_FileTypeName, true);
+            if (_VRPkey != null)
+            {
+                _RegKey.DeleteSubKey(p_FileTypeName, true);
+            }
+            _RegKey.CreateSubKey(p_FileTypeName);
+            _VRPkey = _RegKey.OpenSubKey(p_FileTypeName, true);
+            _VRPkey.SetValue("", "Exec");
+            _VRPkey = _RegKey.OpenSubKey("Exec", true);
+            if (_VRPkey != null) _RegKey.DeleteSubKeyTree("Exec");         //如果等于空就删除注册表DSKJIVR
+            _RegKey.CreateSubKey("Exec");
+            _VRPkey = _RegKey.OpenSubKey("Exec", true);
+            _VRPkey.CreateSubKey("shell");
+            _VRPkey = _VRPkey.OpenSubKey("shell", true);                      //写入必须路径
+            _VRPkey.CreateSubKey("open");
+            _VRPkey = _VRPkey.OpenSubKey("open", true);
+            _VRPkey.CreateSubKey("command");
+            _VRPkey = _VRPkey.OpenSubKey("command", true);
+            string _PathString = "\"" + _FilePathString + "\" \"%1\"";
+            _VRPkey.SetValue("", _PathString);                                    //写入数据
         }
     }
 }

@@ -18,6 +18,7 @@ using FilesCompare.Common;
 using FilesCompare.CompareHelper;
 using System.Reflection;
 using FilesCompare.ViewModel;
+using FilesCompare.View;
 
 namespace FilesCompare
 {
@@ -117,7 +118,7 @@ namespace FilesCompare
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    //MessageBox.Show(ex.Message + "datagrid");
                 }
             }
         }
@@ -147,6 +148,7 @@ namespace FilesCompare
         }
         #endregion
 
+        #region 日志自动滚动
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox txt = (sender as TextBox);
@@ -162,9 +164,29 @@ namespace FilesCompare
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    //MessageBox.Show(ex.Message + "textbox");
                 }
             }
         }
+        #endregion
+
+        #region 支持拖动文件打开
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            string msg = string.Empty;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                msg = ((System.Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
+            }
+            if (msg.EndsWith(".cpr"))
+            {
+                (this.DataContext as MainWindowViewModel).ImportExecute(msg);
+            }
+            else
+            {
+                (new WinWait("目标文件不是有效的分析结果文件！")).ShowDialogEx();
+            }
+        }
+        #endregion
     }
 }

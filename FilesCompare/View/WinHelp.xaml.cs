@@ -18,9 +18,9 @@ namespace FilesCompare.View
     /// <summary>
     /// WinWait.xaml 的交互逻辑
     /// </summary>
-    public partial class WinWait : Window
+    public partial class WinHelp : Window
     {
-        public WinWait(string mess = "")
+        public WinHelp(string mess = "")
         {
             InitializeComponent();
             Message = mess;
@@ -28,10 +28,6 @@ namespace FilesCompare.View
             {
                 this.txtMess.FontSize = 18 - Message.Length / 8;
             }
-        }
-
-        void WinWait_Loaded(object sender, RoutedEventArgs e)
-        {
             BackgroundWorker bg = new BackgroundWorker();
             bg.DoWork += bg_DoWork;
             bg.RunWorkerCompleted += bg_RunWorkerCompleted;
@@ -48,7 +44,12 @@ namespace FilesCompare.View
 
         void bg_DoWork(object sender, DoWorkEventArgs e)
         {
-            Thread.Sleep(500);
+            Thread.Sleep(1000);
+            for (int i = 0; i < 10; i++)
+            {
+                Thread.Sleep(100);
+                this.Opacity = 1 - i * 0.1;
+            }
         }
         private string _message;
         public string Message
@@ -59,11 +60,6 @@ namespace FilesCompare.View
                 _message = value;
                 txtMess.Text = _message;
             }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }

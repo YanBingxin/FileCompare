@@ -74,14 +74,14 @@ namespace FilesCompare.ViewModel
         /// </summary>
         public string ZipHelperDll
         {
-            get { return System.Environment.CurrentDirectory + "\\ICSharpCode.SharpZipLib.dll"; }
+            get { return System.Windows.Forms.Application.StartupPath + "\\ICSharpCode.SharpZipLib.dll"; }
         }
         /// <summary>
         /// Diffdll库文件路径
         /// </summary>
         public string DiffHelperDll
         {
-            get { return System.Environment.CurrentDirectory + "\\Diffuse.cpr"; }
+            get { return System.Windows.Forms.Application.StartupPath + "\\Diffuse.cpr"; }
         }
         /// <summary>
         /// 导入分析临时文件夹
@@ -90,7 +90,7 @@ namespace FilesCompare.ViewModel
         {
             get
             {
-                return System.Environment.CurrentDirectory + "\\Import\\" + TEMPNUMBER.ToString();
+                return System.Windows.Forms.Application.StartupPath + "\\Import\\" + TEMPNUMBER.ToString();
             }
         }
         /// <summary>
@@ -100,7 +100,7 @@ namespace FilesCompare.ViewModel
         {
             get
             {
-                return Directory.GetCurrentDirectory() + "\\" + "Export\\" + TEMPNUMBER.ToString() + "\\";
+                return System.Windows.Forms.Application.StartupPath + "\\" + "Export\\" + TEMPNUMBER.ToString() + "\\";
             }
         }
         /// <summary>
@@ -864,7 +864,6 @@ namespace FilesCompare.ViewModel
             InitData();
             InitCommand();
             LoadConfig();
-            InitTempDirectory();
         }
 
         /// <summary>
@@ -887,26 +886,32 @@ namespace FilesCompare.ViewModel
         private void InitData()
         {
             btnContent = string.Format("开始分析");
-            using (FileStream fs = new FileStream(ZipHelperDll, FileMode.Create))
-            {
-                fs.Write(Properties.Resources.ICSharpCode_SharpZipLib, 0, Properties.Resources.ICSharpCode_SharpZipLib.Length);
-                fs.Flush();
-                fs.Close();
-            }
-            using (FileStream fs = new FileStream(DiffHelperDll, FileMode.Create))
-            {
-                fs.Write(Properties.Resources.Diffuse, 0, Properties.Resources.Diffuse.Length);
-                fs.Flush();
-                fs.Close();
-            }
+            if (!File.Exists(ZipHelperDll))//释放解压类库文件
+                using (FileStream fs = new FileStream(ZipHelperDll, FileMode.Create))
+                {
+                    fs.Write(Properties.Resources.ICSharpCode_SharpZipLib, 0, Properties.Resources.ICSharpCode_SharpZipLib.Length);
+                    fs.Flush();
+                    fs.Close();
+                }
+            if (!File.Exists(DiffHelperDll))//释放内容校对类库
+                using (FileStream fs = new FileStream(DiffHelperDll, FileMode.Create))
+                {
+                    fs.Write(Properties.Resources.Diffuse, 0, Properties.Resources.Diffuse.Length);
+                    fs.Flush();
+                    fs.Close();
+                }
 
             try
-            {
-                CompressHelper.UnZipDir(DiffHelperDll, Environment.CurrentDirectory, false);
+            {//解压内容校对类库
+                if (!Directory.Exists(System.Windows.Forms.Application.StartupPath + "\\Diffuse"))//释放解压类库文件
+                    CompressHelper.UnZipDir(DiffHelperDll, System.Windows.Forms.Application.StartupPath, false);
             }
-            catch (Exception)
-            {
+            catch (Exception) { }
+            try
+            {//文件关联
+                FileTypeRelative.SaveReg(System.Windows.Forms.Application.ExecutablePath, ".cpr");
             }
+            catch (Exception) { }
         }
         #endregion
 
@@ -941,8 +946,6 @@ namespace FilesCompare.ViewModel
             Log("目标2:" + FilePath2);
             Log("分析系统准备中...");
 
-            InitTempDirectory();
-
             UnzipFileName = "开始校对...";
 
             More = 0;
@@ -974,27 +977,6 @@ namespace FilesCompare.ViewModel
             Log("计时器准备就绪。");
         }
 
-        /// <summary>
-        /// 初始临时文件夹
-        /// </summary>
-        private void InitTempDirectory()
-        {
-            try
-            {
-                if (!Directory.Exists("Temp1"))
-                {
-                    Directory.CreateDirectory("Temp1");
-                }
-                if (!Directory.Exists("Temp2"))
-                {
-                    Directory.CreateDirectory("Temp2");
-                }
-            }
-            catch (Exception)
-            {
-                Log("临时文件夹创建异常。");
-            }
-        }
 
         /// <summary>
         /// 检索文件目录计算MD5
@@ -1707,7 +1689,13 @@ namespace FilesCompare.ViewModel
                 }
                 catch (System.AggregateException ex)
                 {
-                    string aa = "";
+                    System.Windows.Application.Current.Dispatcher.Invoke(
+                        new Action(() =>
+                        {
+                            (new WinWait("导出异常，请授予本程序管理员权限后重试。")).ShowDialogEx();
+                        }));
+                    a.Cancel = true;
+                    return;
                 }
                 UnzipFileName = "结果文件合并中...";
                 CompressHelper.CompressDirectory(ExportPath, resultPath);
@@ -1744,11 +1732,21 @@ namespace FilesCompare.ViewModel
         /// <param name="e"></param>
         private void ExportCompeleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (e.Cancelled == true)
+            {
+                Log("导出失败。");
+                UnzipFileName = "导出失败";
+                try
+                {
+                    FileTypeRelative.GetAcess();
+                    m_View.Close();
+                }
+                catch (Exception) { }
+                return;
+            }
             Log("结果导出完毕。");
             UnzipFileName = "导出结果完毕";
-            WinWait win = new WinWait();
-            win.Message = "结果导出完毕";
-            win.ShowDialogEx();
+            (new WinWait("导出结果完毕")).ShowDialogEx();
         }
 
         /// <summary>
@@ -1801,22 +1799,26 @@ namespace FilesCompare.ViewModel
         /// <param name="targetPath"></param>
         private void CopyEmptyFolder(FNode fNode1, FNode fNode2, string targetPath)
         {
-            FNode node = string.IsNullOrEmpty(fNode1.FFullName) ? fNode2 : fNode1;
-            string path = node.FFullName;
-            string root = Result1.Contains(node) ? FilePath1 : FilePath2;
-            string parentDirPath = Directory.GetParent(path).FullName;
+            FNode node = string.IsNullOrEmpty(fNode1.FFullName) ? fNode2 : fNode1;//自己为空获取对方节点
+            string path = node.FFullName;//获取对方路径
+            string root = Result1.Contains(node) ? FilePath1 : FilePath2;//获取所属根目录
+            string parentDir = Directory.GetParent(path).FullName;//获取父目录
+
+            if (parentDir == root)//若父目录为校对目录根目录，则不需要创建
+                return;
+
             bool isZip = !string.IsNullOrEmpty(node.JarParentName);
-            if (isZip)
+            if (isZip)//压缩文件特殊处理
                 root = node.JarParentName.Replace(root + "\\", "");
-            CopyFileWithDir.CopyEmptyFolder(parentDirPath, root, targetPath, isZip);
+            CopyFileWithDir.CopyEmptyFolder(parentDir, root, targetPath, isZip);
         }
         /// <summary>
         /// 导入分析结果
         /// </summary>
         /// <param name="obj"></param>
-        private void ImportExecute(object obj)
+        public void ImportExecute(object obj)
         {
-            string importPath = GetImportPath();
+            string importPath = GetImportPath(obj);
             if (string.IsNullOrEmpty(importPath))
                 return;
             try
@@ -1824,11 +1826,24 @@ namespace FilesCompare.ViewModel
                 BackgroundWorker bg = new BackgroundWorker();
                 bg.DoWork += new DoWorkEventHandler(new Action<object, DoWorkEventArgs>((sender, e) =>
                 {
-                    CompressHelper.UnZipDir(importPath, ImportPath, false);
-                    string file1 = Directory.GetDirectories(ImportPath + "\\新")[0];
-                    string file2 = Directory.GetDirectories(ImportPath + "\\旧")[0];
-                    FilePath1 = file1;
-                    FilePath2 = file2;
+                    try
+                    {
+                        CompressHelper.UnZipDir(importPath, ImportPath, false);
+                        string file1 = Directory.GetDirectories(ImportPath + "\\新")[0];
+                        string file2 = Directory.GetDirectories(ImportPath + "\\旧")[0];
+                        FilePath1 = file1;
+                        FilePath2 = file2;
+                    }
+                    catch (System.Exception ex)
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(
+                            new Action(() =>
+                            {
+                                (new WinWait("导入失败，该文件格式不正确或文件内容已损坏。")).ShowDialogEx();
+                            }));
+                        e.Cancel = true;
+                        return;
+                    }
                 }));
                 bg.RunWorkerCompleted += ImportCompeleted;
                 bg.RunWorkerAsync();
@@ -1847,6 +1862,12 @@ namespace FilesCompare.ViewModel
         /// <param name="e"></param>
         private void ImportCompeleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (e.Cancelled == true)
+            {
+                UnzipFileName = "导入失败";
+                Log("导入失败");
+                return;
+            }
             UnzipFileName = "导入完毕";
             CompareExecute("导入校对");
             Log("导入完毕");
@@ -1855,8 +1876,13 @@ namespace FilesCompare.ViewModel
         /// 获取导入路径
         /// </summary>
         /// <returns></returns>
-        private string GetImportPath()
+        private string GetImportPath(object path)
         {
+            if (path != null)
+            {
+                return path.ToString();
+            }
+
             string res = string.Empty;
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
@@ -1904,6 +1930,7 @@ namespace FilesCompare.ViewModel
             ClearTemp();
             m_View.DataContext = null;
             (m_View as Window).Hide();
+            (new WinHelp("清理临时文件机制启动...")).ShowDialogEx();
         }
 
         /// <summary>
@@ -1917,21 +1944,25 @@ namespace FilesCompare.ViewModel
                 //删除临时目录文件
                 try
                 {
-                    DirectoryInfo dir1 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp1");
-                    DirectoryInfo dir2 = new DirectoryInfo(Environment.CurrentDirectory + @"/Temp2");
-                    DirectoryInfo dir3 = new DirectoryInfo(Environment.CurrentDirectory + @"/Export");
-                    DirectoryInfo dir4 = new DirectoryInfo(Environment.CurrentDirectory + @"/Import");
-                    DirectoryInfo dir5 = new DirectoryInfo(Environment.CurrentDirectory + @"/Diffuse");
+                    string exportPath = System.Windows.Forms.Application.StartupPath + "\\" + "Export";
+                    string importPath = System.Windows.Forms.Application.StartupPath + "\\" + "Import";
+                    string diffPath = System.Windows.Forms.Application.StartupPath + "\\" + "Diffuse";
+
+                    DirectoryInfo dir1 = new DirectoryInfo(Environment.CurrentDirectory + "/Temp1");
+                    DirectoryInfo dir2 = new DirectoryInfo(Environment.CurrentDirectory + "/Temp2");
+                    DirectoryInfo dir3 = new DirectoryInfo(exportPath);
+                    DirectoryInfo dir4 = new DirectoryInfo(importPath);
+                    DirectoryInfo dir5 = new DirectoryInfo(diffPath);
 
                     if (Directory.Exists("Temp1"))
                         dir1.Delete(true);
                     if (Directory.Exists("Temp2"))
                         dir2.Delete(true);
-                    if (Directory.Exists("Export"))
+                    if (Directory.Exists(exportPath))
                         dir3.Delete(true);
-                    if (Directory.Exists("Import"))
+                    if (Directory.Exists(importPath))
                         dir4.Delete(true);
-                    if (Directory.Exists("Diffuse"))
+                    if (Directory.Exists(diffPath))
                         dir5.Delete(true);
                     if (File.Exists(DiffHelperDll))
                         File.Delete(DiffHelperDll);

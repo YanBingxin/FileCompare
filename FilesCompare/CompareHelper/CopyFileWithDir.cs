@@ -17,39 +17,41 @@ namespace FilesCompare.CompareHelper
         public static void CopyFile(string strFullName, string directory, string strToPath, bool isZip = false)
         {
             string exLog = string.Empty;//异常日志
-            if (!directory.EndsWith("\\"))
-            {
-                directory += "\\";
-            }
-            if (!strToPath.EndsWith("\\"))
-            {
-                strToPath += "\\";
-            }
-
-            string fileName = Path.GetFileName(strFullName);
+            string fileName = string.Empty;
             string folderName = string.Empty;
-
-            //取得要拷贝的文件夹名
-            if (isZip)
-            {
-                folderName = directory;
-                folderName += strFullName.Substring(strFullName.IndexOf(folderName) + folderName.Length);
-                folderName = folderName.Substring(0, folderName.Length - fileName.Length);
-            }
-            else
-            {
-                folderName = strFullName.Substring(strFullName.IndexOf(directory) + directory.Length);
-                folderName = folderName.Substring(0, folderName.Length - fileName.Length);
-            }
-
-            //如果源文件夹不存在，则创建
-            if (!Directory.Exists(strToPath + folderName))
-            {
-                Directory.CreateDirectory(strToPath + folderName);
-            }
-
             try
             {
+                if (!directory.EndsWith("\\"))
+                {
+                    directory += "\\";
+                }
+                if (!strToPath.EndsWith("\\"))
+                {
+                    strToPath += "\\";
+                }
+
+                fileName = Path.GetFileName(strFullName);
+
+                //取得要拷贝的文件夹名
+                if (isZip)
+                {
+                    folderName = directory;
+                    folderName += strFullName.Substring(strFullName.IndexOf(folderName) + folderName.Length);
+                    if (folderName.Contains(fileName))
+                        folderName = folderName.Substring(0, folderName.Length - fileName.Length);
+                }
+                else
+                {
+                    folderName = strFullName.Substring(strFullName.IndexOf(directory) + directory.Length);
+                    if (folderName.Contains(fileName))
+                        folderName = folderName.Substring(0, folderName.Length - fileName.Length);
+                }
+
+                //如果源文件夹不存在，则创建
+                if (!Directory.Exists(strToPath + folderName))
+                {
+                    Directory.CreateDirectory(strToPath + folderName);
+                }
                 //开始拷贝文件,true表示覆盖同名文件
                 File.Copy(strFullName, strToPath + folderName + fileName, true);
                 Console.WriteLine("原:" + strFullName);
@@ -57,11 +59,9 @@ namespace FilesCompare.CompareHelper
             }
             catch (Exception ex)
             {
-                exLog += ex.Message + "-文件名:" + strFullName + "\r\n";
+                if (MessageBox.Show("原:\r\n" + strFullName + "\r\n导出到:\r\n" + strToPath + folderName + fileName + "时,\r\n" + "发生异常:\r\n" + ex.Message + "," + "\r\n是否继续导出？", "警告", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                    throw ex;
             }
-            if (string.IsNullOrEmpty(exLog))
-                return;
-            MessageBox.Show(exLog);
         }
         /// <summary>
         /// 拷贝文件夹
@@ -77,33 +77,43 @@ namespace FilesCompare.CompareHelper
             //取得要拷贝的目录名
             string dirName = Path.GetFileName(strFullName);
             string folderName = string.Empty;
-            //取得要拷贝的父层文件夹名
-            if (isZip)
+            try
             {
-                folderName = directory;
-                folderName += strFullName.Substring(strFullName.IndexOf(folderName) + folderName.Length);
-                folderName = folderName.Substring(0, folderName.Length - dirName.Length);
-            }
-            else
-            {
-                folderName = strFullName.Substring(strFullName.IndexOf(directory) + directory.Length);
-                folderName = folderName.Substring(0, folderName.Length - dirName.Length);
-            }
+                //取得要拷贝的父层文件夹名
+                if (isZip)
+                {
+                    folderName = directory;
+                    folderName += strFullName.Substring(strFullName.IndexOf(folderName) + folderName.Length);
+                    if (folderName.Contains(dirName))
+                        folderName = folderName.Substring(0, folderName.Length - dirName.Length);
+                }
+                else
+                {
+                    folderName = strFullName.Substring(strFullName.IndexOf(directory) + directory.Length);
+                    if (folderName.Contains(dirName))
+                        folderName = folderName.Substring(0, folderName.Length - dirName.Length);
+                }
 
-            //如果文件夹不存在，则创建
-            if (!Directory.Exists(strToPath + folderName + dirName))
-            {
-                Directory.CreateDirectory(strToPath + folderName + dirName);
-            }
+                //如果文件夹不存在，则创建
+                if (!Directory.Exists(strToPath + folderName + dirName))
+                {
+                    Directory.CreateDirectory(strToPath + folderName + dirName);
+                }
 
-            //开始拷贝文件,true表示覆盖同名文件
-            foreach (string file in Directory.GetFiles(strFullName))
-            {
-                CopyFile(file, directory, strToPath, isZip);
+                //开始拷贝文件,true表示覆盖同名文件
+                foreach (string file in Directory.GetFiles(strFullName))
+                {
+                    CopyFile(file, directory, strToPath, isZip);
+                }
+                foreach (string folder in Directory.GetDirectories(strFullName))
+                {
+                    CopyFolder(folder, directory, strToPath, isZip);
+                }
             }
-            foreach (string folder in Directory.GetDirectories(strFullName))
+            catch (Exception ex)
             {
-                CopyFolder(folder, directory, strToPath, isZip);
+                if (MessageBox.Show("导出\r\n" + strToPath + folderName + dirName + "时,\r\n发生异常：\r\n" + ex.Message + "," + "\r\n是否继续导出？", "警告", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                    throw ex;
             }
         }
 
@@ -120,24 +130,36 @@ namespace FilesCompare.CompareHelper
                 strToPath += "\\";
             //取得要拷贝的目录名
             string dirName = Path.GetFileName(strFullName);
-            string folderName = string.Empty;
             //取得要拷贝的父层文件夹名
-            if (isZip)
+            string folderName = string.Empty;
+            try
             {
-                folderName = directory;
-                folderName += strFullName.Substring(strFullName.IndexOf(folderName) + folderName.Length);
-                folderName = folderName.Substring(0, folderName.Length - dirName.Length);
-            }
-            else
-            {
-                folderName = strFullName.Substring(strFullName.IndexOf(directory) + directory.Length);
-                folderName = folderName.Substring(0, folderName.Length - dirName.Length);
-            }
+                if (isZip)
+                {
+                    folderName = directory;
+                    folderName += strFullName.Substring(strFullName.IndexOf(folderName) + folderName.Length);
+                    if (folderName.Contains(dirName))
+                        folderName = folderName.Substring(0, folderName.Length - dirName.Length);
+                }
+                else
+                {
+                    folderName = strFullName.Substring(strFullName.IndexOf(directory) + directory.Length);
+                    if (folderName.Contains(dirName))
+                        folderName = folderName.Substring(0, folderName.Length - dirName.Length);
+                }
 
-            //如果文件夹不存在，则创建
-            if (!Directory.Exists(strToPath + folderName + dirName))
+
+                //如果文件夹不存在，则创建
+                if (!Directory.Exists(strToPath + folderName + dirName))
+                {
+                    Directory.CreateDirectory(strToPath + folderName + dirName);
+                }
+
+            }
+            catch (Exception ex)
             {
-                Directory.CreateDirectory(strToPath + folderName + dirName);
+                if (MessageBox.Show("导出\r\n" + strToPath + folderName + dirName + "时,\r\n发生异常:\r\n" + ex.Message + "," + "\r\n是否继续导出？", "警告", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                    throw ex;
             }
         }
     }
