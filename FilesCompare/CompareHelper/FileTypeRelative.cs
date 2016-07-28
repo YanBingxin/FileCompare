@@ -39,8 +39,6 @@ namespace FilesCompare.CompareHelper
         /// <param name="p_FileTypeName">文件类型</param>
         public static void SaveReg(string _FilePathString, string p_FileTypeName)
         {
-            //if (null != Registry.ClassesRoot.OpenSubKey(p_FileTypeName))
-            //    return;
             RegistryKey _RegKey = Registry.ClassesRoot.OpenSubKey("", true);              //打开注册表
             RegistryKey _VRPkey = _RegKey.OpenSubKey(p_FileTypeName, true);
             if (_VRPkey != null)

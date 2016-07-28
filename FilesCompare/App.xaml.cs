@@ -7,6 +7,8 @@ using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Windows;
+using System.Reflection;
+using System.IO;
 
 namespace FilesCompare
 {
@@ -17,6 +19,13 @@ namespace FilesCompare
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+            {
+                if (args.Name.Contains("ICSharpCode.SharpZipLib"))
+                    return Assembly.Load(FilesCompare.Properties.Resources.ICSharpCode_SharpZipLib);
+
+                throw new Exception("not found assembly");
+            };
             base.OnStartup(e);
             IMainWindowView view = new MainWindow();
             IMainWindowViewModel vm = new MainWindowViewModel(view);

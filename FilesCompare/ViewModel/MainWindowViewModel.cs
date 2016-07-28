@@ -886,13 +886,6 @@ namespace FilesCompare.ViewModel
         private void InitData()
         {
             btnContent = string.Format("开始分析");
-            if (!File.Exists(ZipHelperDll))//释放解压类库文件
-                using (FileStream fs = new FileStream(ZipHelperDll, FileMode.Create))
-                {
-                    fs.Write(Properties.Resources.ICSharpCode_SharpZipLib, 0, Properties.Resources.ICSharpCode_SharpZipLib.Length);
-                    fs.Flush();
-                    fs.Close();
-                }
             if (!File.Exists(DiffHelperDll))//释放内容校对类库
                 using (FileStream fs = new FileStream(DiffHelperDll, FileMode.Create))
                 {
