@@ -1921,7 +1921,6 @@ namespace FilesCompare.ViewModel
         {
             SaveIgnores();
             ClearTemp();
-            m_View.DataContext = null;
             (m_View as Window).Hide();
             (new WinHelp("清理临时文件机制启动...")).ShowDialogEx();
         }
@@ -1973,7 +1972,7 @@ namespace FilesCompare.ViewModel
 
         private void bg_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            CommonMethod.Write("立思辰文件比对工具2.0--by ybx", "临时文件级数", "0", Environment.CurrentDirectory + @"\Compare.cfg");
+            CommonMethod.Write("立思辰文件比对工具3.0--by ybx", "临时文件级数", "0", Environment.CurrentDirectory + @"\Compare.cfg");
             m_View.Close();
         }
 
