@@ -944,11 +944,13 @@ namespace FilesCompare.ViewModel
         /// <param name="prarmeter"></param>
         private void CompareExecute(object prarmeter)
         {
+            SetLogMaxWidth();
             (new WinHelp("分析启动，请关注底部状态栏的实时状态...")).ShowDialogEx();
             TEMPNUMBER++;
             InitDataForCompare();
             CompareFiles(prarmeter);
         }
+
         /// <summary>
         /// 初始化比较所用数据
         /// </summary>
@@ -1088,6 +1090,8 @@ namespace FilesCompare.ViewModel
             timer.Stop();
             Log("计时器已终止。");
             Log("结果加载中...");
+            //日志宽度复位
+            SetLogNormalWidth();
             WinWait win = new WinWait();
             win.Message = "已校对完毕";
             win.ShowDialogEx();
@@ -1691,6 +1695,7 @@ namespace FilesCompare.ViewModel
         /// <param name="obj"></param>
         private void ExportExecute(object obj)
         {
+            SetLogMaxWidth();
             //保存地址
             string resultPath = GetResPath();
             if (string.IsNullOrEmpty(resultPath))
@@ -1758,6 +1763,7 @@ namespace FilesCompare.ViewModel
             }
             Log("结果导出完毕。");
             UnzipFileName = "导出结果完毕";
+            SetLogNormalWidth();
             (new WinWait("导出结果完毕")).ShowDialogEx();
         }
 
@@ -1824,12 +1830,14 @@ namespace FilesCompare.ViewModel
                 root = node.JarParentName.Replace(root + "\\", "");
             CopyFileWithDir.CopyEmptyFolder(parentDir, root, targetPath, isZip);
         }
+
         /// <summary>
         /// 导入分析结果
         /// </summary>
         /// <param name="obj"></param>
         public void ImportExecute(object obj)
         {
+            SetLogMaxWidth();
             string importPath = GetImportPath(obj);
             if (string.IsNullOrEmpty(importPath))
                 return;
@@ -1883,6 +1891,7 @@ namespace FilesCompare.ViewModel
             UnzipFileName = "导入完毕";
             CompareExecute("导入校对");
             Log("导入完毕");
+            SetLogNormalWidth();
         }
         /// <summary>
         /// 获取导入路径
@@ -2006,6 +2015,29 @@ namespace FilesCompare.ViewModel
             {
                 win.DragMove();
             }
+        }
+        /// <summary>
+        /// 日志回复正常宽度
+        /// </summary>
+        public void SetLogNormalWidth()
+        {
+            SetLogColumnWidth(200.0);
+        }
+        /// <summary>
+        /// 日志宽度最大化
+        /// </summary>
+        public void SetLogMaxWidth()
+        {
+            SetLogColumnWidth((m_View as MainWindow).ActualWidth);
+        }
+
+        /// <summary>
+        /// 改变日志列宽度
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetLogColumnWidth(double value)
+        {
+            (m_View as MainWindow).clnLog.Width = (GridLength)(new GridLengthConverter()).ConvertFrom((value));
         }
         #endregion
     }
