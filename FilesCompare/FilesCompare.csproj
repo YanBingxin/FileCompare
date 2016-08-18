@@ -112,6 +112,9 @@
     <Compile Include="Style\SelectableTextBlock.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Model\StringWraper.cs" />
+    <Compile Include="View\WinProgress.xaml.cs">
+      <DependentUpon>WinProgress.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\WinHelp.xaml.cs">
       <DependentUpon>WinHelp.xaml</DependentUpon>
     </Compile>
@@ -135,6 +138,10 @@
     <Page Include="Style\ybx_GraySimpleStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\WinProgress.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\WinHelp.xaml">
       <Generator>MSBuild:Compile</Generator>

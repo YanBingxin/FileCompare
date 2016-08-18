@@ -396,7 +396,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Expander ExpandDirection="Down" Background="Gray" Grid.Row="1">
                     <Expander.Header>
@@ -416,7 +416,7 @@
                     <Expander.Header>
                         <TextBlock Text="运行日志" Foreground="White" HorizontalAlignment="Center"></TextBlock>
                     </Expander.Header>
-                    <TextBox MinHeight="500" TextChanged="TextBox_TextChanged" MaxHeight="500" Grid.Row="1" VerticalAlignment="Stretch" Background="WhiteSmoke" TabIndex="5"  Foreground="Black" HorizontalAlignment="Stretch"  Text="{Binding Logs, UpdateSourceTrigger=PropertyChanged}" 
+                    <TextBox TextChanged="TextBox_TextChanged" Grid.Row="1" VerticalAlignment="Stretch" Background="WhiteSmoke" TabIndex="5"  Foreground="Black" HorizontalAlignment="Stretch"  Text="{Binding Logs, UpdateSourceTrigger=PropertyChanged}" 
                          FontSize="12" BorderThickness="1" Margin="0,0,0,1" SnapsToDevicePixels="True"
                          Style="{StaticResource DownClearButtonTextBoxStyle}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
                     </TextBox>

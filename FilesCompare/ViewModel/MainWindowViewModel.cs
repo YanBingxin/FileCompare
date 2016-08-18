@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FilesCompare.View;
+using System.Security.Principal;
 
 namespace FilesCompare.ViewModel
 {
@@ -69,6 +70,10 @@ namespace FilesCompare.ViewModel
         #endregion
 
         #region 属性
+        public string ConfigFilePath
+        {
+            get { return System.Windows.Forms.Application.StartupPath + @"\Compare.cfg"; }
+        }
         /// <summary>
         /// ZIPdll库文件路径
         /// </summary>
@@ -885,6 +890,20 @@ namespace FilesCompare.ViewModel
         /// </summary>
         private void InitData()
         {
+            //获取管理员权限
+            try
+            {
+                WindowsIdentity wi = WindowsIdentity.GetCurrent();
+                WindowsPrincipal wp = new WindowsPrincipal(wi);
+
+                if (!wp.IsInRole(WindowsBuiltInRole.Administrator))
+                {
+                    FileTypeRelative.GetAcess();
+                    m_View.Close();
+                }
+            }
+            catch (Exception) { }
+
             btnContent = string.Format("开始分析");
             if (!File.Exists(DiffHelperDll))//释放内容校对类库
                 using (FileStream fs = new FileStream(DiffHelperDll, FileMode.Create))
@@ -925,6 +944,7 @@ namespace FilesCompare.ViewModel
         /// <param name="prarmeter"></param>
         private void CompareExecute(object prarmeter)
         {
+            (new WinHelp("分析启动，请关注底部状态栏的实时状态...")).ShowDialogEx();
             TEMPNUMBER++;
             InitDataForCompare();
             CompareFiles(prarmeter);
@@ -1553,10 +1573,7 @@ namespace FilesCompare.ViewModel
         /// </summary>
         private void SaveIgnores()
         {
-            if (!File.Exists("Compare.cfg"))
-            {
-                File.Create("Compare.cfg");
-            }
+
 
             SetValue("临时文件级数", TEMPNUMBER.ToString());
             SetValue("黑名单", Ignore);
@@ -1645,7 +1662,11 @@ namespace FilesCompare.ViewModel
         /// <returns></returns>
         private string GetValue(string key)
         {
-            return CommonMethod.Read("立思辰文件比对工具3.0--by ybx", key, Environment.CurrentDirectory + @"\Compare.cfg");
+            if (!File.Exists(ConfigFilePath))
+            {
+                File.Create(ConfigFilePath);
+            }
+            return CommonMethod.Read("立思辰文件比对工具3.0--by ybx", key, ConfigFilePath);
         }
 
         /// <summary>
@@ -1655,7 +1676,11 @@ namespace FilesCompare.ViewModel
         /// <returns></returns>
         private void SetValue(string key, string value)
         {
-            CommonMethod.Write("立思辰文件比对工具3.0--by ybx", key, value, Environment.CurrentDirectory + @"\Compare.cfg");
+            if (!File.Exists(ConfigFilePath))
+            {
+                File.Create(ConfigFilePath);
+            }
+            CommonMethod.Write("立思辰文件比对工具3.0--by ybx", key, value, ConfigFilePath);
         }
         #endregion
 
@@ -1729,12 +1754,6 @@ namespace FilesCompare.ViewModel
             {
                 Log("导出失败。");
                 UnzipFileName = "导出失败";
-                try
-                {
-                    FileTypeRelative.GetAcess();
-                    m_View.Close();
-                }
-                catch (Exception) { }
                 return;
             }
             Log("结果导出完毕。");
@@ -1972,7 +1991,7 @@ namespace FilesCompare.ViewModel
 
         private void bg_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            CommonMethod.Write("立思辰文件比对工具3.0--by ybx", "临时文件级数", "0", Environment.CurrentDirectory + @"\Compare.cfg");
+            CommonMethod.Write("立思辰文件比对工具3.0--by ybx", "临时文件级数", "0", ConfigFilePath);
             m_View.Close();
         }
 

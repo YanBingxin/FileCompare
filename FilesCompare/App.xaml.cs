@@ -9,6 +9,8 @@ using System.Linq;
 using System.Windows;
 using System.Reflection;
 using System.IO;
+using FilesCompare.CompareHelper;
+using System.Security.Principal;
 
 namespace FilesCompare
 {
@@ -19,6 +21,7 @@ namespace FilesCompare
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            //加载失败程序集后从资源获取ICSharpCode.SharpZipLib.dll
             AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
             {
                 if (args.Name.Contains("ICSharpCode.SharpZipLib"))
@@ -26,11 +29,15 @@ namespace FilesCompare
 
                 throw new Exception("not found assembly");
             };
+
             base.OnStartup(e);
+
             IMainWindowView view = new MainWindow();
             IMainWindowViewModel vm = new MainWindowViewModel(view);
-            view.Height = SystemParameters.PrimaryScreenHeight * 0.9;
-            view.Width = SystemParameters.PrimaryScreenWidth * 0.85;
+
+            view.Height = SystemParameters.PrimaryScreenHeight * 0.75;
+            view.Width = SystemParameters.PrimaryScreenWidth * 0.75;
+
             view.Show();
             if (e != null && e.Args != null && e.Args.Count() > 0)
                 (vm as MainWindowViewModel).ImportExecute(e.Args[0]);
