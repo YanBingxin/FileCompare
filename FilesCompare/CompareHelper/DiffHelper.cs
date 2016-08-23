@@ -24,12 +24,14 @@ namespace FilesCompare.CompareHelper
             string newf2FullName = string.IsNullOrEmpty(f2.FName) ? f2.FFullName : f2.FFullName.Replace(f2.FName, "");//java文件2全路径
 
             //反编译.class文件为.java文件
-            if (f1.FFullName.EndsWith(".class") && f2.FFullName.EndsWith(".class"))
+            if (f1.FFullName.EndsWith(".class") || f2.FFullName.EndsWith(".class"))
             {
                 cmd += diskName;
                 cmd += "&cd " + curRunPath;
-                cmd += "&" + @"jad -o -d " + newf1FullName + " -s java " + f1.FFullName;
-                cmd += "&" + @"jad -o -d " + newf2FullName + " -s java " + f2.FFullName;
+                if (!string.IsNullOrEmpty(newf1FullName))
+                    cmd += "&" + @"jad -o -d " + newf1FullName + " -s java " + f1.FFullName;
+                if (!string.IsNullOrEmpty(newf2FullName))
+                    cmd += "&" + @"jad -o -d " + newf2FullName + " -s java " + f2.FFullName;
 
                 string res;
                 CommonMethod.RunCmd(cmd, out res);
