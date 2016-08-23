@@ -59,7 +59,7 @@ namespace FilesCompare
             FNode f1 = dgNew.Items[index] as FNode;
             FNode f2 = dgOld.Items[index] as FNode;
 
-            if (string.IsNullOrEmpty(f1.FFullName) || string.IsNullOrEmpty(f2.FFullName))
+            if (string.IsNullOrEmpty(f1.FFullName) && string.IsNullOrEmpty(f2.FFullName))
             {
                 return;
             }

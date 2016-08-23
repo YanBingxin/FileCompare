@@ -20,8 +20,8 @@ namespace FilesCompare.CompareHelper
             string cmd = string.Empty;//命令
             string diskName = System.Windows.Forms.Application.StartupPath[0] + ":";//盘符名
             string curRunPath = System.Windows.Forms.Application.StartupPath + @"\Diffuse";//当前程序路径
-            string newf1FullName = f1.FFullName.Replace(f1.FName, "");//java文件1全路径
-            string newf2FullName = f2.FFullName.Replace(f2.FName, "");//java文件2全路径
+            string newf1FullName = string.IsNullOrEmpty(f1.FName) ? f1.FFullName : f1.FFullName.Replace(f1.FName, "");//java文件1全路径
+            string newf2FullName = string.IsNullOrEmpty(f2.FName) ? f2.FFullName : f2.FFullName.Replace(f2.FName, "");//java文件2全路径
 
             //反编译.class文件为.java文件
             if (f1.FFullName.EndsWith(".class") && f2.FFullName.EndsWith(".class"))
