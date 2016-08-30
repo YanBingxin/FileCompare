@@ -890,20 +890,6 @@ namespace FilesCompare.ViewModel
         /// </summary>
         private void InitData()
         {
-            //获取管理员权限
-            try
-            {
-                WindowsIdentity wi = WindowsIdentity.GetCurrent();
-                WindowsPrincipal wp = new WindowsPrincipal(wi);
-
-                if (!wp.IsInRole(WindowsBuiltInRole.Administrator))
-                {
-                    FileTypeRelative.GetAcess();
-                    m_View.Close();
-                }
-            }
-            catch (Exception) { }
-
             btnContent = string.Format("开始分析");
             if (!File.Exists(DiffHelperDll))//释放内容校对类库
                 using (FileStream fs = new FileStream(DiffHelperDll, FileMode.Create))
