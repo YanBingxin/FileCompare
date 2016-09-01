@@ -1078,9 +1078,7 @@ namespace FilesCompare.ViewModel
             Log("结果加载中...");
             //日志宽度复位
             SetLogNormalWidth();
-            WinWait win = new WinWait();
-            win.Message = "已校对完毕";
-            win.ShowDialogEx();
+            CMessageBox.Show("已校对完毕。");
         }
         /// <summary>
         /// 过滤结果中不适用白名单的文件结果
@@ -1701,7 +1699,7 @@ namespace FilesCompare.ViewModel
                     System.Windows.Application.Current.Dispatcher.Invoke(
                         new Action(() =>
                         {
-                            (new WinWait("导出异常，请授予本程序管理员权限后重试。")).ShowDialogEx();
+                            CMessageBox.Show("导出异常，请授予本程序管理员权限后重试。");
                         }));
                     a.Cancel = true;
                     return;
@@ -1750,7 +1748,7 @@ namespace FilesCompare.ViewModel
             Log("结果导出完毕。");
             UnzipFileName = "导出结果完毕";
             SetLogNormalWidth();
-            (new WinWait("导出结果完毕")).ShowDialogEx();
+            CMessageBox.Show("导出结果完毕");
         }
 
         /// <summary>
@@ -1845,7 +1843,7 @@ namespace FilesCompare.ViewModel
                         System.Windows.Application.Current.Dispatcher.Invoke(
                             new Action(() =>
                             {
-                                (new WinWait("导入失败，该文件格式不正确或文件内容已损坏。")).ShowDialogEx();
+                                CMessageBox.Show("导入失败，该文件格式不正确或文件内容已损坏。");
                             }));
                         e.Cancel = true;
                         return;
@@ -1858,7 +1856,7 @@ namespace FilesCompare.ViewModel
             }
             catch (Exception)
             {
-                (new WinWait("该结果文件不包含校对信息")).ShowDialogEx();
+                CMessageBox.Show("该结果文件不包含校对信息");
             }
         }
         /// <summary>

@@ -1,4 +1,4 @@
-﻿<Window x:Class="FilesCompare.View.WinProgress"
+﻿<Window x:Class="FilesCompare.View.CMessageBox"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Height="200" Width="400"
@@ -26,16 +26,16 @@
                 <can:ParticleCanvas IsEnabled="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Direction="Shine" MinSpeed="1" MaxSpeed="5" Width="400" ParticlesBrush="LightCyan" MinSize="5" MaxSize="5" ParticlesCount="100" Height="200" X1="5" X2="395" Y1="0" Y2="0" IsShowParticles="True">
                 </can:ParticleCanvas>
             </can:AdornedControl.AdornerContent>
-            <TextBlock x:Name="txtMess" VerticalAlignment="Center" FontSize="25" HorizontalAlignment="Center" Text="正在处理结果中..." FontFamily="幼圆" Grid.Column="1" Grid.Row="1">
-                <TextBlock.TextEffects>
+            <TextBlock x:Name="txtMess" VerticalAlignment="Center" FontSize="25" HorizontalAlignment="Center" TextWrapping="Wrap" Text="正在处理结果中..." FontFamily="幼圆" Grid.Column="1" Grid.Row="1">
+                <!--<TextBlock.TextEffects>
                     <TextEffect x:Name="ef" PositionStart="0" PositionCount="1" >
                         <TextEffect.Transform>
                             <TranslateTransform x:Name="st" X="0" Y="0"/>
                         </TextEffect.Transform>
                     </TextEffect>
                 </TextBlock.TextEffects>
-                <TextBlock.Triggers>
-                    <EventTrigger RoutedEvent="Loaded">
+                <TextBlock.Triggers>-->
+                    <!--<EventTrigger RoutedEvent="Loaded">
                         <BeginStoryboard>
                             <Storyboard Storyboard.TargetName="st" Storyboard.TargetProperty="Y" RepeatBehavior="Forever" AutoReverse="True">
                                 <DoubleAnimation From="0" To="-3.5" Duration="0:0:0.5"/>
@@ -51,8 +51,9 @@
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger>
-                </TextBlock.Triggers>
+                </TextBlock.Triggers>-->
             </TextBlock>
         </can:AdornedControl>
+        <Button Style="{StaticResource BaseButtonStyle}" Background="WhiteSmoke" Content="确定" HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="Bottom" Height="35"  Click="Button_Click"/>
     </Grid>
 </Window>

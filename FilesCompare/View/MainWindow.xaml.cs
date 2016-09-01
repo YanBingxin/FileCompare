@@ -184,7 +184,7 @@ namespace FilesCompare
             }
             else
             {
-                (new WinWait("目标文件不是有效的分析结果文件！")).ShowDialogEx();
+                CMessageBox.Show("目标文件不是有效的分析结果文件！");
             }
         }
         #endregion
