@@ -931,7 +931,7 @@ namespace FilesCompare.ViewModel
         private void CompareExecute(object prarmeter)
         {
             SetLogMaxWidth();
-            (new WinHelp("分析启动，请关注底部状态栏的实时状态...")).ShowDialogEx();
+            WinTips.Show("分析启动，请关注底部状态栏的实时状态...");
             TEMPNUMBER++;
             InitDataForCompare();
             CompareFiles(prarmeter);
@@ -1934,7 +1934,7 @@ namespace FilesCompare.ViewModel
             SaveIgnores();
             ClearTemp();
             (m_View as Window).Hide();
-            (new WinHelp("清理临时文件机制启动...")).ShowDialogEx();
+            WinTips.Show("清理临时文件机制启动...");
         }
 
         /// <summary>

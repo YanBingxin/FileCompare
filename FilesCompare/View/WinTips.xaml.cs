@@ -12,22 +12,19 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using FilesCompare.Common;
 
 namespace FilesCompare.View
 {
     /// <summary>
     /// WinWait.xaml 的交互逻辑
     /// </summary>
-    public partial class WinHelp : Window
+    public partial class WinTips : Window
     {
-        public WinHelp(string mess = "")
+        public WinTips(string mess = "")
         {
             InitializeComponent();
             Message = mess;
-            if (Message.Length > 12)
-            {
-                this.txtMess.FontSize = 18 - Message.Length / 8;
-            }
             BackgroundWorker bg = new BackgroundWorker();
             bg.DoWork += bg_DoWork;
             bg.RunWorkerCompleted += bg_RunWorkerCompleted;
@@ -60,6 +57,16 @@ namespace FilesCompare.View
                 _message = value;
                 txtMess.Text = _message;
             }
+        }
+
+        /// <summary>
+        /// 弹出窗口展示信息
+        /// </summary>
+        /// <param name="mess"></param>
+        public static void Show(string mess)
+        {
+            WinTips win = new WinTips(mess);
+            win.ShowDialogEx();
         }
     }
 }

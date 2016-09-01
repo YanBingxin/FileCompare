@@ -115,8 +115,8 @@
     <Compile Include="Style\SelectableTextBlock.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Model\StringWraper.cs" />
-    <Compile Include="View\WinHelp.xaml.cs">
-      <DependentUpon>WinHelp.xaml</DependentUpon>
+    <Compile Include="View\WinTips.xaml.cs">
+      <DependentUpon>WinTips.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\CMessageBox.xaml.cs">
       <DependentUpon>CMessageBox.xaml</DependentUpon>
@@ -139,7 +139,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\WinHelp.xaml">
+    <Page Include="View\WinTips.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
