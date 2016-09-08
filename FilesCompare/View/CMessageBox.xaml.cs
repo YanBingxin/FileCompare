@@ -24,7 +24,7 @@ namespace FilesCompare.View
         public CMessageBox(string mess = "")
         {
             InitializeComponent();
-            _message = mess;
+            Message = mess;
         }
 
         private string _message;
@@ -34,6 +34,11 @@ namespace FilesCompare.View
         public string Message
         {
             get { return _message; }
+            set
+            {
+                _message = value;
+                txtMess.Text = _message;
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
