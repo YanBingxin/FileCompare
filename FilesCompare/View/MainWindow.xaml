@@ -262,7 +262,7 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
-                                            <ctrl:SelectableTextBlock FontFamily="Italic" VerticalAlignment="Center" Foreground="#FFD7AB69" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}">
+                                            <ctrl:SelectableTextBlock FontFamily="Italic" VerticalAlignment="Center" Foreground="Blue" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}">
                                                 <ctrl:SelectableTextBlock.Text>
                                                     <MultiBinding Converter="{StaticResource JarNameConverter}">
                                                         <Binding Path="DataContext.FilePath1" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
@@ -341,7 +341,7 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
-                                            <ctrl:SelectableTextBlock FontFamily="Italic" VerticalAlignment="Center" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Foreground="#FFD7AB69">
+                                            <ctrl:SelectableTextBlock FontFamily="Italic" VerticalAlignment="Center" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Foreground="Blue">
                                                 <ctrl:SelectableTextBlock.Text>
                                                     <MultiBinding Converter="{StaticResource JarNameConverter}">
                                                         <Binding Path="DataContext.FilePath2" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
