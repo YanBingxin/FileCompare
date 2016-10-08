@@ -52,6 +52,10 @@ namespace FilesCompare.ViewModel
         /// 导入命令
         /// </summary>
         public ICommand ImportCommand { set; get; }
+        /// <summary>
+        /// 保存结果截图
+        /// </summary>
+        public ICommand ResPngCommand { get; set; }
         #endregion
 
         #region 字段
@@ -883,6 +887,7 @@ namespace FilesCompare.ViewModel
             DragMoveCommand = new RelayCommand(DragMoveExecute);
             ExportCommand = new RelayCommand(ExportExecute);
             ImportCommand = new RelayCommand(ImportExecute);
+            ResPngCommand = new RelayCommand(ResPngExecute);
         }
 
         /// <summary>
@@ -1669,6 +1674,15 @@ namespace FilesCompare.ViewModel
                 File.Create(ConfigFilePath);
             }
             CommonMethod.Write("立思辰文件比对工具3.0--by ybx", key, value, ConfigFilePath);
+        }
+        #endregion
+
+        #region 保存结果快照
+        private void ResPngExecute(object obj)
+        {
+            ResPreview pr = new ResPreview();
+            pr.DataContext = this;
+            pr.ShowDialogEx();
         }
         #endregion
 

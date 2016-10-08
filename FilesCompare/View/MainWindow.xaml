@@ -426,6 +426,7 @@
                         <TextBlock Text="导入导出" Foreground="White" HorizontalAlignment="Center"></TextBlock>
                     </Expander.Header>
                     <StackPanel Orientation="Vertical">
+                        <Button FontSize="13" Command="{Binding ResPngCommand}" Content="保存结果快照 ◎ " Margin="2" Style="{StaticResource  BaseButtonStyle}"></Button>
                         <Button FontSize="13" Command="{Binding ImportCommand}" Content="导入分析结果←" Margin="2" Style="{StaticResource  BaseButtonStyle}"></Button>
                         <Button FontSize="13" Command="{Binding ExportCommand}" Content="导出分析结果→"  Style="{StaticResource  BaseButtonStyle}"></Button>
                     </StackPanel>

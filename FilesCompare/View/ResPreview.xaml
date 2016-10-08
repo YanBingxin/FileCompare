@@ -1,0 +1,198 @@
+﻿<Window x:Class="FilesCompare.View.ResPreview"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:converter="clr-namespace:FilesCompare.Converter"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="ToolWindow"
+        Background="Gray"
+        WindowState="Maximized"
+        Title="ResPreview">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Style/ybx_GraySimpleStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="TextBlock">
+                <Setter Property="ToolTip" Value="{Binding Text,RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="FontSize" Value="16"/>
+            </Style>
+            <converter:PathConverter x:Key="PathConverter"/>
+            <converter:JarNameConverter x:Key="JarNameConverter"/>
+            <converter:ImportPathConverter x:Key="ImportPathConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Grid.Column="0">
+        <ScrollViewer x:Name="scRes" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="0,0,0,20">
+            <Grid x:Name="gdRes" HorizontalAlignment="Stretch">
+                <Grid.Resources>
+                    <Style TargetType="DataGrid">
+                        <Setter Property="GridLinesVisibility" Value="None"/>
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <DataGrid x:Name="dgNew" HeadersVisibility="Column" CanUserAddRows="False" SelectionMode="Single" RowBackground="#FFD4D0D0" AlternatingRowBackground="#FFD4D0D0" Grid.Column="0" RowHeight="22" HorizontalAlignment="Stretch" AutoGenerateColumns="False" Margin="1" ItemsSource="{Binding Result1, UpdateSourceTrigger=PropertyChanged}" 
+                       >
+                    <DataGrid.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel/>
+                        </ItemsPanelTemplate>
+                    </DataGrid.ItemsPanel>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="类型">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Vertical">
+                                        <Image x:Name="file" Tag="{Binding}" ToolTip="打开文件所在目录" Height="20" Stretch="Uniform" Source="..\Style\File.ico"/>
+                                        <!--<Image x:Name="folder" MouseLeftButtonDown="file_MouseLeftButtonDown" Tag="{Binding FFullName}" Height="20" Stretch="Uniform" Source="..\Style\folder.ico" Visibility="Collapsed"/>-->
+                                    </StackPanel>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsFile}" Value="false">
+                                            <Setter TargetName="file" Property="Source" Value="..\Style\folder.ico"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding FName}" Value="">
+                                            <Setter TargetName="file" Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="文件">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
+                                        <TextBlock FontFamily="Italic" VerticalAlignment="Center" Foreground="#FFD7AB69" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource JarNameConverter}">
+                                                    <Binding Path="DataContext.FilePath1" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
+                                                    <Binding Path="JarParentName"/>
+                                                    <Binding Path="FFullName"/>
+                                                    <Binding Path="FName"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock x:Name="txtFile" Foreground="Black" Text="{Binding FName}" ToolTip="{Binding FFullName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                    </StackPanel>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding DifTag}" Value="True">
+                                            <Setter TargetName="sp" Property="Background" Value="Yellow"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding DifTag}" Value="False">
+                                            <Setter TargetName="sp" Property="Background" Value="LightGreen"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="全路径">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock x:Name="txtFile" ToolTip="{Binding FFullName}" Foreground="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{StaticResource PathConverter}">
+                                                <Binding Path="DataContext.FilePath1" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
+                                                <Binding Path="FFullName"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding DifTag}" Value="True">
+                                            <Setter TargetName="txtFile" Property="Background" Value="Yellow"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding DifTag}" Value="False">
+                                            <Setter TargetName="txtFile" Property="Background" Value="LightGreen"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <DataGrid x:Name="dgOld" HeadersVisibility="Column" CanUserAddRows="False" RowBackground="#FFD4D0D0" AlternatingRowBackground="#FFD4D0D0" Grid.Column="1" RowHeight="22" HorizontalAlignment="Stretch" AutoGenerateColumns="False" Margin="1" ItemsSource="{Binding Result2, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single">
+                    <DataGrid.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </DataGrid.ItemsPanel>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="类型">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Vertical">
+                                        <Image x:Name="file" Tag="{Binding}" ToolTip="打开文件所在目录" Height="20" Stretch="Uniform" Source="..\Style\File.ico"/>
+                                        <!--<Image x:Name="folder" MouseLeftButtonDown="file_MouseLeftButtonDown" Tag="{Binding FFullName}" Height="20" Stretch="Uniform" Source="..\Style\folder.ico" Visibility="Collapsed"/>-->
+                                    </StackPanel>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsFile}" Value="false">
+                                            <Setter TargetName="file" Property="Source" Value="..\Style\folder.ico"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding FName}" Value="">
+                                            <Setter TargetName="file" Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <!--<DataTrigger Binding="{Binding IsFile}" Value="false">
+                                                    <Setter TargetName="folder" Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>-->
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="文件">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel x:Name="sp" Orientation="Horizontal" Width="auto">
+                                        <TextBlock FontFamily="Italic" VerticalAlignment="Center" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Foreground="#FFD7AB69">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource JarNameConverter}">
+                                                    <Binding Path="DataContext.FilePath2" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
+                                                    <Binding Path="JarParentName"/>
+                                                    <Binding Path="FFullName"/>
+                                                    <Binding Path="FName"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock x:Name="txtFile" ToolTip="{Binding FFullName}" Foreground="Black" Text="{Binding FName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                    </StackPanel>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding DifTag}" Value="True">
+                                            <Setter TargetName="sp" Property="Background" Value="Yellow"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding DifTag}" Value="False">
+                                            <Setter TargetName="sp" Property="Background" Value="LightPink"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="全路径">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock x:Name="txtFile" ToolTip="{Binding FFullName}" Foreground="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{StaticResource PathConverter}">
+                                                <Binding Path="DataContext.FilePath2" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
+                                                <Binding Path="FFullName"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding DifTag}" Value="True">
+                                            <Setter TargetName="txtFile" Property="Background" Value="Yellow"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding DifTag}" Value="False">
+                                            <Setter TargetName="txtFile" Property="Background" Value="LightPink"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </ScrollViewer>
+        <Button VerticalAlignment="Bottom" Margin="5" Click="Button_Click" Content="保存快照" Style="{StaticResource BaseButtonStyle}"/>
+    </Grid>
+</Window>

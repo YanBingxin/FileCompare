@@ -10,6 +10,8 @@ using System.Security.Principal;
 using System.Text;
 using System.Windows;
 using Microsoft.Win32;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace FilesCompare.Common
 {
@@ -363,28 +365,7 @@ namespace FilesCompare.Common
         }
         #endregion
 
-        #region 获取管理权限+管理文件类型
-        /// <summary>
-        /// 获取管理员权限
-        /// </summary>
-        /// <param name="type"></param>
-        public static void GetAcess(string type = "")
-        {
-            WindowsIdentity wi = WindowsIdentity.GetCurrent();
-            WindowsPrincipal wp = new WindowsPrincipal(wi);
-
-            if (!wp.IsInRole(WindowsBuiltInRole.Administrator))
-            {
-                ProcessStartInfo start = new ProcessStartInfo();
-                Process p = new Process();
-                start.WorkingDirectory = System.Windows.Forms.Application.StartupPath;
-                start.Verb = "runas";
-                start.FileName = System.Windows.Forms.Application.ExecutablePath;
-                Process.Start(start);
-                return;
-            }
-        }
-
+        #region 关联文件类型
         /// <summary>
         /// 关联文件
         /// </summary>
@@ -413,6 +394,28 @@ namespace FilesCompare.Common
             _VRPkey = _VRPkey.OpenSubKey("command", true);
             string _PathString = "\"" + _FilePathString + "\" \"%1\"";
             _VRPkey.SetValue("", _PathString);                                    //写入数据
+        }
+        #endregion
+
+        #region 截图
+        public static void SaveElementPng(FrameworkElement fElement, string fileName)
+        {
+            try
+            {
+                using (System.IO.FileStream fs = System.IO.File.Open(fileName, System.IO.FileMode.OpenOrCreate))
+                {
+                    RenderTargetBitmap tbit = new RenderTargetBitmap((int)fElement.ActualWidth, (int)fElement.ActualHeight, 96d, 96d, PixelFormats.Pbgra32);
+                    tbit.Render(fElement);
+                    BitmapEncoder ben = new PngBitmapEncoder();
+                    ben.Frames.Add(BitmapFrame.Create(tbit));
+                    ben.Save(fs);
+                    fs.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         #endregion
     }
