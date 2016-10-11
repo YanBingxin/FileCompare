@@ -18,11 +18,27 @@ namespace FilesCompare.View
     /// <summary>
     /// ResPreview.xaml 的交互逻辑
     /// </summary>
-    public partial class ResPreview : Window
+    public partial class ResPreview : BxWindow.BxWindow
     {
         public ResPreview()
         {
             InitializeComponent();
+        }
+
+        public override double TitleHeight
+        {
+            get
+            {
+                return 30;
+            }
+        }
+
+        public override double TitleRightMargin
+        {
+            get
+            {
+                return this.stpHeaderButton.ActualWidth;
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -50,6 +66,11 @@ namespace FilesCompare.View
             {
                 CMessageBox.Show("保存失败,原因:" + ex.Message);
             }
+            this.Close();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
             this.Close();
         }
     }

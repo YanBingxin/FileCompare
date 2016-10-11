@@ -1,13 +1,13 @@
-﻿<Window x:Class="FilesCompare.View.ResPreview"
+﻿<win:BxWindow x:Class="FilesCompare.View.ResPreview"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-         xmlns:converter="clr-namespace:FilesCompare.Converter"
+        xmlns:win="clr-namespace:BxWindow"
+        xmlns:converter="clr-namespace:FilesCompare.Converter"
         WindowStartupLocation="CenterScreen"
-        WindowStyle="ToolWindow"
         Background="Gray"
         WindowState="Maximized"
         Title="ResPreview">
-    <Window.Resources>
+    <win:BxWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Style/ybx_GraySimpleStyle.xaml"/>
@@ -22,9 +22,43 @@
             <converter:JarNameConverter x:Key="JarNameConverter"/>
             <converter:ImportPathConverter x:Key="ImportPathConverter"/>
         </ResourceDictionary>
-    </Window.Resources>
+    </win:BxWindow.Resources>
     <Grid Grid.Column="0">
-        <ScrollViewer x:Name="scRes" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="0,0,0,20">
+        <Label Content="分析结果" Foreground="White" Height="30" VerticalAlignment="Top" FontSize="14"/>
+        <StackPanel x:Name="stpHeaderButton" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top"
+        		Background="Transparent">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource NoBorderButtonStyle}">
+                    <Setter Property="Width" Value="20"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="#FF333333"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Background" Value="DimGray"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Resources>
+            <Button Content="-" Command="{Binding MinCommand}"/>
+            <Button Content="□" Command="{Binding MaxCommand}"/>
+            <Button Content="×" Click="Button_Click_1">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource NoBorderButtonStyle}">
+                        <Setter Property="Width" Value="20"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Background" Value="#FF333333"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="Red"/>
+                                <Setter Property="Background" Value="DimGray"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+        <ScrollViewer x:Name="scRes" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="0,30,0,20">
             <Grid x:Name="gdRes" HorizontalAlignment="Stretch">
                 <Grid.Resources>
                     <Style TargetType="DataGrid">
@@ -195,4 +229,4 @@
         </ScrollViewer>
         <Button VerticalAlignment="Bottom" Margin="5" Click="Button_Click" Content="保存快照" Style="{StaticResource BaseButtonStyle}"/>
     </Grid>
-</Window>
+</win:BxWindow>

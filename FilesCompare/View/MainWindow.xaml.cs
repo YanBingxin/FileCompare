@@ -25,24 +25,28 @@ namespace FilesCompare
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window, IMainWindowView
+    public partial class MainWindow : BxWindow.BxWindow, IMainWindowView
     {
+        public override double TitleHeight
+        {
+            get
+            {
+                return this.gdTitle.ActualHeight;
+            }
+        }
+
+        public override double TitleRightMargin
+        {
+            get
+            {
+                return this.stpHeaderButton.ActualWidth + 5;
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
         }
-
-        #region 拖动
-        /// <summary>
-        /// 为了减少引用的外部dll，偷懒写在这吧。嘻嘻
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            this.DragMove();
-        }
-        #endregion
 
         #region 比对
         /// <summary>

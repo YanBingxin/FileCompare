@@ -1,15 +1,15 @@
-﻿<Window x:Class="FilesCompare.MainWindow"
+﻿<win:BxWindow x:Class="FilesCompare.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converter="clr-namespace:FilesCompare.Converter"
         xmlns:ctrl="clr-namespace:FilesCompare.Style"
+        xmlns:win="clr-namespace:BxWindow"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
-        ResizeMode="NoResize"
         AllowDrop="True"
         Drop="Window_Drop"
         Title="MainWindow" Height="650" Width="1000">
-    <Window.Resources>
+    <win:BxWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Style/ybx_GraySimpleStyle.xaml"/>
@@ -24,10 +24,10 @@
             <converter:JarNameConverter x:Key="JarNameConverter"/>
             <converter:ImportPathConverter x:Key="ImportPathConverter"/>
         </ResourceDictionary>
-    </Window.Resources>
-    <Window.InputBindings>
+    </win:BxWindow.Resources>
+    <win:BxWindow.InputBindings>
         <KeyBinding Gesture="Enter" Command="{Binding DescryptCommand}"/>
-    </Window.InputBindings>
+    </win:BxWindow.InputBindings>
     <Grid Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"></ColumnDefinition>
@@ -44,7 +44,7 @@
             <RowDefinition Height="25"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5">
+        <Grid x:Name="gdTitle" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="68"/>
@@ -471,4 +471,4 @@
                    Text="{Binding Time, UpdateSourceTrigger=PropertyChanged,StringFormat=本次用时：{0}秒}">
         </TextBlock>
     </Grid>
-</Window>
+</win:BxWindow>
