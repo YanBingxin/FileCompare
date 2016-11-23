@@ -110,7 +110,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" Grid.Row="0" Text="黑名单※" FontFamily="幼圆"/>
+            <TextBlock Grid.Column="0" Grid.Row="0" Text="黑名单※" FontFamily="幼圆" HorizontalAlignment="Left" Margin="4,0,0,0"/>
             <TextBox x:Name="txtBlack" Button.Click="TextBox_Click_Ignore" IsReadOnly="True"  Grid.Row="0" TabIndex="0" Grid.Column="1" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" HorizontalContentAlignment="Center" TextWrapping="NoWrap" Text="{Binding Ignore, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}">
             </TextBox>
             <ctrl:PopubEx x:Name="pupIgnore" AllowsTransparency="True" PlacementTarget="{Binding ElementName=txtBlack}" Placement="Bottom" PopupAnimation="Scroll" Grid.Row="0" Grid.Column="1" SnapsToDevicePixels="True">
@@ -131,7 +131,7 @@
                     </StackPanel>
                 </Border>
             </ctrl:PopubEx>
-            <TextBlock Grid.Column="2" Grid.Row="0" Text="白名单√" FontFamily="幼圆"/>
+            <TextBlock Grid.Column="2" Grid.Row="0" Text="白名单√" FontFamily="幼圆" HorizontalAlignment="Left" Margin="4,0,0,0"/>
             <TextBox x:Name="txtWhite" Grid.Row="0" IsReadOnly="True" Button.Click="TextBox_Click_Prefer"  TabIndex="1" Grid.Column="3" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" HorizontalContentAlignment="Center" TextWrapping="NoWrap" Text="{Binding Prefer, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" FontFamily="幼圆" FontSize="20" Style="{StaticResource SecContentTBXStyle}"/>
             <ctrl:PopubEx x:Name="pupPrefer" AllowsTransparency="True" PlacementTarget="{Binding ElementName=txtWhite}" Placement="Bottom"  PopupAnimation="Scroll" Grid.Row="0" Grid.Column="1" SnapsToDevicePixels="True">
                 <Border BorderBrush="Black" BorderThickness="0.55" Background="White">
@@ -150,7 +150,7 @@
                 </Border>
             </ctrl:PopubEx>
 
-            <TextBlock Text="新文件>" FontFamily="幼圆" Grid.Column="0" Grid.Row="1">
+            <TextBlock Text="新文件>" FontFamily="幼圆" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" Margin="4,0,0,0">
                 <TextBlock.TextEffects>
                     <TextEffect PositionStart="3" PositionCount="1" >
                         <TextEffect.Transform>
@@ -172,7 +172,7 @@
                      TabIndex="2" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}"
                  Style="{StaticResource OpenPathTBXStyle}"
                  Text="{Binding FilePath1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource ImportPathConverter}}"></TextBox>
-            <TextBlock Text="旧文件>" FontFamily="幼圆" Grid.Column="2" Grid.Row="1">
+            <TextBlock Text="旧文件>" FontFamily="幼圆" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" Margin="4,0,0,0">
                 <TextBlock.TextEffects>
                     <TextEffect PositionStart="3" PositionCount="1" >
                         <TextEffect.Transform>

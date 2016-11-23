@@ -133,6 +133,7 @@
     <Compile Include="Style\BxWindow.cs" />
     <Compile Include="Style\PopubEx.cs" />
     <Compile Include="Style\SelectableTextBlock.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Model\StringWraper.cs" />
     <Compile Include="View\ResPreview.xaml.cs">

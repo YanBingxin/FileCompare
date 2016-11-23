@@ -21,7 +21,7 @@ using System.Security.Principal;
 
 namespace FilesCompare.ViewModel
 {
-    public class MainWindowViewModel : NotifyObject, IMainWindowViewModel
+    public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
     {
         #region 命令
         /// <summary>
@@ -880,14 +880,14 @@ namespace FilesCompare.ViewModel
         /// </summary>
         private void InitCommand()
         {
-            DescryptCommand = new RelayCommand(CompareExecute, CompareCanExecute);
+            DescryptCommand = new RelayCommand<object>(CompareExecute, CompareCanExecute);
             MinCommand = new RelayCommand(MinWindowExecute);
             MaxCommand = new RelayCommand(MaxWindowExecute);
             CloseCommand = new RelayCommand(CloseExecute);
             DragMoveCommand = new RelayCommand(DragMoveExecute);
-            ExportCommand = new RelayCommand(ExportExecute);
-            ImportCommand = new RelayCommand(ImportExecute);
-            ResPngCommand = new RelayCommand(ResPngExecute);
+            ExportCommand = new RelayCommand<object>(ExportExecute);
+            ImportCommand = new RelayCommand<object>(ImportExecute);
+            ResPngCommand = new RelayCommand<object>(ResPngExecute);
         }
 
         /// <summary>
@@ -1922,7 +1922,7 @@ namespace FilesCompare.ViewModel
         /// 最小化窗口
         /// </summary>
         /// <param name="parameter"></param>
-        private void MinWindowExecute(object parameter)
+        private void MinWindowExecute()
         {
             if ((m_View as Window) != null)
                 (m_View as Window).WindowState = WindowState.Minimized;
@@ -1931,7 +1931,7 @@ namespace FilesCompare.ViewModel
         /// 最大化窗口
         /// </summary>
         /// <param name="parameter"></param>
-        private void MaxWindowExecute(object parameter)
+        private void MaxWindowExecute()
         {
             Window win = (m_View as Window);
             if (win != null)
@@ -1943,7 +1943,7 @@ namespace FilesCompare.ViewModel
         ///关闭窗口 
         /// </summary>
         /// <param name="parameter"></param>
-        private void CloseExecute(object parameter)
+        private void CloseExecute()
         {
             SaveIgnores();
             ClearTemp();
@@ -2006,7 +2006,7 @@ namespace FilesCompare.ViewModel
         /// 拖动窗口
         /// </summary>
         /// <param name="obj"></param>
-        private void DragMoveExecute(object obj)
+        private void DragMoveExecute()
         {
             Window win = (m_View as Window);
             if (win != null)
