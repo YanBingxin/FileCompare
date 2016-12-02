@@ -12,6 +12,7 @@ using System.Windows;
 using Microsoft.Win32;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
+using System.Collections.ObjectModel;
 
 namespace FilesCompare.Common
 {
@@ -23,6 +24,77 @@ namespace FilesCompare.Common
     /// </summary>
     public static class CommonMethod
     {
+        /// <summary>
+        /// 捕获异常状态下运行无返回值
+        /// </summary>
+        /// <param name="act"></param>
+        public static void CatchExRun(Action act, bool isShowMessage = false)
+        {
+            try
+            {
+                act();
+            }
+            catch (Exception ex)
+            {
+                if (isShowMessage)
+                    MessageBox.Show(ex.Message);
+            }
+        }
+        /// <summary>
+        /// 捕获异常状态下有返回值运行
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static T CatchExRun<T>(Func<T> func, bool isShowMessage = false)
+        {
+            try
+            {
+                return func();
+            }
+            catch (Exception ex)
+            {
+                if (isShowMessage)
+                    MessageBox.Show(ex.Message);
+                return default(T);
+            }
+        }
+
+        /// <summary>
+        /// 为泛型列表附加序号属性
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list">目标列表</param>
+        /// <returns>附加序号属性后的列表</returns>
+        public static List<T> Sort<T>(this List<T> list, string proName)
+        {
+            System.Reflection.PropertyInfo proInfo = typeof(T).GetProperty(proName);
+            int i = 1;
+            foreach (var item in list)
+            {
+                proInfo.SetValue(item, i, null);
+                i++;
+            }
+            return list;
+        }
+        /// <summary>
+        /// 为泛型列表附加序号属性
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list">目标列表</param>
+        /// <returns>附加Xh属性后的列表</returns>
+        public static ObservableCollection<T> Sort<T>(this ObservableCollection<T> list, string proName)
+        {
+            System.Reflection.PropertyInfo proInfo = typeof(T).GetProperty(proName);
+            int i = 1;
+            foreach (var item in list)
+            {
+                proInfo.SetValue(item, i, null);
+                i++;
+            }
+            return list;
+        }
+
         #region 获取数据源同名属性属性值，赋值到目标数据源
         /// <summary>
         /// 获取数据源同名属性属性值，赋值到目标数据源
@@ -31,7 +103,7 @@ namespace FilesCompare.Common
         /// <param name="source">取值对象</param>
         /// <param name="ignores">用户指定忽略的属性名</param>
         /// <returns></returns>
-        public static object GetValueByPropertyName(object target, object source, string[] ignores = null)
+        public static T CopyTo<T>(T target, object source, string[] ignores = null)
         {
             //目标为空，抛出
             if (target == null)
@@ -50,16 +122,19 @@ namespace FilesCompare.Common
                 foreach (PropertyInfo property in source.GetType().GetProperties())
                 {
                     //忽略用户指定属性
-                    if (ignores != null && ignores.Contains(pro.Name))
+                    if (ignores != null && ignores.Contains(pro.Name) || !property.CanRead || !property.CanWrite)
                     {
                         continue;
                     }
-                    //取出相同属性名且不被忽略的属性值
-                    if (pro.Name == property.Name && property.GetValue(source, null) != null)
+                    CommonMethod.CatchExRun(delegate
                     {
-                        object temp = Convert.ChangeType(property.GetValue(source, null), pro.PropertyType);//转换属性值类型
-                        pro.SetValue(target, temp, null);//赋值
-                    }
+                        //取出相同属性名且不被忽略的属性值
+                        if (pro.Name == property.Name && property.GetValue(source, null) != null)
+                        {
+                            object temp = Convert.ChangeType(property.GetValue(source, null), pro.PropertyType);//转换属性值类型
+                            pro.SetValue(target, temp, null);//赋值
+                        }
+                    });
                 }
             }
             //返回赋值对象
