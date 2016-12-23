@@ -1193,14 +1193,14 @@ namespace FilesCompare.ViewModel
             //检索当前目录所有文件和目录节点
             try
             {
-                tempList = new ObservableCollection<FNode>((from f in Directory.GetFiles(pathName)
+                tempList = new ObservableCollection<FNode>((from f in Directory.EnumerateFiles(pathName)
                                                             where (IgnoreOnFiles == false || IsIgnore(f) == false) && (PreferOnFiles == false || IsPrefer(f))
                                                             select new FNode()
                                                             {
                                                                 FFullName = f,
                                                                 FName = f.Replace(pathName + "\\", ""),
                                                                 IsFile = true
-                                                            }).Concat(from d in Directory.GetDirectories(pathName)
+                                                            }).Concat(from d in Directory.EnumerateDirectories(pathName)
                                                                       where IgnoreOnFolders == false || IsIgnore(d) == false
                                                                       select new FNode()
                                                                       {
@@ -1242,7 +1242,7 @@ namespace FilesCompare.ViewModel
             //检索当前目录所有文件和目录节点
             try
             {
-                tempList = new ObservableCollection<FNode>((from f in Directory.GetFiles(pathName)
+                tempList = new ObservableCollection<FNode>((from f in Directory.EnumerateFiles(pathName)
                                                             where (IgnoreOnUCFiles == false || IsIgnore(f) == false) && (PreferOnUCFiles == false || IsPrefer(f))//对解压后文件根据配置应用黑名单和白名单校验
                                                             select new FNode()
                                                             {
@@ -1250,7 +1250,7 @@ namespace FilesCompare.ViewModel
                                                                 FName = f.Replace(pathName + "\\", ""),
                                                                 JarParentName = jarName,
                                                                 IsFile = true
-                                                            }).Concat(from d in Directory.GetDirectories(pathName)
+                                                            }).Concat(from d in Directory.EnumerateDirectories(pathName)
                                                                       where IgnoreOnUCFolders == false || IsIgnore(d) == false
                                                                       select new FNode()
                                                                       {
