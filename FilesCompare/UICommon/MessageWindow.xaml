@@ -1,0 +1,46 @@
+﻿<Window x:Class="NV.DRF.UICommon.MessageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Background="Transparent"
+        Title="{Binding PTitle}" 
+        Height="300" Width="548" 
+        FontSize="16"
+        WindowStartupLocation="CenterScreen" 
+        AllowsTransparency="True"
+        ShowInTaskbar="False" WindowStyle="None">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Style/ybx_GraySimpleStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <RoutedUICommand x:Key="btn_Click" Text="btn_Click"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource btn_Click}" CanExecute="CanExecute" Executed="btn_Click"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="O" Command="{StaticResource btn_Click}" CommandParameter="{Binding ElementName=btnOK}"/>
+        <KeyBinding Key="Y"  Command="{StaticResource btn_Click}" CommandParameter="{Binding ElementName=btnYes}"/>
+        <KeyBinding Key="N" Command="{StaticResource btn_Click}" CommandParameter="{Binding ElementName=btnNo}"/>
+        <KeyBinding Key="C" Command="{StaticResource btn_Click}" CommandParameter="{Binding ElementName=btnCancel}"/>
+    </Window.InputBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Border Background="{StaticResource  TextBoxBG}"  Grid.Row="0" Grid.RowSpan="3" BorderBrush="Gray" BorderThickness="1" CornerRadius="0,0,5,5"/>
+        <Label Content="{Binding PTitle}" Foreground="White" MouseLeftButtonDown="Label_MouseLeftButtonDown" VerticalContentAlignment="Center" Margin="0,0" FontSize="18" Background="{StaticResource BtnBG}">
+
+        </Label>
+        <TextBlock Text="{Binding MessageText}" Grid.Row="1" Margin="10,2" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontSize="18"/>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="2">
+            <Button Content="确定(O)" FontSize="16" Tag="1" MinWidth="80" Height="35" Margin="8" Click="btn_Click" Name="btnOK" Visibility="Collapsed"/>
+            <Button Content="是(Y)"  FontSize="16" Tag="6" MinWidth="80" Height="35" Margin="8" Click="btn_Click" Name="btnYes" Visibility="Collapsed"/>
+            <Button Content="否(N)"  FontSize="16" Tag="7" MinWidth="80" Height="35" Margin="8" Click="btn_Click" Name="btnNo" Visibility="Collapsed"/>
+            <Button Content="取消(C)"  FontSize="16" Tag="2" MinWidth="75" Height="35" Margin="8" Click="btn_Click" Name="btnCancel" Visibility="Collapsed"/>
+        </StackPanel>
+    </Grid>
+</Window>

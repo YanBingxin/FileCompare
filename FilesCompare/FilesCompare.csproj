@@ -133,6 +133,11 @@
     <Compile Include="Style\BxWindow.cs" />
     <Compile Include="Style\PopubEx.cs" />
     <Compile Include="Style\SelectableTextBlock.cs" />
+    <Compile Include="UICommon\MessageWindow.xaml.cs" />
+    <Compile Include="UICommon\NativeMethods.cs" />
+    <Compile Include="UICommon\ObservableModel.cs" />
+    <Compile Include="UICommon\RelayCommand.cs" />
+    <Compile Include="UICommon\ViewModelBase.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Model\StringWraper.cs" />
@@ -145,6 +150,10 @@
     <Compile Include="View\CMessageBox.xaml.cs">
       <DependentUpon>CMessageBox.xaml</DependentUpon>
     </Compile>
+    <Page Include="UICommon\MessageWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

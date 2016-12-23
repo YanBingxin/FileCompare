@@ -1,7 +1,39 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:UC="clr-namespace:FilesCompare.Common">
-
+    <!--默认背景灰度-->
+    <SolidColorBrush Color="#FF3F3B3A" x:Key="BG"/>
+    <SolidColorBrush Color="#FFDBDBDC" x:Key="TextBoxBG"/>
+    <!--默认条目选择背景色-->
+    <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,0" StartPoint="0,1">
+        <GradientStop Color="#FF0C375C" Offset="0"/>
+        <GradientStop Color="#FF4F9DB2" Offset="1"/>
+        <GradientStop Color="#FF34738E" Offset="0.755"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="SelectedBG" EndPoint="0,0" StartPoint="0,1">
+        <GradientStop Color="#FF0C375C" Offset="0"/>
+        <GradientStop Color="#FF4F9DB2" Offset="1"/>
+        <GradientStop Color="#FF34738E" Offset="0.755"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="MouseOverBG" EndPoint="0,0" StartPoint="0,1">
+        <GradientStop Color="#FF0C375C" Offset="0"/>
+        <GradientStop Color="#FF4F9DB2" Offset="1"/>
+        <GradientStop Color="#FF34738E" Offset="0.755"/>
+    </LinearGradientBrush>
+    <!--按钮类默认背景色-->
+    <LinearGradientBrush x:Key="BtnBG" EndPoint="0,0" StartPoint="0,1">
+        <GradientStop Color="#FF383635" Offset="0"/>
+        <GradientStop Color="#FF726767" Offset="1"/>
+        <GradientStop Color="#FF494747" Offset="0.755"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="BtnMouseOverBG" EndPoint="0,0" StartPoint="0,1">
+        <GradientStop Color="#FF0C375C" Offset="0"/>
+        <GradientStop Color="#FF4F9DB2" Offset="1"/>
+        <GradientStop Color="#FF34738E" Offset="0.755"/>
+    </LinearGradientBrush>
+    <!--按钮类默认前景色-->
+    <SolidColorBrush x:Key="BtnForeground" Color="#FFEEEEEE"/>
+  
     <VisualBrush x:Key="TipBrush" Opacity="0.3" AlignmentX="Left" AlignmentY="Center">
         <VisualBrush.Visual>
             <TextBlock Text="" FontStyle="Italic"/>
