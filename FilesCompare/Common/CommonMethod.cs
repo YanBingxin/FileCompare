@@ -440,7 +440,7 @@ namespace FilesCompare.Common
         }
         #endregion
 
-        #region 关联文件类型
+        #region 关联文件类型 和开机自启动
         /// <summary>
         /// 关联文件
         /// </summary>
@@ -469,6 +469,38 @@ namespace FilesCompare.Common
             _VRPkey = _VRPkey.OpenSubKey("command", true);
             string _PathString = "\"" + _FilePathString + "\" \"%1\"";
             _VRPkey.SetValue("", _PathString);                                    //写入数据
+        }
+
+        private const string REG_KEY = "bing.wincn.net";
+
+        /// <summary>
+        /// 设置开机自启
+        /// </summary>
+        public static void setAutoStartup()
+        {
+            //获得文件的当前路径  
+            string appName = Process.GetCurrentProcess().MainModule.FileName;
+            //获取Run键
+            RegistryKey reg = Registry.LocalMachine;
+            RegistryKey run = reg.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
+            //在Run键中写入一个新的键值  
+            run.SetValue(REG_KEY, "\"" + appName + "\"");
+            reg.Close();
+        }
+
+        /// <summary>
+        /// 取消开机自启
+        /// </summary>
+        public static void cancleAutoStartup()
+        {
+            RegistryKey reg = Registry.LocalMachine;
+            RegistryKey run = reg.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
+            //在Run键中写入一个新的键值  
+            if (run.GetValue(REG_KEY) != null)
+            {
+                run.DeleteValue(REG_KEY);
+            }
+            reg.Close();
         }
         #endregion
 
