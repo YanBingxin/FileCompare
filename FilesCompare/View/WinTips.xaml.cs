@@ -45,7 +45,10 @@ namespace FilesCompare.View
             for (int i = 0; i < 10; i++)
             {
                 Thread.Sleep(100);
-                this.Opacity = 1 - i * 0.1;
+                 this.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    this.Opacity = 1 - i * 0.1;
+                }));
             }
         }
         private string _message;
